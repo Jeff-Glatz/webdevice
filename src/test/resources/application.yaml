@@ -1,0 +1,11 @@
+logging:
+  level:
+    org.springframework: INFO
+
+automaton:
+  baseUrl: http://www.apple.com
+  devices:
+    firefox:
+      driver: org.openqa.selenium.firefox.FirefoxDriver
+    chrome:
+      driver: org.openqa.selenium.chrome.ChromeDriver
