@@ -17,7 +17,7 @@ automaton:
         accessKey: ${saucelabs_accessKey}
         platformName: OS X 10.10
         browserVersion: 33.0
-      masked:
+      confidential:
         - accessKey
     iPhoneXS:
       remote-address: https://ondemand.saucelabs.com:443/wd/hub
@@ -29,5 +29,5 @@ automaton:
         deviceOrientation: portrait
         platformName: iOS
         browserName: Safari
-      masked:
+      confidential:
         - accessKey

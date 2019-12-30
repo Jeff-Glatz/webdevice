@@ -6,7 +6,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.net.URL;
 import java.util.Objects;
 
-import static automaton.util.LogHelper.mask;
+import static automaton.driver.CapabilitiesHelper.mask;
 
 public class RemoteWebDeviceProvider
         extends BaseWebDeviceProvider<RemoteWebDevice> {
@@ -26,7 +26,7 @@ public class RemoteWebDeviceProvider
 
     @Override
     public RemoteWebDevice get() {
-        log.info("Providing new device named {} connecting to {} with {}", name, remoteAddress, mask(capabilities, masked));
+        log.info("Providing new device named {} connecting to {} with {}", name, remoteAddress, mask(capabilities, confidential));
         return new RemoteWebDevice(new RemoteWebDriver(remoteAddress, capabilities), name);
     }
 

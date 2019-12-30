@@ -1,4 +1,4 @@
-package automaton.device;
+package automaton.driver;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

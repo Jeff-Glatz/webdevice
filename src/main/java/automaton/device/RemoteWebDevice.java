@@ -1,5 +1,6 @@
 package automaton.device;
 
+import automaton.driver.WebDriverDecorator;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 

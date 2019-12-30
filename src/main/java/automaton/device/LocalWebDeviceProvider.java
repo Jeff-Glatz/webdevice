@@ -7,7 +7,7 @@ import org.openqa.selenium.WebDriverException;
 
 import java.util.Objects;
 
-import static automaton.util.LogHelper.mask;
+import static automaton.driver.CapabilitiesHelper.mask;
 import static java.util.UUID.randomUUID;
 
 public class LocalWebDeviceProvider<Driver extends WebDriver>
@@ -53,7 +53,7 @@ public class LocalWebDeviceProvider<Driver extends WebDriver>
                 return type.getDeclaredConstructor()
                         .newInstance();
             } else {
-                log.info("Instantiating {} using capabilities constructor: {}", type, mask(capabilities, masked));
+                log.info("Instantiating {} using capabilities constructor: {}", type, mask(capabilities, confidential));
                 return type.getDeclaredConstructor(Capabilities.class)
                         .newInstance(capabilities);
             }

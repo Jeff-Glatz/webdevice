@@ -1,4 +1,4 @@
-package automaton.util;
+package automaton.driver;
 
 import org.openqa.selenium.Capabilities;
 
@@ -12,13 +12,14 @@ import static java.lang.String.valueOf;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
 
-public class LogHelper {
+public class CapabilitiesHelper {
+    private static final String MASK = "********";
 
-    public static String mask(Capabilities capabilities, Set<String> masked) {
-        return mask(new IdentityHashMap<>(), capabilities.asMap(), masked);
+    public static String mask(Capabilities capabilities, Set<String> confidential) {
+        return mask(new IdentityHashMap<>(), capabilities.asMap(), confidential);
     }
 
-    private static String mask(Map<Object, String> seen, Object stringify, Set<String> masked) {
+    private static String mask(Map<Object, String> seen, Object stringify, Set<String> confidential) {
         if (stringify == null) {
             return "null";
         }
@@ -29,14 +30,14 @@ public class LogHelper {
             value.append("[");
             value.append(
                     Stream.of((Object[]) stringify)
-                            .map(item -> mask(seen, item, masked))
+                            .map(item -> mask(seen, item, confidential))
                             .collect(joining(", ")));
             value.append("]");
         } else if (stringify instanceof Collection) {
             value.append("[");
             value.append(
                     ((Collection<?>) stringify).stream()
-                            .map(item -> mask(seen, item, masked))
+                            .map(item -> mask(seen, item, confidential))
                             .collect(joining(", ")));
             value.append("]");
         } else if (stringify instanceof Map) {
@@ -45,7 +46,9 @@ public class LogHelper {
                     ((Map<?, ?>) stringify).entrySet().stream()
                             .sorted(comparing(entry -> valueOf(entry.getKey())))
                             .map(entry -> entry.getKey() + ": " +
-                                    (!masked.contains(entry.getKey()) ? mask(seen, entry.getValue(), masked) : "********"))
+                                    (!confidential.contains(entry.getKey()) ?
+                                            mask(seen, entry.getValue(), confidential) :
+                                            MASK))
                             .collect(joining(", ")));
             value.append("}");
         } else {

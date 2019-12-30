@@ -33,7 +33,7 @@ public class Device
     private Class<? extends MutableCapabilities> options;
     private String desired;
     private Map<String, Object> capabilities = new LinkedHashMap<>();
-    private Set<String> masked = new LinkedHashSet<>();
+    private Set<String> confidential = new LinkedHashSet<>();
 
     public String getName() {
         return name;
@@ -157,16 +157,16 @@ public class Device
         return this;
     }
 
-    public Set<String> getMasked() {
-        return masked;
+    public Set<String> getConfidential() {
+        return confidential;
     }
 
-    public void setMasked(Set<String> masked) {
-        this.masked = masked;
+    public void setConfidential(Set<String> confidential) {
+        this.confidential = confidential;
     }
 
-    public Device withMasked(String mask) {
-        masked.add(mask);
+    public Device withConfidential(String mask) {
+        confidential.add(mask);
         return this;
     }
 
@@ -176,7 +176,7 @@ public class Device
             log.info("{} capabilities will originate from {}", name, options.getName());
             MutableCapabilities options = options();
             if (!capabilities.isEmpty()) {
-                log.info("Merging {} capabilities into options", name);
+                log.info("Merging {} custom capabilities into options", name);
                 options.merge(new DesiredCapabilities(capabilities));
             }
             return options;
@@ -186,14 +186,14 @@ public class Device
             log.info("{} capabilities will originate from DesiredCapabilities.{}()", name, desired);
             DesiredCapabilities desired = desired();
             if (!capabilities.isEmpty()) {
-                log.info("Merging {} capabilities into desired capabilities", name);
+                log.info("Merging {} custom capabilities into desired capabilities", name);
                 desired.merge(new DesiredCapabilities(capabilities));
             }
             return desired;
         }
         // Next check for Capabilities
         else if (!capabilities.isEmpty()) {
-            log.info("{} capabilities will originate from map", name);
+            log.info("{} capabilities will originate from custom capabilities", name);
             return new DesiredCapabilities(capabilities);
         }
         // No capabilities specified
@@ -219,8 +219,8 @@ public class Device
         if (capabilities != null) {
             definition.addPropertyValue("capabilities", capabilities);
         }
-        if (!masked.isEmpty()) {
-            definition.addPropertyValue("masked", masked);
+        if (!confidential.isEmpty()) {
+            definition.addPropertyValue("confidential", confidential);
         }
         return definition.setAutowireMode(AUTOWIRE_BY_TYPE);
     }
@@ -237,11 +237,11 @@ public class Device
                 Objects.equals(options, device.options) &&
                 Objects.equals(desired, device.desired) &&
                 Objects.equals(capabilities, device.capabilities) &&
-                Objects.equals(masked, device.masked);
+                Objects.equals(confidential, device.confidential);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, provider, driver, remoteAddress, options, desired, capabilities, masked);
+        return Objects.hash(name, provider, driver, remoteAddress, options, desired, capabilities, confidential);
     }
 }

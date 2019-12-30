@@ -13,7 +13,7 @@ public abstract class BaseWebDeviceProvider<Device extends WebDevice>
     protected final String name;
 
     protected Capabilities capabilities;
-    protected Set<String> masked;
+    protected Set<String> confidential;
 
     protected BaseWebDeviceProvider(String name) {
         this.name = name;
@@ -32,12 +32,12 @@ public abstract class BaseWebDeviceProvider<Device extends WebDevice>
         this.capabilities = capabilities;
     }
 
-    public Set<String> getMasked() {
-        return masked;
+    public Set<String> getConfidential() {
+        return confidential;
     }
 
-    public void setMasked(Set<String> masked) {
-        this.masked = masked;
+    public void setConfidential(Set<String> confidential) {
+        this.confidential = confidential;
     }
 
     @Override
@@ -58,11 +58,11 @@ public abstract class BaseWebDeviceProvider<Device extends WebDevice>
         BaseWebDeviceProvider<?> that = (BaseWebDeviceProvider<?>) o;
         return Objects.equals(name, that.name) &&
                 Objects.equals(capabilities, that.capabilities) &&
-                Objects.equals(masked, that.masked);
+                Objects.equals(confidential, that.confidential);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, capabilities, masked);
+        return Objects.hash(name, capabilities, confidential);
     }
 }
