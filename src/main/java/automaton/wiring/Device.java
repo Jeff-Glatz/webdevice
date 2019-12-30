@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static java.lang.String.format;
+import static org.owasp.security.logging.SecurityMarkers.CONFIDENTIAL;
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_BY_TYPE;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
@@ -160,7 +161,7 @@ public class Device
             log.info("{} capabilities will come from {}", name, options.getName());
             MutableCapabilities options = options();
             if (!capabilities.isEmpty()) {
-                log.info("Merging {} capabilities {} into options {}", name, capabilities, options);
+                log.info(CONFIDENTIAL, "Merging {} capabilities {} into options {}", name, capabilities, options);
                 options.merge(new DesiredCapabilities(capabilities));
             }
             return options;
@@ -170,14 +171,14 @@ public class Device
             log.info("{} capabilities will come from DesiredCapabilities.{}()", name, desired);
             DesiredCapabilities desired = desired();
             if (!capabilities.isEmpty()) {
-                log.info("Merging {} capabilities {} into desired capabilities {}", name, capabilities, desired);
+                log.info(CONFIDENTIAL, "Merging {} capabilities {} into desired capabilities {}", name, capabilities, desired);
                 desired.merge(new DesiredCapabilities(capabilities));
             }
             return desired;
         }
         // Next check for Capabilities
         else if (!capabilities.isEmpty()) {
-            log.info("{} capabilities will come from {}", name, capabilities);
+            log.info(CONFIDENTIAL, "{} capabilities will come from {}", name, capabilities);
             return new DesiredCapabilities(capabilities);
         }
         // No capabilities specified

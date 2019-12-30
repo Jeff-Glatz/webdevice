@@ -8,6 +8,7 @@ import org.openqa.selenium.WebDriverException;
 import java.util.Objects;
 
 import static java.util.UUID.randomUUID;
+import static org.owasp.security.logging.SecurityMarkers.CONFIDENTIAL;
 
 public class LocalWebDeviceProvider<Driver extends WebDriver>
         extends BaseWebDeviceProvider<LocalWebDevice<Driver>> {
@@ -27,7 +28,7 @@ public class LocalWebDeviceProvider<Driver extends WebDriver>
 
     @Override
     public LocalWebDevice<Driver> get() {
-        log.info("Providing new device named {} with {}", name, capabilities);
+        log.info(CONFIDENTIAL, "Providing new device named {} with {}", name, capabilities);
         return new LocalWebDevice<>(newDriver(), name, randomUUID());
     }
 

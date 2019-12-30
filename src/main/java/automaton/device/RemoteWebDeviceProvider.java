@@ -6,6 +6,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.net.URL;
 import java.util.Objects;
 
+import static org.owasp.security.logging.SecurityMarkers.CONFIDENTIAL;
+
 public class RemoteWebDeviceProvider
         extends BaseWebDeviceProvider<RemoteWebDevice> {
     private final URL remoteAddress;
@@ -24,7 +26,7 @@ public class RemoteWebDeviceProvider
 
     @Override
     public RemoteWebDevice get() {
-        log.info("Providing new device named {} connecting to {} with {}", name, remoteAddress, capabilities);
+        log.info(CONFIDENTIAL, "Providing new device named {} connecting to {} with {}", name, remoteAddress, capabilities);
         return new RemoteWebDevice(new RemoteWebDriver(remoteAddress, capabilities), name);
     }
 
