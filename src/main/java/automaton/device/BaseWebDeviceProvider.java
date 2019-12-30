@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
+import java.util.Set;
 
 public abstract class BaseWebDeviceProvider<Device extends WebDevice>
         implements WebDeviceProvider<Device> {
@@ -12,6 +13,7 @@ public abstract class BaseWebDeviceProvider<Device extends WebDevice>
     protected final String name;
 
     protected Capabilities capabilities;
+    protected Set<String> masked;
 
     protected BaseWebDeviceProvider(String name) {
         this.name = name;
@@ -28,6 +30,14 @@ public abstract class BaseWebDeviceProvider<Device extends WebDevice>
 
     public void setCapabilities(Capabilities capabilities) {
         this.capabilities = capabilities;
+    }
+
+    public Set<String> getMasked() {
+        return masked;
+    }
+
+    public void setMasked(Set<String> masked) {
+        this.masked = masked;
     }
 
     @Override
@@ -47,11 +57,12 @@ public abstract class BaseWebDeviceProvider<Device extends WebDevice>
         if (o == null || getClass() != o.getClass()) return false;
         BaseWebDeviceProvider<?> that = (BaseWebDeviceProvider<?>) o;
         return Objects.equals(name, that.name) &&
-                Objects.equals(capabilities, that.capabilities);
+                Objects.equals(capabilities, that.capabilities) &&
+                Objects.equals(masked, that.masked);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, capabilities);
+        return Objects.hash(name, capabilities, masked);
     }
 }

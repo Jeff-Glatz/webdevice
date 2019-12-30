@@ -14,8 +14,10 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import static java.lang.String.format;
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_BY_TYPE;
@@ -31,6 +33,7 @@ public class Device
     private Class<? extends MutableCapabilities> options;
     private String desired;
     private Map<String, Object> capabilities = new LinkedHashMap<>();
+    private Set<String> masked = new LinkedHashSet<>();
 
     public String getName() {
         return name;
@@ -154,6 +157,19 @@ public class Device
         return this;
     }
 
+    public Set<String> getMasked() {
+        return masked;
+    }
+
+    public void setMasked(Set<String> masked) {
+        this.masked = masked;
+    }
+
+    public Device withMasked(String mask) {
+        masked.add(mask);
+        return this;
+    }
+
     public Capabilities capabilitiesOf() {
         // First check for Options
         if (options != null) {
@@ -203,6 +219,9 @@ public class Device
         if (capabilities != null) {
             definition.addPropertyValue("capabilities", capabilities);
         }
+        if (!masked.isEmpty()) {
+            definition.addPropertyValue("masked", masked);
+        }
         return definition.setAutowireMode(AUTOWIRE_BY_TYPE);
     }
 
@@ -217,11 +236,12 @@ public class Device
                 Objects.equals(remoteAddress, device.remoteAddress) &&
                 Objects.equals(options, device.options) &&
                 Objects.equals(desired, device.desired) &&
-                Objects.equals(capabilities, device.capabilities);
+                Objects.equals(capabilities, device.capabilities) &&
+                Objects.equals(masked, device.masked);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, provider, driver, remoteAddress, options, desired, capabilities);
+        return Objects.hash(name, provider, driver, remoteAddress, options, desired, capabilities, masked);
     }
 }
