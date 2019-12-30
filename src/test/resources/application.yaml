@@ -3,9 +3,17 @@ logging:
     org.springframework: INFO
 
 automaton:
-  baseUrl: http://www.apple.com
+  base-url: http://www.apple.com
   devices:
     firefox:
       driver: org.openqa.selenium.firefox.FirefoxDriver
     chrome:
       driver: org.openqa.selenium.chrome.ChromeDriver
+    custom:
+      remote-address: https://ondemand.saucelabs.com:443/wd/hub
+      capabilities:
+        username: ${saucelabs.username}
+        accessKey: ${saucelabs.accessKey}
+        browserName: Chrome
+        platform: Windows 10
+        version: 59.0

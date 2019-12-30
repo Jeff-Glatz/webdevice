@@ -1,21 +1,27 @@
 {
-  "groups": [
+  "hints": [
     {
-      "name": "automaton",
-      "type": "automaton.wiring.Settings",
-      "description": "Automaton settings"
-    },
-    {
-      "name": "automaton.devices",
-      "type": "java.util.Map<java.lang.String, automaton.wiring.Device>",
-      "description": "Map of devices to use"
-    }
-  ],
-  "properties": [
-    {
-      "name": "automaton.baseUrl",
-      "type": "java.net.URL",
-      "description": "Root URL for devices"
+      "name": "automaton.devices.keys",
+      "values": [
+        {
+          "value": "chrome"
+        },
+        {
+          "value": "edge"
+        },
+        {
+          "value": "firefox"
+        },
+        {
+          "value": "ie"
+        },
+        {
+          "value": "opera"
+        },
+        {
+          "value": "phantomjs"
+        }
+      ]
     }
   ]
 }
