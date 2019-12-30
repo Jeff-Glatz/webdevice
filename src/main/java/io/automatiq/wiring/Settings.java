@@ -1,4 +1,4 @@
-package automaton.wiring;
+package io.automatiq.wiring;
 
 import java.io.Serializable;
 import java.net.URL;

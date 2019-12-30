@@ -1,7 +1,7 @@
 {
   "hints": [
     {
-      "name": "automaton.devices.keys",
+      "name": "automatiq.devices.keys",
       "values": [
         {
           "value": "chrome"

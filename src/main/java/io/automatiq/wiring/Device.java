@@ -1,8 +1,8 @@
-package automaton.wiring;
+package io.automatiq.wiring;
 
-import automaton.device.LocalWebDeviceProvider;
-import automaton.device.RemoteWebDeviceProvider;
-import automaton.device.WebDeviceProvider;
+import io.automatiq.device.LocalWebDeviceProvider;
+import io.automatiq.device.RemoteWebDeviceProvider;
+import io.automatiq.device.WebDeviceProvider;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import static automaton.driver.CapabilitiesHelper.mark;
+import static io.automatiq.driver.ConfidentialCapabilities.mark;
 import static java.lang.String.format;
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_BY_TYPE;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;

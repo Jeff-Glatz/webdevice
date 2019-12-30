@@ -1,4 +1,4 @@
-package automaton.device;
+package io.automatiq.device;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,6 +1,6 @@
-package automaton.wiring;
+package io.automatiq.wiring;
 
-import automaton.device.WebDevicePool;
+import io.automatiq.device.WebDevicePool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 
+import static io.automatiq.wiring.Automatiq.PREFIX;
 import static java.lang.String.format;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
@@ -28,7 +29,7 @@ public class DeviceRegistrar
     @Override
     public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
         Settings settings = Binder.get(environment)
-                .bind("automaton", Settings.class)
+                .bind(PREFIX, Settings.class)
                 .get();
 
         log.info("Registering devices ...");

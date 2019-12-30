@@ -1,4 +1,4 @@
-package automaton.device;
+package io.automatiq.device;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;

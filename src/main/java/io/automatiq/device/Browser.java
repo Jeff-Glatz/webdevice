@@ -1,6 +1,6 @@
-package automaton.device;
+package io.automatiq.device;
 
-import automaton.driver.WebDriverDecorator;
+import io.automatiq.driver.WebDriverDecorator;
 import org.openqa.selenium.remote.SessionId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;

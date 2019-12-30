@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-automaton.wiring.Automaton
+io.automatiq.wiring.Automatiq

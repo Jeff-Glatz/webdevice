@@ -1,4 +1,4 @@
-package automaton.driver;
+package io.automatiq.driver;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

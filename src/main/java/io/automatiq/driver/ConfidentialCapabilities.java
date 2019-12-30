@@ -1,4 +1,4 @@
-package automaton.driver;
+package io.automatiq.driver;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
@@ -14,7 +14,7 @@ import static java.util.Collections.emptySet;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
 
-public class CapabilitiesHelper {
+public class ConfidentialCapabilities {
     private static final String CONFIDENTIAL_CAPABILITY = "meta:confidential";
     private static final String MASK = "********";
 

@@ -1,7 +1,7 @@
-package automaton.cucumber.steps;
+package io.automatiq.cucumber.steps;
 
-import automaton.device.Browser;
-import automaton.wiring.Automaton;
+import io.automatiq.device.Browser;
+import io.automatiq.wiring.Automatiq;
 import io.cucumber.java.en.Given;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * for Spring. This is detected by cucumber-spring library and will serve
  * as the "entry point" for Spring configuration
  */
-@SpringBootTest(classes = Automaton.class)
+@SpringBootTest(classes = Automatiq.class)
 public class TestSteps {
 
     @Autowired

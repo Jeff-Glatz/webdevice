@@ -1,4 +1,4 @@
-package automaton.wiring;
+package io.automatiq.wiring;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,12 +12,13 @@ import java.net.URL;
 
 @Configuration
 @Import(DeviceRegistrar.class)
-@ComponentScan("automaton.device")
+@ComponentScan("io.automatiq.device")
 @EnableConfigurationProperties
-public class Automaton {
+public class Automatiq {
+    public static final String PREFIX = "automatiq";
 
     @Bean
-    @ConfigurationProperties("automaton")
+    @ConfigurationProperties(PREFIX)
     public Settings settings() {
         return new Settings();
     }

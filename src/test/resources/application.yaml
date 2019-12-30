@@ -2,7 +2,7 @@ logging:
   level:
     org.springframework: INFO
 
-automaton:
+automatiq:
   base-url: http://www.apple.com
   devices:
     firefox:

@@ -1,4 +1,4 @@
-package automaton.wiring;
+package io.automatiq.wiring;
 
 import org.springframework.context.annotation.Import;
 
@@ -12,6 +12,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(TYPE)
 @Retention(RUNTIME)
 @Documented
-@Import(Automaton.class)
-public @interface EnableAutomaton {
+@Import(Automatiq.class)
+public @interface EnableAutomatiq {
 }
