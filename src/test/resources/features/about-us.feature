@@ -24,3 +24,8 @@ Feature: About Us page
     Given a "SafariLatestMojave" browser
     When I navigate home
     And I navigate to "/about"
+
+  Scenario: About Us page can be viewed with Chrome (latest) on Mojave
+    Given a "ChromeLatestMojave" browser
+    When I navigate home
+    And I navigate to "/about"

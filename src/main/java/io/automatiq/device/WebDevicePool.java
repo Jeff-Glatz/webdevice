@@ -1,5 +1,6 @@
 package io.automatiq.device;
 
+import org.openqa.selenium.remote.SessionId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +39,7 @@ public class WebDevicePool<Device extends WebDevice>
             device = provider.get();
             log.info("Obtained new device {} from provider {}.", device.getSessionId(), getName());
         }
+        // TODO: Test the device to see if it is valid before returning
         used.push(device);
         log.info("Acquired {} in {} pool", device.getSessionId(), getName());
         logStats();
@@ -62,15 +64,20 @@ public class WebDevicePool<Device extends WebDevice>
         log.info("Pool {} shut down.", getName());
     }
 
+    private void quit(Device device) {
+        SessionId sessionId = device.getSessionId();
+        try {
+            provider.accept(device);
+        } catch (Exception e) {
+            log.warn(format("Failure quitting device %s in %s pool", sessionId, getName()), e);
+        }
+    }
+
     private void drain(Deque<Device> devices) {
         for (Device device = devices.poll();
              device != null;
              device = devices.poll()) {
-            try {
-                provider.accept(device);
-            } catch (Exception e) {
-                log.warn(format("Failure quitting device %s in %s pool", device.getSessionId(), getName()), e);
-            }
+            quit(device);
         }
     }
 

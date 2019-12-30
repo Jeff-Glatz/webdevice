@@ -24,3 +24,8 @@ Feature: Contact Us page
     Given a "SafariLatestMojave" browser
     When I navigate home
     And I navigate to "/contact"
+
+  Scenario: Contact Us page can be viewed with Chrome (latest) on Mojave
+    Given a "ChromeLatestMojave" browser
+    When I navigate home
+    And I navigate to "/contact"

@@ -42,6 +42,19 @@ automatiq:
         version: latest
       confidential:
         - accessKey
+    ChromeLatestMojave:
+      remote-address: https://ondemand.saucelabs.com:443/wd/hub
+      options: org.openqa.selenium.chrome.ChromeOptions
+      capabilities:
+        w3c: true
+        platformName: macOS 10.14
+        browserVersion: latest
+      sauce-options:
+        username: ${saucelabs_username}
+        accessKey: ${saucelabs_accessKey}
+        extendedDebugging: true
+      confidential:
+        - accessKey
     iPhoneXS:
       remote-address: https://ondemand.saucelabs.com:443/wd/hub
       desired: iphone
