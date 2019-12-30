@@ -42,3 +42,18 @@ automatiq:
         version: latest
       confidential:
         - accessKey
+    iPhoneXS:
+      remote-address: https://ondemand.saucelabs.com:443/wd/hub
+      desired: iphone
+      capabilities:
+        username: ${saucelabs_username}
+        accessKey: ${saucelabs_accessKey}
+        extendedDebugging: true
+        appiumVersion: 1.15.0
+        deviceName: iPhone XS Simulator
+        deviceOrientation: portrait
+        platformVersion: 13.0
+        platformName: iOS
+        browserName: Safari
+      confidential:
+        - accessKey

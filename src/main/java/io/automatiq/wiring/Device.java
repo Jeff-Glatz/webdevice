@@ -33,6 +33,7 @@ public class Device
     private Class<? extends MutableCapabilities> options;
     private String desired;
     private Map<String, Object> capabilities = new LinkedHashMap<>();
+    private Map<String, Object> sauceOptions = new LinkedHashMap<>();
     private Set<String> confidential = new LinkedHashSet<>();
 
     public String getName() {
@@ -157,6 +158,19 @@ public class Device
         return this;
     }
 
+    public Map<String, Object> getSauceOptions() {
+        return sauceOptions;
+    }
+
+    public void setSauceOptions(Map<String, Object> sauceOptions) {
+        this.sauceOptions = sauceOptions;
+    }
+
+    public Device withSauceOption(String option, Object value) {
+        sauceOptions.put(option, value);
+        return this;
+    }
+
     public Set<String> getConfidential() {
         return confidential;
     }
@@ -168,37 +182,6 @@ public class Device
     public Device withConfidential(String mask) {
         confidential.add(mask);
         return this;
-    }
-
-    public MutableCapabilities capabilitiesOf() {
-        // First check for Options
-        if (options != null) {
-            log.info("{} capabilities will originate from {}", name, options.getName());
-            MutableCapabilities options = options();
-            if (!capabilities.isEmpty()) {
-                log.info("Merging {} custom capabilities into options", name);
-                options.merge(new DesiredCapabilities(capabilities));
-            }
-            return options;
-        }
-        // Next check for DesiredCapabilities
-        else if (desired != null) {
-            log.info("{} capabilities will originate from DesiredCapabilities.{}()", name, desired);
-            DesiredCapabilities desired = desired();
-            if (!capabilities.isEmpty()) {
-                log.info("Merging {} custom capabilities into desired capabilities", name);
-                desired.merge(new DesiredCapabilities(capabilities));
-            }
-            return desired;
-        }
-        // Next check for Capabilities
-        else if (!capabilities.isEmpty()) {
-            log.info("{} capabilities will originate from custom capabilities", name);
-            return new DesiredCapabilities(capabilities);
-        }
-        // No capabilities specified
-        log.info("Will not add custom capabilities to {}", name);
-        return null;
     }
 
     public BeanDefinitionBuilder definitionOf() {
@@ -217,9 +200,6 @@ public class Device
         }
         MutableCapabilities capabilities = capabilitiesOf();
         if (capabilities != null) {
-            if (!confidential.isEmpty()) {
-                capabilities = mark(capabilities, confidential);
-            }
             definition.addPropertyValue("capabilities", capabilities);
         }
         return definition.setAutowireMode(AUTOWIRE_BY_TYPE);
@@ -237,11 +217,64 @@ public class Device
                 Objects.equals(options, device.options) &&
                 Objects.equals(desired, device.desired) &&
                 Objects.equals(capabilities, device.capabilities) &&
+                Objects.equals(sauceOptions, device.sauceOptions) &&
                 Objects.equals(confidential, device.confidential);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, provider, driver, remoteAddress, options, desired, capabilities, confidential);
+        return Objects.hash(name, provider, driver, remoteAddress, options, desired, capabilities, sauceOptions, confidential);
+    }
+
+    private MutableCapabilities capabilitiesOf() {
+        // First check for Options
+        if (options != null) {
+            log.info("{} capabilities will originate from {}", name, options.getName());
+            MutableCapabilities options = options();
+            // Merge capabilities into options
+            if (!capabilities.isEmpty()) {
+                log.info("Merging {} custom capabilities into options", name);
+                options.merge(new DesiredCapabilities(capabilities));
+            }
+            // Inject sauce options
+            if (!sauceOptions.isEmpty()) {
+                log.info("{} capabilities will include sauce options", name);
+                options.setCapability("sauce:options", new DesiredCapabilities(sauceOptions));
+            }
+            // Add confidential capability markers
+            return mark(options, confidential);
+        }
+        // Next check for DesiredCapabilities
+        else if (desired != null) {
+            log.info("{} capabilities will originate from DesiredCapabilities.{}()", name, desired);
+            DesiredCapabilities desired = desired();
+            // Merge capabilities into desired
+            if (!capabilities.isEmpty()) {
+                log.info("Merging {} custom capabilities into desired capabilities", name);
+                desired.merge(new DesiredCapabilities(capabilities));
+            }
+            // Inject sauce options
+            if (!sauceOptions.isEmpty()) {
+                log.info("{} capabilities will include sauce options", name);
+                desired.setCapability("sauce:options", new DesiredCapabilities(sauceOptions));
+            }
+            // Add confidential capability markers
+            return mark(desired, confidential);
+        }
+        // Then check for Capabilities
+        else if (!capabilities.isEmpty()) {
+            log.info("{} capabilities will originate from custom capabilities", name);
+            DesiredCapabilities desired = new DesiredCapabilities(capabilities);
+            // Inject sauce options
+            if (!sauceOptions.isEmpty()) {
+                log.info("{} capabilities will include sauce options", name);
+                desired.setCapability("sauce:options", new DesiredCapabilities(sauceOptions));
+            }
+            // Add confidential capability markers
+            return mark(desired, confidential);
+        }
+        // No capabilities specified
+        log.info("Will not add custom capabilities to {}", name);
+        return null;
     }
 }
