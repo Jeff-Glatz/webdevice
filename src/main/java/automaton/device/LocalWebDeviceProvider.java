@@ -7,8 +7,8 @@ import org.openqa.selenium.WebDriverException;
 
 import java.util.Objects;
 
+import static automaton.util.LogHelper.mask;
 import static java.util.UUID.randomUUID;
-import static org.owasp.security.logging.SecurityMarkers.CONFIDENTIAL;
 
 public class LocalWebDeviceProvider<Driver extends WebDriver>
         extends BaseWebDeviceProvider<LocalWebDevice<Driver>> {
@@ -28,7 +28,7 @@ public class LocalWebDeviceProvider<Driver extends WebDriver>
 
     @Override
     public LocalWebDevice<Driver> get() {
-        log.info(CONFIDENTIAL, "Providing new device named {} with {}", name, capabilities);
+        log.info("Providing new device named {}", name);
         return new LocalWebDevice<>(newDriver(), name, randomUUID());
     }
 
@@ -53,7 +53,7 @@ public class LocalWebDeviceProvider<Driver extends WebDriver>
                 return type.getDeclaredConstructor()
                         .newInstance();
             } else {
-                log.info("Instantiating {} using capabilities constructor: {}", type, capabilities);
+                log.info("Instantiating {} using capabilities constructor: {}", type, mask(capabilities));
                 return type.getDeclaredConstructor(Capabilities.class)
                         .newInstance(capabilities);
             }

@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import static java.lang.String.format;
-import static org.owasp.security.logging.SecurityMarkers.CONFIDENTIAL;
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_BY_TYPE;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
@@ -158,27 +157,27 @@ public class Device
     public Capabilities capabilitiesOf() {
         // First check for Options
         if (options != null) {
-            log.info("{} capabilities will come from {}", name, options.getName());
+            log.info("{} capabilities will originate from {}", name, options.getName());
             MutableCapabilities options = options();
             if (!capabilities.isEmpty()) {
-                log.info(CONFIDENTIAL, "Merging {} capabilities {} into options {}", name, capabilities, options);
+                log.info("Merging {} capabilities into options", name);
                 options.merge(new DesiredCapabilities(capabilities));
             }
             return options;
         }
         // Next check for DesiredCapabilities
         else if (desired != null) {
-            log.info("{} capabilities will come from DesiredCapabilities.{}()", name, desired);
+            log.info("{} capabilities will originate from DesiredCapabilities.{}()", name, desired);
             DesiredCapabilities desired = desired();
             if (!capabilities.isEmpty()) {
-                log.info(CONFIDENTIAL, "Merging {} capabilities {} into desired capabilities {}", name, capabilities, desired);
+                log.info("Merging {} capabilities into desired capabilities", name);
                 desired.merge(new DesiredCapabilities(capabilities));
             }
             return desired;
         }
         // Next check for Capabilities
         else if (!capabilities.isEmpty()) {
-            log.info(CONFIDENTIAL, "{} capabilities will come from {}", name, capabilities);
+            log.info("{} capabilities will originate from map", name);
             return new DesiredCapabilities(capabilities);
         }
         // No capabilities specified
