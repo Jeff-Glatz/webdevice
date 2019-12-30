@@ -10,12 +10,12 @@ Feature: About Us Page
     When I navigate home
     And I navigate to "/about"
 
-  Scenario: Page can be viewed with Firefox again
-    Given a "firefox" browser
+  Scenario: Page can be viewed with FirefoxMacOSv33
+    Given a "FirefoxMacOSv33" browser
     When I navigate home
     And I navigate to "/about"
 
-  Scenario: Page can be viewed with Custom
-    Given a "custom" browser
+  Scenario: Page can be viewed with iPhone XS
+    Given a "iPhoneXS" browser
     When I navigate home
     And I navigate to "/about"

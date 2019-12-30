@@ -27,6 +27,7 @@ public class LocalWebDeviceProvider<Driver extends WebDriver>
 
     @Override
     public LocalWebDevice<Driver> get() {
+        log.info("Providing new device named {} with {}", name, capabilities);
         return new LocalWebDevice<>(newDriver(), name, randomUUID());
     }
 

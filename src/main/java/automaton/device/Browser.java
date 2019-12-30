@@ -72,9 +72,11 @@ public class Browser
     @PreDestroy
     public void release() {
         try {
-            log.info("Releasing {} browser {}...", delegate.getName(), delegate.getSessionId());
-            provider(delegate.getName())
-                    .accept(delegate);
+            if (delegate != null) {
+                log.info("Releasing {} browser {}...", delegate.getName(), delegate.getSessionId());
+                provider(delegate.getName())
+                        .accept(delegate);
+            }
             log.info("Browser released.");
         } finally {
             delegate = null;

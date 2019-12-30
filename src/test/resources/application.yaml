@@ -9,11 +9,21 @@ automaton:
       driver: org.openqa.selenium.firefox.FirefoxDriver
     chrome:
       driver: org.openqa.selenium.chrome.ChromeDriver
-    custom:
+    FirefoxMacOSv33:
       remote-address: https://ondemand.saucelabs.com:443/wd/hub
+      options: org.openqa.selenium.firefox.FirefoxOptions
       capabilities:
         username: ${saucelabs.username}
         accessKey: ${saucelabs.accessKey}
-        browserName: Chrome
-        platform: Windows 10
-        version: 59.0
+        platformName: OS X 10.10
+        browserVersion: 33.0
+    iPhoneXS:
+      remote-address: https://ondemand.saucelabs.com:443/wd/hub
+      desired: iphone
+      capabilities:
+        username: ${saucelabs.username}
+        accessKey: ${saucelabs.accessKey}
+        deviceName: iPhone XS Simulator
+        deviceOrientation: portrait
+        platformName: iOS
+        browserName: Safari
