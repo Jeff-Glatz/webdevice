@@ -26,7 +26,8 @@ public class RemoteWebDeviceProvider
 
     @Override
     public RemoteWebDevice get() {
-        log.info("Providing new device named {} connecting to {} with {}", name, remoteAddress, mask(capabilities, confidential));
+        log.info("Providing new device named {} connecting to {} with capabilities {}",
+                name, remoteAddress, mask(capabilities));
         return new RemoteWebDevice(new RemoteWebDriver(remoteAddress, capabilities), name);
     }
 

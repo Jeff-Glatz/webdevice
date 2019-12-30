@@ -1,6 +1,7 @@
 package automaton.driver;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.MutableCapabilities;
 
 import java.util.Collection;
 import java.util.IdentityHashMap;
@@ -9,14 +10,48 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.lang.String.valueOf;
+import static java.util.Collections.emptySet;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
 
 public class CapabilitiesHelper {
+    private static final String CONFIDENTIAL_CAPABILITY = "meta:confidential";
     private static final String MASK = "********";
 
-    public static String mask(Capabilities capabilities, Set<String> confidential) {
-        return mask(new IdentityHashMap<>(), capabilities.asMap(), confidential);
+    /**
+     * Retrieves the set of capabilities that should be considered confidential.
+     *
+     * @param capabilities The {@link Capabilities} instance to check.
+     * @return The set of capabilities considered confidential.
+     */
+    public static Set<String> confidential(Capabilities capabilities) {
+        Set<String> confidential = (Set<String>) capabilities
+                .getCapability(CONFIDENTIAL_CAPABILITY);
+        return confidential != null ? confidential : emptySet();
+    }
+
+    /**
+     * Marks the supplied {@link MutableCapabilities} instance with the set of capabilities
+     * that should be considered confidential.
+     *
+     * @param capabilities The {@link MutableCapabilities} instance to modify.
+     * @param confidential The set of capabilities considered confidential.
+     * @return The supplied {@link MutableCapabilities} instance.
+     */
+    public static MutableCapabilities mark(MutableCapabilities capabilities, Set<String> confidential) {
+        capabilities.setCapability(CONFIDENTIAL_CAPABILITY, confidential);
+        return capabilities;
+    }
+
+    /**
+     * Mimics {@link MutableCapabilities#toString()} behavior, masking capability values marked
+     * as confidential.
+     *
+     * @param capabilities The {@link Capabilities} instance to stringify.
+     * @return The string representation of the supplied {@link Capabilities} instance.
+     */
+    public static String mask(Capabilities capabilities) {
+        return mask(new IdentityHashMap<>(), capabilities.asMap(), confidential(capabilities));
     }
 
     private static String mask(Map<Object, String> seen, Object stringify, Set<String> confidential) {
@@ -44,6 +79,7 @@ public class CapabilitiesHelper {
             value.append("{");
             value.append(
                     ((Map<?, ?>) stringify).entrySet().stream()
+                            .filter(entry -> !entry.getKey().equals(CONFIDENTIAL_CAPABILITY))
                             .sorted(comparing(entry -> valueOf(entry.getKey())))
                             .map(entry -> entry.getKey() + ": " +
                                     (!confidential.contains(entry.getKey()) ?

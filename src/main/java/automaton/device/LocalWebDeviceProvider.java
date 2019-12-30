@@ -53,7 +53,7 @@ public class LocalWebDeviceProvider<Driver extends WebDriver>
                 return type.getDeclaredConstructor()
                         .newInstance();
             } else {
-                log.info("Instantiating {} using capabilities constructor: {}", type, mask(capabilities, confidential));
+                log.info("Instantiating {} with capabilities {}", type, mask(capabilities));
                 return type.getDeclaredConstructor(Capabilities.class)
                         .newInstance(capabilities);
             }

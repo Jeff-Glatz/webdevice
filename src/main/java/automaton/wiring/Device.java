@@ -3,7 +3,6 @@ package automaton.wiring;
 import automaton.device.LocalWebDeviceProvider;
 import automaton.device.RemoteWebDeviceProvider;
 import automaton.device.WebDeviceProvider;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -19,6 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import static automaton.driver.CapabilitiesHelper.mark;
 import static java.lang.String.format;
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_BY_TYPE;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
@@ -170,7 +170,7 @@ public class Device
         return this;
     }
 
-    public Capabilities capabilitiesOf() {
+    public MutableCapabilities capabilitiesOf() {
         // First check for Options
         if (options != null) {
             log.info("{} capabilities will originate from {}", name, options.getName());
@@ -215,12 +215,12 @@ public class Device
                     .addConstructorArgValue(name)
                     .addConstructorArgValue(driver);
         }
-        Capabilities capabilities = capabilitiesOf();
+        MutableCapabilities capabilities = capabilitiesOf();
         if (capabilities != null) {
+            if (!confidential.isEmpty()) {
+                capabilities = mark(capabilities, confidential);
+            }
             definition.addPropertyValue("capabilities", capabilities);
-        }
-        if (!confidential.isEmpty()) {
-            definition.addPropertyValue("confidential", confidential);
         }
         return definition.setAutowireMode(AUTOWIRE_BY_TYPE);
     }
