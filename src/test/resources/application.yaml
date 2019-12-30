@@ -5,29 +5,40 @@ logging:
 automatiq:
   base-url: http://www.apple.com
   devices:
-    firefox:
+    LocalFirefox:
       driver: org.openqa.selenium.firefox.FirefoxDriver
-    chrome:
+    LocalChrome:
       driver: org.openqa.selenium.chrome.ChromeDriver
-    FirefoxMacOSv33:
+    Chrome59Windows10:
+      remote-address: https://ondemand.saucelabs.com:443/wd/hub
+      capabilities:
+        username: ${saucelabs_username}
+        accessKey: ${saucelabs_accessKey}
+        browserName: Chrome
+        platform: Windows 10
+        version: 59.0
+        extendedDebugging: true
+      confidential:
+        - accessKey
+    FirefoxLatestMojave:
       remote-address: https://ondemand.saucelabs.com:443/wd/hub
       options: org.openqa.selenium.firefox.FirefoxOptions
       capabilities:
         username: ${saucelabs_username}
         accessKey: ${saucelabs_accessKey}
-        platformName: OS X 10.10
-        browserVersion: 33.0
+        extendedDebugging: true
+        platform: macOS 10.14
+        version: latest
       confidential:
         - accessKey
-    iPhoneXS:
+    SafariLatestMojave:
       remote-address: https://ondemand.saucelabs.com:443/wd/hub
-      desired: iphone
+      desired: safari
       capabilities:
         username: ${saucelabs_username}
         accessKey: ${saucelabs_accessKey}
-        deviceName: iPhone XS Simulator
-        deviceOrientation: portrait
-        platformName: iOS
-        browserName: Safari
+        extendedDebugging: true
+        platform: macOS 10.14
+        version: latest
       confidential:
         - accessKey

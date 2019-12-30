@@ -17,17 +17,17 @@ public class TestSteps {
     @Autowired
     private Browser browser;
 
-    @Given("^a \"(.*)\" browser")
+    @Given("a {string} browser")
     public void useBrowser(String name) {
         browser.use(name);
     }
 
-    @Given("^I navigate home$")
+    @Given("I navigate home")
     public void navigateHome() {
         browser.home();
     }
 
-    @Given("^I navigate to \"(.*)\"$")
+    @Given("I navigate to {string}")
     public void navigateTo(String relativePath) {
         browser.navigateTo(relativePath);
     }
