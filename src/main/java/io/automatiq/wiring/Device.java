@@ -34,7 +34,8 @@ public class Device
     private Class<? extends MutableCapabilities> options;
     private String desired;
     private Map<String, Object> capabilities = new LinkedHashMap<>();
-    private Map<String, Object> sauceOptions = new LinkedHashMap<>();
+    private String extraCapability;
+    private Map<String, Object> extraOptions = new LinkedHashMap<>();
     private Set<String> confidential = new LinkedHashSet<>();
 
     public String getName() {
@@ -172,16 +173,29 @@ public class Device
         return this;
     }
 
-    public Map<String, Object> getSauceOptions() {
-        return sauceOptions;
+    public String getExtraCapability() {
+        return extraCapability;
     }
 
-    public void setSauceOptions(Map<String, Object> sauceOptions) {
-        this.sauceOptions = sauceOptions;
+    public void setExtraCapability(String extraCapability) {
+        this.extraCapability = extraCapability;
     }
 
-    public Device withSauceOption(String option, Object value) {
-        sauceOptions.put(option, value);
+    public Device withExtraCapability(String extraCapability) {
+        this.extraCapability = extraCapability;
+        return this;
+    }
+
+    public Map<String, Object> getExtraOptions() {
+        return extraOptions;
+    }
+
+    public void setExtraOptions(Map<String, Object> extraOptions) {
+        this.extraOptions = extraOptions;
+    }
+
+    public Device withExtraOption(String option, Object value) {
+        extraOptions.put(option, value);
         return this;
     }
 
@@ -232,13 +246,14 @@ public class Device
                 Objects.equals(options, device.options) &&
                 Objects.equals(desired, device.desired) &&
                 Objects.equals(capabilities, device.capabilities) &&
-                Objects.equals(sauceOptions, device.sauceOptions) &&
+                Objects.equals(extraCapability, device.extraCapability) &&
+                Objects.equals(extraOptions, device.extraOptions) &&
                 Objects.equals(confidential, device.confidential);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, pooled, provider, driver, remoteAddress, options, desired, capabilities, sauceOptions, confidential);
+        return Objects.hash(name, pooled, provider, driver, remoteAddress, options, desired, capabilities, extraCapability, extraOptions, confidential);
     }
 
     private MutableCapabilities capabilitiesOf() {
@@ -251,10 +266,10 @@ public class Device
                 log.info("Merging {} custom capabilities into options", name);
                 options.merge(new DesiredCapabilities(capabilities));
             }
-            // Inject sauce options
-            if (!sauceOptions.isEmpty()) {
+            // Inject extra options
+            if (!extraOptions.isEmpty()) {
                 log.info("{} capabilities will include sauce options", name);
-                options.setCapability("sauce:options", new DesiredCapabilities(sauceOptions));
+                options.setCapability(extraCapability, new DesiredCapabilities(extraOptions));
             }
             // Add confidential capability markers
             return mark(options, confidential);
@@ -268,10 +283,10 @@ public class Device
                 log.info("Merging {} custom capabilities into desired capabilities", name);
                 desired.merge(new DesiredCapabilities(capabilities));
             }
-            // Inject sauce options
-            if (!sauceOptions.isEmpty()) {
+            // Inject extra options
+            if (!extraOptions.isEmpty()) {
                 log.info("{} capabilities will include sauce options", name);
-                desired.setCapability("sauce:options", new DesiredCapabilities(sauceOptions));
+                desired.setCapability(extraCapability, new DesiredCapabilities(extraOptions));
             }
             // Add confidential capability markers
             return mark(desired, confidential);
@@ -280,10 +295,10 @@ public class Device
         else if (!capabilities.isEmpty()) {
             log.info("{} capabilities will originate from custom capabilities", name);
             DesiredCapabilities desired = new DesiredCapabilities(capabilities);
-            // Inject sauce options
-            if (!sauceOptions.isEmpty()) {
+            // Inject extra options
+            if (!extraOptions.isEmpty()) {
                 log.info("{} capabilities will include sauce options", name);
-                desired.setCapability("sauce:options", new DesiredCapabilities(sauceOptions));
+                desired.setCapability(extraCapability, new DesiredCapabilities(extraOptions));
             }
             // Add confidential capability markers
             return mark(desired, confidential);
