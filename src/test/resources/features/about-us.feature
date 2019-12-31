@@ -29,3 +29,8 @@ Feature: About Us page
     Given a "ChromeLatestMojave" browser
     When I navigate home
     And I navigate to "/about"
+
+  Scenario: About Us page can be viewed with iPhone 8
+    Given a "iPhone8" browser
+    When I navigate home
+    And I navigate to "/about"
