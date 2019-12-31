@@ -1,6 +1,5 @@
 package io.automatiq.device;
 
-import io.automatiq.driver.ConfidentialCapabilities;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
@@ -8,6 +7,7 @@ import org.openqa.selenium.WebDriverException;
 
 import java.util.Objects;
 
+import static io.automatiq.driver.ConfidentialCapabilities.mask;
 import static java.util.UUID.randomUUID;
 
 public class LocalWebDeviceProvider<Driver extends WebDriver>
@@ -53,7 +53,7 @@ public class LocalWebDeviceProvider<Driver extends WebDriver>
                 return type.getDeclaredConstructor()
                         .newInstance();
             } else {
-                log.info("Instantiating {} with capabilities {}", type, ConfidentialCapabilities.mask(capabilities));
+                log.info("Instantiating {} with capabilities {}", type, mask(capabilities));
                 return type.getDeclaredConstructor(Capabilities.class)
                         .newInstance(capabilities);
             }

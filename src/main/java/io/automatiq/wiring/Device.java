@@ -27,6 +27,7 @@ public class Device
         implements Serializable {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private String name;
+    private boolean pooled = true;
     private Class<? extends WebDeviceProvider<?>> provider;
     private Class<? extends WebDriver> driver;
     private URL remoteAddress;
@@ -46,6 +47,19 @@ public class Device
 
     public Device withName(String name) {
         setName(name);
+        return this;
+    }
+
+    public boolean isPooled() {
+        return pooled;
+    }
+
+    public void setPooled(boolean pooled) {
+        this.pooled = pooled;
+    }
+
+    public Device withPooled(boolean pooled) {
+        setPooled(pooled);
         return this;
     }
 
@@ -210,7 +224,8 @@ public class Device
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Device device = (Device) o;
-        return Objects.equals(name, device.name) &&
+        return pooled == device.pooled &&
+                Objects.equals(name, device.name) &&
                 Objects.equals(provider, device.provider) &&
                 Objects.equals(driver, device.driver) &&
                 Objects.equals(remoteAddress, device.remoteAddress) &&
@@ -223,7 +238,7 @@ public class Device
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, provider, driver, remoteAddress, options, desired, capabilities, sauceOptions, confidential);
+        return Objects.hash(name, pooled, provider, driver, remoteAddress, options, desired, capabilities, sauceOptions, confidential);
     }
 
     private MutableCapabilities capabilitiesOf() {

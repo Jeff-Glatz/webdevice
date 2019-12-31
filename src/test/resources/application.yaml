@@ -22,6 +22,7 @@ automatiq:
         - accessKey
     FirefoxLatestMojave:
       remote-address: https://ondemand.saucelabs.com:443/wd/hub
+      pooled: false
       options: org.openqa.selenium.firefox.FirefoxOptions
       capabilities:
         username: ${saucelabs_username}
@@ -33,6 +34,7 @@ automatiq:
         - accessKey
     SafariLatestMojave:
       remote-address: https://ondemand.saucelabs.com:443/wd/hub
+      pooled: false
       desired: safari
       capabilities:
         username: ${saucelabs_username}
@@ -44,6 +46,7 @@ automatiq:
         - accessKey
     ChromeLatestMojave:
       remote-address: https://ondemand.saucelabs.com:443/wd/hub
+      pooled: false
       options: org.openqa.selenium.chrome.ChromeOptions
       capabilities:
         w3c: true
@@ -57,6 +60,7 @@ automatiq:
         - accessKey
     iPhoneXS:
       remote-address: https://ondemand.saucelabs.com:443/wd/hub
+      pooled: false
       desired: iphone
       capabilities:
         username: ${saucelabs_username}

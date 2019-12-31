@@ -31,21 +31,34 @@ public class WebDevicePool<Device extends WebDevice>
         return provider.getName();
     }
 
+    /**
+     * Acquires a {@link Device} for exclusive use
+     *
+     * @return a {@link Device} for exclusive use
+     */
     @Override
     public synchronized Device get() {
         Device device = free.poll();
         if (device == null) {
-            log.info("Obtaining new device from provider {}...", getName());
-            device = provider.get();
-            log.info("Obtained new device {} from provider {}.", device.getSessionId(), getName());
+            device = create();
+        } else {
+            if (!alive(device)) {
+                log.info("Device {} in {} pool is not usable", device.getSessionId(), getName());
+                release(device);
+                device = create();
+            }
         }
-        // TODO: Test the device to see if it is valid before returning
         used.push(device);
         log.info("Acquired {} in {} pool", device.getSessionId(), getName());
         logStats();
         return device;
     }
 
+    /**
+     * Marks the {@link Device} as free for use
+     *
+     * @param device The {@link Device} to be made available
+     */
     @Override
     public synchronized void accept(Device device) {
         log.info("Removing device {} from used deque in {} pool", device.getSessionId(), getName());
@@ -64,12 +77,25 @@ public class WebDevicePool<Device extends WebDevice>
         log.info("Pool {} shut down.", getName());
     }
 
-    private void quit(Device device) {
+    private Device create() {
+        log.info("Obtaining new device from provider {}...", getName());
+        Device device = provider.get();
+        log.info("Obtained new device {} from provider {}.", device.getSessionId(), getName());
+        return device;
+    }
+
+    private boolean alive(Device device) {
+        // TODO: How to determine aliveness?
+        return true;
+    }
+
+    private void release(Device device) {
         SessionId sessionId = device.getSessionId();
+        log.info("Releasing {} from use in {} pool", device.getSessionId(), getName());
         try {
             provider.accept(device);
         } catch (Exception e) {
-            log.warn(format("Failure quitting device %s in %s pool", sessionId, getName()), e);
+            log.warn(format("Failure releasing device %s from %s pool", sessionId, getName()), e);
         }
     }
 
@@ -77,7 +103,7 @@ public class WebDevicePool<Device extends WebDevice>
         for (Device device = devices.poll();
              device != null;
              device = devices.poll()) {
-            quit(device);
+            release(device);
         }
     }
 

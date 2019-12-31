@@ -35,8 +35,17 @@ public class DeviceRegistrar
         log.info("Registering devices ...");
         settings.devices()
                 .filter(device -> !registry.isBeanNameInUse(device.getName()))
-                .forEach(device -> maybeDefinePool(device, registry,
-                        maybeDefineProvider(device, registry)));
+                .forEach(device -> {
+                    String provider = maybeDefineProvider(device, registry);
+                    if (device.isPooled()) {
+                        String pool = maybeDefinePool(device, registry, provider);
+                        log.info("Registering alias {} for {}", device.getName(), pool);
+                        registry.registerAlias(pool, device.getName());
+                    } else {
+                        log.info("Registering alias {} for {}", device.getName(), provider);
+                        registry.registerAlias(provider, device.getName());
+                    }
+                });
         log.info("Devices registered.");
     }
 
@@ -51,7 +60,7 @@ public class DeviceRegistrar
         return provider;
     }
 
-    private void maybeDefinePool(Device device, BeanDefinitionRegistry registry, String provider) {
+    private String maybeDefinePool(Device device, BeanDefinitionRegistry registry, String provider) {
         String pool = format("%s-pool", device.getName());
         if (!registry.isBeanNameInUse(pool)) {
             log.info("Registering WebDevicePool definition named {}", pool);
@@ -59,8 +68,7 @@ public class DeviceRegistrar
                     genericBeanDefinition(WebDevicePool.class)
                             .addConstructorArgReference(provider)
                             .getBeanDefinition());
-            log.info("Registering alias {} for {}", device.getName(), pool);
-            registry.registerAlias(pool, device.getName());
         }
+        return pool;
     }
 }

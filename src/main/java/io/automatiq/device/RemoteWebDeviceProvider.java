@@ -1,11 +1,12 @@
 package io.automatiq.device;
 
-import io.automatiq.driver.ConfidentialCapabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.net.URL;
 import java.util.Objects;
+
+import static io.automatiq.driver.ConfidentialCapabilities.mask;
 
 public class RemoteWebDeviceProvider
         extends BaseWebDeviceProvider<RemoteWebDevice> {
@@ -26,7 +27,7 @@ public class RemoteWebDeviceProvider
     @Override
     public RemoteWebDevice get() {
         log.info("Providing new device named {} connecting to {} with capabilities {}",
-                name, remoteAddress, ConfidentialCapabilities.mask(capabilities));
+                name, remoteAddress, mask(capabilities));
         return new RemoteWebDevice(new RemoteWebDriver(remoteAddress, capabilities), name);
     }
 

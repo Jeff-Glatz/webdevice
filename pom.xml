@@ -13,7 +13,7 @@
     <groupId>engineering.bestquality</groupId>
     <artifactId>settings</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Automaton</name>
+    <name>Automatiq</name>
 
     <properties>
         <cucumber.version>4.8.0</cucumber.version>
