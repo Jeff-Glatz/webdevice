@@ -256,52 +256,37 @@ public class Device
         return Objects.hash(name, pooled, provider, driver, remoteAddress, options, desired, capabilities, extraCapability, extraOptions, confidential);
     }
 
+    private MutableCapabilities maybeMergeCapabilities(MutableCapabilities capabilities) {
+        if (!this.capabilities.isEmpty()) {
+            log.info("Merging {} custom capabilities", name);
+            capabilities.merge(new DesiredCapabilities(this.capabilities));
+        }
+        return capabilities;
+    }
+
+    private MutableCapabilities maybeSetExtraCapability(MutableCapabilities capabilities) {
+        if (!extraOptions.isEmpty()) {
+            log.info("{} capabilities will include {}", name, extraCapability);
+            capabilities.setCapability(extraCapability, new DesiredCapabilities(extraOptions));
+        }
+        return capabilities;
+    }
+
     private MutableCapabilities capabilitiesOf() {
         // First check for Options
         if (options != null) {
             log.info("{} capabilities will originate from {}", name, options.getName());
-            MutableCapabilities options = options();
-            // Merge capabilities into options
-            if (!capabilities.isEmpty()) {
-                log.info("Merging {} custom capabilities into options", name);
-                options.merge(new DesiredCapabilities(capabilities));
-            }
-            // Inject extra options
-            if (!extraOptions.isEmpty()) {
-                log.info("{} capabilities will include sauce options", name);
-                options.setCapability(extraCapability, new DesiredCapabilities(extraOptions));
-            }
-            // Add confidential capability markers
-            return mark(options, confidential);
+            return mark(maybeSetExtraCapability(maybeMergeCapabilities(options())), confidential);
         }
         // Next check for DesiredCapabilities
         else if (desired != null) {
             log.info("{} capabilities will originate from DesiredCapabilities.{}()", name, desired);
-            DesiredCapabilities desired = desired();
-            // Merge capabilities into desired
-            if (!capabilities.isEmpty()) {
-                log.info("Merging {} custom capabilities into desired capabilities", name);
-                desired.merge(new DesiredCapabilities(capabilities));
-            }
-            // Inject extra options
-            if (!extraOptions.isEmpty()) {
-                log.info("{} capabilities will include sauce options", name);
-                desired.setCapability(extraCapability, new DesiredCapabilities(extraOptions));
-            }
-            // Add confidential capability markers
-            return mark(desired, confidential);
+            return mark(maybeSetExtraCapability(maybeMergeCapabilities(desired())), confidential);
         }
         // Then check for Capabilities
         else if (!capabilities.isEmpty()) {
             log.info("{} capabilities will originate from custom capabilities", name);
-            DesiredCapabilities desired = new DesiredCapabilities(capabilities);
-            // Inject extra options
-            if (!extraOptions.isEmpty()) {
-                log.info("{} capabilities will include sauce options", name);
-                desired.setCapability(extraCapability, new DesiredCapabilities(extraOptions));
-            }
-            // Add confidential capability markers
-            return mark(desired, confidential);
+            return mark(maybeSetExtraCapability(new DesiredCapabilities(capabilities)), confidential);
         }
         // No capabilities specified
         log.info("Will not add custom capabilities to {}", name);
