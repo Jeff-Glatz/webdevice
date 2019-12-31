@@ -272,23 +272,29 @@ public class Device
         return capabilities;
     }
 
+    private MutableCapabilities fromOptions() {
+        log.info("{} capabilities will originate from {}", name, options.getName());
+        return mark(withExtraCapability(withCapabilities(options())), confidential);
+    }
+
+    private MutableCapabilities fromDesiredCapabilities() {
+        log.info("{} capabilities will originate from DesiredCapabilities.{}()", name, desired);
+        return mark(withExtraCapability(withCapabilities(desired())), confidential);
+    }
+
+    private MutableCapabilities fromCapabilities() {
+        log.info("{} capabilities will originate from custom capabilities", name);
+        return mark(withExtraCapability(new DesiredCapabilities(capabilities)), confidential);
+    }
+
     private MutableCapabilities capabilitiesOf() {
-        // First check for Options
         if (options != null) {
-            log.info("{} capabilities will originate from {}", name, options.getName());
-            return mark(withExtraCapability(withCapabilities(options())), confidential);
+            return fromOptions();
+        } else if (desired != null) {
+            return fromDesiredCapabilities();
+        } else if (!capabilities.isEmpty()) {
+            return fromCapabilities();
         }
-        // Next check for DesiredCapabilities
-        else if (desired != null) {
-            log.info("{} capabilities will originate from DesiredCapabilities.{}()", name, desired);
-            return mark(withExtraCapability(withCapabilities(desired())), confidential);
-        }
-        // Then check for Capabilities
-        else if (!capabilities.isEmpty()) {
-            log.info("{} capabilities will originate from custom capabilities", name);
-            return mark(withExtraCapability(new DesiredCapabilities(capabilities)), confidential);
-        }
-        // No capabilities specified
         log.info("Will not add custom capabilities to {}", name);
         return null;
     }
