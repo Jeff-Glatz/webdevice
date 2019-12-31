@@ -124,17 +124,6 @@ public class Device
         return this;
     }
 
-    public MutableCapabilities options() {
-        try {
-            return options != null ?
-                    options.getDeclaredConstructor().newInstance() :
-                    null;
-        } catch (Exception e) {
-            throw new IllegalArgumentException(
-                    format("Failure invoking new %s()", options.getName()), e);
-        }
-    }
-
     public String getDesired() {
         return desired;
     }
@@ -146,18 +135,6 @@ public class Device
     public Device withDesired(String desired) {
         setDesired(desired);
         return this;
-    }
-
-    public DesiredCapabilities desired() {
-        try {
-            return desired != null ?
-                    (DesiredCapabilities) DesiredCapabilities.class.getDeclaredMethod(desired)
-                            .invoke(DesiredCapabilities.class) :
-                    null;
-        } catch (Exception e) {
-            throw new IllegalArgumentException(
-                    format("Failure invoking DesiredCapabilities.%s()", desired), e);
-        }
     }
 
     public Map<String, Object> getCapabilities() {
@@ -272,9 +249,32 @@ public class Device
         return capabilities;
     }
 
+    private MutableCapabilities options() {
+        try {
+            return options != null ?
+                    options.getDeclaredConstructor().newInstance() :
+                    null;
+        } catch (Exception e) {
+            throw new IllegalArgumentException(
+                    format("Failure invoking new %s()", options.getName()), e);
+        }
+    }
+
     private MutableCapabilities fromOptions() {
         log.info("{} capabilities will originate from {}", name, options.getName());
         return mark(withExtraCapability(withCapabilities(options())), confidential);
+    }
+
+    private DesiredCapabilities desired() {
+        try {
+            return desired != null ?
+                    (DesiredCapabilities) DesiredCapabilities.class.getDeclaredMethod(desired)
+                            .invoke(DesiredCapabilities.class) :
+                    null;
+        } catch (Exception e) {
+            throw new IllegalArgumentException(
+                    format("Failure invoking DesiredCapabilities.%s()", desired), e);
+        }
     }
 
     private MutableCapabilities fromDesiredCapabilities() {
