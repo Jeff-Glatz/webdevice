@@ -256,7 +256,7 @@ public class Device
         return Objects.hash(name, pooled, provider, driver, remoteAddress, options, desired, capabilities, extraCapability, extraOptions, confidential);
     }
 
-    private MutableCapabilities maybeMergeCapabilities(MutableCapabilities capabilities) {
+    private MutableCapabilities withCapabilities(MutableCapabilities capabilities) {
         if (!this.capabilities.isEmpty()) {
             log.info("Merging {} custom capabilities", name);
             capabilities.merge(new DesiredCapabilities(this.capabilities));
@@ -264,7 +264,7 @@ public class Device
         return capabilities;
     }
 
-    private MutableCapabilities maybeSetExtraCapability(MutableCapabilities capabilities) {
+    private MutableCapabilities withExtraCapability(MutableCapabilities capabilities) {
         if (!extraOptions.isEmpty()) {
             log.info("{} capabilities will include {}", name, extraCapability);
             capabilities.setCapability(extraCapability, new DesiredCapabilities(extraOptions));
@@ -276,17 +276,17 @@ public class Device
         // First check for Options
         if (options != null) {
             log.info("{} capabilities will originate from {}", name, options.getName());
-            return mark(maybeSetExtraCapability(maybeMergeCapabilities(options())), confidential);
+            return mark(withExtraCapability(withCapabilities(options())), confidential);
         }
         // Next check for DesiredCapabilities
         else if (desired != null) {
             log.info("{} capabilities will originate from DesiredCapabilities.{}()", name, desired);
-            return mark(maybeSetExtraCapability(maybeMergeCapabilities(desired())), confidential);
+            return mark(withExtraCapability(withCapabilities(desired())), confidential);
         }
         // Then check for Capabilities
         else if (!capabilities.isEmpty()) {
             log.info("{} capabilities will originate from custom capabilities", name);
-            return mark(maybeSetExtraCapability(new DesiredCapabilities(capabilities)), confidential);
+            return mark(withExtraCapability(new DesiredCapabilities(capabilities)), confidential);
         }
         // No capabilities specified
         log.info("Will not add custom capabilities to {}", name);
