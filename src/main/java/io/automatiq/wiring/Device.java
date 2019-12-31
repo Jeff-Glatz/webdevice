@@ -17,9 +17,11 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static io.automatiq.driver.ConfidentialCapabilities.mark;
 import static java.lang.String.format;
+import static java.util.Objects.hash;
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_BY_TYPE;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
@@ -27,10 +29,12 @@ public class Device
         implements Serializable {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private String name;
+    private Set<String> aliases = new LinkedHashSet<>();
     private boolean pooled = true;
     private Class<? extends WebDeviceProvider<?>> provider;
     private Class<? extends WebDriver> driver;
     private URL remoteAddress;
+    private String capabilitiesRef;
     private Class<? extends MutableCapabilities> options;
     private String desired;
     private Map<String, Object> capabilities = new LinkedHashMap<>();
@@ -49,6 +53,23 @@ public class Device
     public Device withName(String name) {
         setName(name);
         return this;
+    }
+
+    public Set<String> getAliases() {
+        return aliases;
+    }
+
+    public void setAliases(Set<String> aliases) {
+        this.aliases = aliases;
+    }
+
+    public Device withAlias(String alias) {
+        aliases.add(alias);
+        return this;
+    }
+
+    public Stream<String> aliases() {
+        return aliases.stream();
     }
 
     public boolean isPooled() {
@@ -109,6 +130,19 @@ public class Device
 
     public boolean isRemote() {
         return remoteAddress != null;
+    }
+
+    public String getCapabilitiesRef() {
+        return capabilitiesRef;
+    }
+
+    public void setCapabilitiesRef(String capabilitiesRef) {
+        this.capabilitiesRef = capabilitiesRef;
+    }
+
+    public Device withCapabilitiesRef(String capabilitiesRef) {
+        setCapabilitiesRef(capabilitiesRef);
+        return this;
     }
 
     public Class<? extends MutableCapabilities> getOptions() {
@@ -203,11 +237,8 @@ public class Device
                     .addConstructorArgValue(name)
                     .addConstructorArgValue(driver);
         }
-        MutableCapabilities capabilities = capabilitiesOf();
-        if (capabilities != null) {
-            definition.addPropertyValue("capabilities", capabilities);
-        }
-        return definition.setAutowireMode(AUTOWIRE_BY_TYPE);
+        return addCapabilities(definition)
+                .setAutowireMode(AUTOWIRE_BY_TYPE);
     }
 
     @Override
@@ -217,9 +248,11 @@ public class Device
         Device device = (Device) o;
         return pooled == device.pooled &&
                 Objects.equals(name, device.name) &&
+                Objects.equals(aliases, device.aliases) &&
                 Objects.equals(provider, device.provider) &&
                 Objects.equals(driver, device.driver) &&
                 Objects.equals(remoteAddress, device.remoteAddress) &&
+                Objects.equals(capabilitiesRef, device.capabilitiesRef) &&
                 Objects.equals(options, device.options) &&
                 Objects.equals(desired, device.desired) &&
                 Objects.equals(capabilities, device.capabilities) &&
@@ -230,7 +263,9 @@ public class Device
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, pooled, provider, driver, remoteAddress, options, desired, capabilities, extraCapability, extraOptions, confidential);
+        return hash(name, aliases, pooled, provider, driver,
+                remoteAddress, capabilitiesRef, options, desired,
+                capabilities, extraCapability, extraOptions, confidential);
     }
 
     private MutableCapabilities withCapabilities(MutableCapabilities capabilities) {
@@ -297,5 +332,17 @@ public class Device
         }
         log.info("Will not add custom capabilities to {}", name);
         return null;
+    }
+
+    private BeanDefinitionBuilder addCapabilities(BeanDefinitionBuilder definition) {
+        MutableCapabilities capabilities = capabilitiesOf();
+        if (capabilities != null) {
+            log.info("{} adding computed capabilities to BeanDefinition", name);
+            definition.addPropertyValue("capabilities", capabilities);
+        } else if (capabilitiesRef != null) {
+            log.info("{} adding capabilities reference to BeanDefinition", name);
+            definition.addPropertyReference("capabilities", capabilitiesRef);
+        }
+        return definition;
     }
 }

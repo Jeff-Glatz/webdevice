@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 public class Settings
         implements Serializable {
     private URL baseUrl;
+    private String defaultDevice;
     private Map<String, Device> devices = new LinkedHashMap<>();
 
     public URL getBaseUrl() {
@@ -22,6 +23,19 @@ public class Settings
 
     public Settings withBaseUrl(URL baseUrl) {
         setBaseUrl(baseUrl);
+        return this;
+    }
+
+    public String getDefaultDevice() {
+        return defaultDevice;
+    }
+
+    public void setDefaultDevice(String defaultDevice) {
+        this.defaultDevice = defaultDevice;
+    }
+
+    public Settings withDefaultDevice(String defaultDevice) {
+        setDefaultDevice(defaultDevice);
         return this;
     }
 
@@ -47,13 +61,14 @@ public class Settings
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Settings properties = (Settings) o;
-        return Objects.equals(baseUrl, properties.baseUrl) &&
-                Objects.equals(devices, properties.devices);
+        Settings settings = (Settings) o;
+        return Objects.equals(baseUrl, settings.baseUrl) &&
+                Objects.equals(defaultDevice, settings.defaultDevice) &&
+                Objects.equals(devices, settings.devices);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(baseUrl, devices);
+        return Objects.hash(baseUrl, defaultDevice, devices);
     }
 }

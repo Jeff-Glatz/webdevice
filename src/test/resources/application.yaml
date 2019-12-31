@@ -4,13 +4,18 @@ logging:
 
 automatiq:
   base-url: http://www.apple.com
+  default-device: "Firefox"
   devices:
     LocalFirefox:
       driver: org.openqa.selenium.firefox.FirefoxDriver
+      aliases: Firefox, Local Firefox
+      capabilites-ref: localFirefoxCapabilities
     LocalChrome:
       driver: org.openqa.selenium.chrome.ChromeDriver
+      aliases: Chrome, Local Chrome
     Chrome59Windows10:
       remote-address: https://ondemand.saucelabs.com:443/wd/hub
+      aliases: "Chrome v59 Windows 10"
       capabilities:
         username: ${saucelabs_username}
         accessKey: ${saucelabs_accessKey}
@@ -61,6 +66,7 @@ automatiq:
         - accessKey
     iPhone8:
       remote-address: https://ondemand.saucelabs.com:443/wd/hub
+      aliases: iPhone 8
       pooled: false
       desired: iphone
       capabilities:

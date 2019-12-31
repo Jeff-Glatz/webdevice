@@ -31,20 +31,15 @@ public class DeviceRegistrar
         Settings settings = Binder.get(environment)
                 .bind(PREFIX, Settings.class)
                 .get();
-
         log.info("Registering devices ...");
         settings.devices()
                 .filter(device -> !registry.isBeanNameInUse(device.getName()))
                 .forEach(device -> {
                     String provider = maybeDefineProvider(device, registry);
                     if (device.isPooled()) {
-                        String pool = maybeDefinePool(device, registry, provider);
-                        log.info("Registering alias {} for {}", device.getName(), pool);
-                        registry.registerAlias(pool, device.getName());
-                    } else {
-                        log.info("Registering alias {} for {}", device.getName(), provider);
-                        registry.registerAlias(provider, device.getName());
+                        provider = maybeDefinePool(device, provider, registry);
                     }
+                    registerAliases(provider, device, registry);
                 });
         log.info("Devices registered.");
     }
@@ -60,7 +55,7 @@ public class DeviceRegistrar
         return provider;
     }
 
-    private String maybeDefinePool(Device device, BeanDefinitionRegistry registry, String provider) {
+    private String maybeDefinePool(Device device, String provider, BeanDefinitionRegistry registry) {
         String pool = format("%s-pool", device.getName());
         if (!registry.isBeanNameInUse(pool)) {
             log.info("Registering WebDevicePool definition named {}", pool);
@@ -70,5 +65,14 @@ public class DeviceRegistrar
                             .getBeanDefinition());
         }
         return pool;
+    }
+
+    private void registerAliases(String canonical, Device device, BeanDefinitionRegistry registry) {
+        log.info("Registering alias '{}' for '{}'", device.getName(), canonical);
+        registry.registerAlias(canonical, device.getName());
+        device.aliases().forEach(alias -> {
+            log.info("Registering alias '{}' for '{}'", alias, canonical);
+            registry.registerAlias(canonical, alias);
+        });
     }
 }
