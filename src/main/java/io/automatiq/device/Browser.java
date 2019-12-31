@@ -62,6 +62,11 @@ public class Browser
         return delegate.getSessionId();
     }
 
+    @Override
+    public boolean usable() {
+        return delegate.usable();
+    }
+
     public void home() {
         delegate.navigate().to(baseUrl);
     }

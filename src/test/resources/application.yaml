@@ -4,7 +4,7 @@ logging:
 
 automatiq:
   base-url: http://www.apple.com
-  default-device: "Firefox"
+  default-device: Firefox
   devices:
     LocalFirefox:
       driver: org.openqa.selenium.firefox.FirefoxDriver
@@ -15,13 +15,14 @@ automatiq:
       aliases: Chrome, Local Chrome
     Chrome59Windows10:
       remote-address: https://ondemand.saucelabs.com:443/wd/hub
-      aliases: "Chrome v59 Windows 10"
+      pooled: false
+      aliases: Chrome v59 Windows 10
       capabilities:
         username: ${saucelabs_username}
         accessKey: ${saucelabs_accessKey}
         browserName: Chrome
         platform: Windows 10
-        version: 59.0
+        version: "59.0"
         extendedDebugging: true
       confidential:
         - accessKey
@@ -57,7 +58,7 @@ automatiq:
         w3c: true
         platformName: macOS 10.14
         browserVersion: latest
-      extra-capability: "sauce:options"
+      extra-capability: sauce:options
       extra-options:
         username: ${saucelabs_username}
         accessKey: ${saucelabs_accessKey}
@@ -73,7 +74,7 @@ automatiq:
         username: ${saucelabs_username}
         accessKey: ${saucelabs_accessKey}
         extendedDebugging: true
-        appiumVersion: 1.13.0
+        appiumVersion: "1.13.0"
         deviceName: iPhone 8
         deviceOrientation: portrait
         platformVersion: "12.2"

@@ -7,4 +7,5 @@ public interface WebDevice
         extends WebDriver {
     String getName();
     SessionId getSessionId();
+    boolean usable();
 }

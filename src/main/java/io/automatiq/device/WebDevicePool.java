@@ -42,7 +42,7 @@ public class WebDevicePool<Device extends WebDevice>
         if (device == null) {
             device = create();
         } else {
-            if (!alive(device)) {
+            if (!device.usable()) {
                 log.info("Device {} in {} pool is not usable", device.getSessionId(), getName());
                 release(device);
                 device = create();
@@ -82,11 +82,6 @@ public class WebDevicePool<Device extends WebDevice>
         Device device = provider.get();
         log.info("Obtained new device {} from provider {}.", device.getSessionId(), getName());
         return device;
-    }
-
-    private boolean alive(Device device) {
-        // TODO: How to determine aliveness?
-        return true;
     }
 
     private void release(Device device) {

@@ -27,6 +27,12 @@ public class RemoteWebDevice
     }
 
     @Override
+    public boolean usable() {
+        // TODO: How to determine liveness?
+        return true;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
