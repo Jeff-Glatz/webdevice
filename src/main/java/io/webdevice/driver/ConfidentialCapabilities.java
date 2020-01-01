@@ -1,4 +1,4 @@
-package io.automatiq.driver;
+package io.webdevice.driver;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;

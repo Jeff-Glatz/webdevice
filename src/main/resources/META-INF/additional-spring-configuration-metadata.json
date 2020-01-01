@@ -1,7 +1,7 @@
 {
   "hints": [
     {
-      "name": "automatiq.devices.keys",
+      "name": "webdevice.devices.keys",
       "values": [
         {
           "value": "chrome"

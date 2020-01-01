@@ -1,4 +1,4 @@
-package io.automatiq.wiring;
+package io.webdevice.wiring;
 
 import org.springframework.context.annotation.Import;
 
@@ -12,6 +12,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(TYPE)
 @Retention(RUNTIME)
 @Documented
-@Import(Automatiq.class)
-public @interface EnableAutomatiq {
+@Import(WebDeviceWiring.class)
+public @interface EnableWebDevice {
 }

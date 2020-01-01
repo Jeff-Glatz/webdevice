@@ -1,4 +1,4 @@
-package io.automatiq.wiring;
+package io.webdevice.wiring;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,10 +12,10 @@ import java.net.URL;
 
 @Configuration
 @Import(DeviceRegistrar.class)
-@ComponentScan("io.automatiq.device")
+@ComponentScan("io.webdevice.device")
 @EnableConfigurationProperties
-public class Automatiq {
-    public static final String PREFIX = "automatiq";
+public class WebDeviceWiring {
+    public static final String PREFIX = "webdevice";
 
     @Bean
     @ConfigurationProperties(PREFIX)

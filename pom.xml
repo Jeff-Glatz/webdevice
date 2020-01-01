@@ -10,10 +10,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>engineering.bestquality</groupId>
-    <artifactId>settings</artifactId>
+    <groupId>io.webdevice</groupId>
+    <artifactId>webdevice-core</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Automatiq</name>
+    <name>WebDevice.IO</name>
 
     <properties>
         <cucumber.version>4.8.0</cucumber.version>

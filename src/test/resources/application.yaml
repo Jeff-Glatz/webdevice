@@ -2,7 +2,7 @@ logging:
   level:
     org.springframework: INFO
 
-automatiq:
+webdevice:
   base-url: http://www.apple.com
   default-device: Firefox
   devices:

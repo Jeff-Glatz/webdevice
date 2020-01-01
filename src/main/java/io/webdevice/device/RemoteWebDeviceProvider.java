@@ -1,4 +1,4 @@
-package io.automatiq.device;
+package io.webdevice.device;
 
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -6,7 +6,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.net.URL;
 import java.util.Objects;
 
-import static io.automatiq.driver.ConfidentialCapabilities.mask;
+import static io.webdevice.driver.ConfidentialCapabilities.mask;
 
 public class RemoteWebDeviceProvider
         extends BaseWebDeviceProvider<RemoteWebDevice> {

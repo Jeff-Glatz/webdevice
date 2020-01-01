@@ -1,6 +1,6 @@
-package io.automatiq.wiring;
+package io.webdevice.wiring;
 
-import io.automatiq.device.WebDevicePool;
+import io.webdevice.device.WebDevicePool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 
-import static io.automatiq.wiring.Automatiq.PREFIX;
+import static io.webdevice.wiring.WebDeviceWiring.PREFIX;
 import static java.lang.String.format;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 

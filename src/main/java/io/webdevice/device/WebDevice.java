@@ -1,4 +1,4 @@
-package io.automatiq.device;
+package io.webdevice.device;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.SessionId;

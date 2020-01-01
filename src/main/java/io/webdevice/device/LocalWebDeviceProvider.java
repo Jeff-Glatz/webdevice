@@ -1,4 +1,4 @@
-package io.automatiq.device;
+package io.webdevice.device;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.Capabilities;
@@ -7,7 +7,7 @@ import org.openqa.selenium.WebDriverException;
 
 import java.util.Objects;
 
-import static io.automatiq.driver.ConfidentialCapabilities.mask;
+import static io.webdevice.driver.ConfidentialCapabilities.mask;
 import static java.util.UUID.randomUUID;
 
 public class LocalWebDeviceProvider<Driver extends WebDriver>

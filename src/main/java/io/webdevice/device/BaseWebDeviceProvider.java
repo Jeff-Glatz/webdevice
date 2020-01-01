@@ -1,4 +1,4 @@
-package io.automatiq.device;
+package io.webdevice.device;
 
 import org.openqa.selenium.Capabilities;
 import org.slf4j.Logger;

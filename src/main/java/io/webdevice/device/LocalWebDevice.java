@@ -1,19 +1,22 @@
-package io.automatiq.device;
+package io.webdevice.device;
 
-import io.automatiq.driver.WebDriverDecorator;
-import org.openqa.selenium.remote.RemoteWebDriver;
+import io.webdevice.driver.WebDriverDecorator;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.SessionId;
 
 import java.util.Objects;
+import java.util.UUID;
 
-public class RemoteWebDevice
-        extends WebDriverDecorator<RemoteWebDriver>
+public class LocalWebDevice<Driver extends WebDriver>
+        extends WebDriverDecorator<Driver>
         implements WebDevice {
     private final String name;
+    private final SessionId sessionId;
 
-    public RemoteWebDevice(RemoteWebDriver driver, String name) {
+    public LocalWebDevice(Driver driver, String name, UUID uuid) {
         super(driver);
         this.name = name;
+        this.sessionId = new SessionId(uuid);
     }
 
     @Override
@@ -23,7 +26,7 @@ public class RemoteWebDevice
 
     @Override
     public SessionId getSessionId() {
-        return delegate.getSessionId();
+        return sessionId;
     }
 
     @Override
@@ -37,12 +40,13 @@ public class RemoteWebDevice
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        RemoteWebDevice that = (RemoteWebDevice) o;
-        return Objects.equals(name, that.name);
+        LocalWebDevice<?> that = (LocalWebDevice<?>) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(sessionId, that.sessionId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), name);
+        return Objects.hash(super.hashCode(), name, sessionId);
     }
 }

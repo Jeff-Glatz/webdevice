@@ -1,4 +1,4 @@
-package io.automatiq.wiring;
+package io.webdevice.wiring;
 
 import java.io.Serializable;
 import java.net.URL;
