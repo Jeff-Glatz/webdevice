@@ -24,19 +24,22 @@ public class Browser
         extends WebDriverDecorator<WebDevice>
         implements WebDevice {
     private final WebDeviceProviders providers;
-    private final Settings settings;
+    private final BrowserSettings settings;
 
     private URL baseUrl;
 
-    @Autowired
-    public Browser(WebDeviceProviders providers, Settings settings) {
+    public Browser(WebDeviceProviders providers, BrowserSettings settings) {
         this.providers = providers;
         this.settings = settings;
     }
 
+    @Autowired
+    public Browser(WebDeviceProviders providers, Settings settings) {
+        this(providers, settings.getBrowser());
+    }
+
     @PostConstruct
     public void initialize() {
-        BrowserSettings settings = this.settings.getBrowser();
         setBaseUrl(settings.getBaseUrl());
         if (settings.isEager()) {
             log.info("Eagerly acquiring default device");
@@ -68,8 +71,10 @@ public class Browser
 
     public Browser use(String name) {
         if (delegate != null) {
-            // TODO: Introduce setting to raise exception or release
-            throw new IllegalStateException("Browser has already been acquired for the current scenario");
+            if (settings.isStrict()) {
+                throw new IllegalStateException("Browser has already been acquired for the current scenario");
+            }
+            release();
         }
         log.info("Acquiring {} browser...", name);
         delegate = providers.providerOf(name)
@@ -79,7 +84,7 @@ public class Browser
     }
 
     public Browser use() {
-        return use(settings.getBrowser().getDefaultDevice());
+        return use(settings.getDefaultDevice());
     }
 
     @Override

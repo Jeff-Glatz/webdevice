@@ -83,3 +83,4 @@ webdevice:
     base-url: http://www.apple.com
     default-device: Firefox
     eager: false
+    strict: true

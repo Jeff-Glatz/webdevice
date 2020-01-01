@@ -8,7 +8,8 @@ public class BrowserSettings
         implements Serializable {
     private URL baseUrl;
     private String defaultDevice;
-    private boolean eager;
+    private boolean eager = false;
+    private boolean strict = true;
 
     public URL getBaseUrl() {
         return baseUrl;
@@ -49,18 +50,32 @@ public class BrowserSettings
         return this;
     }
 
+    public boolean isStrict() {
+        return strict;
+    }
+
+    public void setStrict(boolean strict) {
+        this.strict = strict;
+    }
+
+    public BrowserSettings withStrict(boolean strict) {
+        setStrict(strict);
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BrowserSettings that = (BrowserSettings) o;
         return eager == that.eager &&
+                strict == that.strict &&
                 Objects.equals(baseUrl, that.baseUrl) &&
                 Objects.equals(defaultDevice, that.defaultDevice);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(baseUrl, defaultDevice, eager);
+        return Objects.hash(baseUrl, defaultDevice, eager, strict);
     }
 }
