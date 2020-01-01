@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;
 
 import static io.cucumber.spring.CucumberTestContext.SCOPE_CUCUMBER_GLUE;
@@ -25,6 +26,7 @@ public class WebDeviceWiring {
     }
 
     @Bean
+    @Primary
     @Scope(SCOPE_CUCUMBER_GLUE)
     public Browser browser() {
         return new Browser(context, settings.getDefaultDevice())
