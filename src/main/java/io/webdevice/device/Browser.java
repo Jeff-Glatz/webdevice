@@ -2,34 +2,38 @@ package io.webdevice.device;
 
 import io.webdevice.driver.WebDriverDecorator;
 import org.openqa.selenium.remote.SessionId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static io.cucumber.spring.CucumberTestContext.SCOPE_CUCUMBER_GLUE;
 import static java.lang.String.format;
 
-@Component
-@Scope(SCOPE_CUCUMBER_GLUE)
 public class Browser
         extends WebDriverDecorator<WebDevice>
         implements WebDevice {
     private final ApplicationContext context;
-    private final URL baseUrl;
+    private final String defaultDevice;
 
-    @Autowired
-    public Browser(ApplicationContext context, URL baseUrl) {
+    private URL baseUrl;
+
+    public Browser(ApplicationContext context, String defaultDevice) {
         this.context = context;
-        this.baseUrl = baseUrl;
+        this.defaultDevice = defaultDevice;
     }
 
     public URL getBaseUrl() {
         return baseUrl;
+    }
+
+    public void setBaseUrl(URL baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+
+    public Browser withBaseUrl(URL baseUrl) {
+        setBaseUrl(baseUrl);
+        return this;
     }
 
     public URL absolute(String relativePath) {

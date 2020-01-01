@@ -14,6 +14,7 @@ import static java.util.Collections.emptySet;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
 
+// TODO: How to protected confidential capabilities
 public class ConfidentialCapabilities {
     private static final String CONFIDENTIAL_CAPABILITY = "meta:confidential";
     private static final String MASK = "********";

@@ -1,31 +1,33 @@
 package io.webdevice.wiring;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import io.webdevice.device.Browser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Scope;
 
-import java.net.URL;
+import static io.cucumber.spring.CucumberTestContext.SCOPE_CUCUMBER_GLUE;
 
 @Configuration
 @Import(DeviceRegistrar.class)
-@ComponentScan("io.webdevice.device")
-@EnableConfigurationProperties
+@EnableConfigurationProperties(Settings.class)
 public class WebDeviceWiring {
-    public static final String PREFIX = "webdevice";
+    private final ApplicationContext context;
+    private final Settings settings;
 
-    @Bean
-    @ConfigurationProperties(PREFIX)
-    public Settings settings() {
-        return new Settings();
+    @Autowired
+    public WebDeviceWiring(ApplicationContext context, Settings settings) {
+        this.context = context;
+        this.settings = settings;
     }
 
     @Bean
-    @ConditionalOnMissingBean(name = "baseUrl", value = URL.class)
-    public URL baseUrl(Settings settings) {
-        return settings.getBaseUrl();
+    @Scope(SCOPE_CUCUMBER_GLUE)
+    public Browser browser() {
+        return new Browser(context, settings.getDefaultDevice())
+                .withBaseUrl(settings.getBaseUrl());
     }
 }

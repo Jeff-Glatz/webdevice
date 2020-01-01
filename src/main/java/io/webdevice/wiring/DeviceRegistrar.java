@@ -11,7 +11,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 
-import static io.webdevice.wiring.WebDeviceWiring.PREFIX;
+import static io.webdevice.wiring.Settings.PREFIX;
 import static java.lang.String.format;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 

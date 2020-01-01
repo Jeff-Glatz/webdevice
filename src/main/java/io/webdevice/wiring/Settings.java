@@ -1,5 +1,7 @@
 package io.webdevice.wiring;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
 import java.io.Serializable;
 import java.net.URL;
 import java.util.LinkedHashMap;
@@ -7,8 +9,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import static io.webdevice.wiring.Settings.PREFIX;
+
+@ConfigurationProperties(PREFIX)
 public class Settings
         implements Serializable {
+    public static final String PREFIX = "webdevice";
+
     private URL baseUrl;
     private String defaultDevice;
     private Map<String, Device> devices = new LinkedHashMap<>();
