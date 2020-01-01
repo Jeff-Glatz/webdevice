@@ -286,9 +286,7 @@ public class Device
 
     private MutableCapabilities options() {
         try {
-            return options != null ?
-                    options.getDeclaredConstructor().newInstance() :
-                    null;
+            return options.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new IllegalArgumentException(
                     format("Failure invoking new %s()", options.getName()), e);
@@ -302,10 +300,9 @@ public class Device
 
     private DesiredCapabilities desired() {
         try {
-            return desired != null ?
-                    (DesiredCapabilities) DesiredCapabilities.class.getDeclaredMethod(desired)
-                            .invoke(DesiredCapabilities.class) :
-                    null;
+            return (DesiredCapabilities) DesiredCapabilities.class
+                    .getDeclaredMethod(desired)
+                    .invoke(DesiredCapabilities.class);
         } catch (Exception e) {
             throw new IllegalArgumentException(
                     format("Failure invoking DesiredCapabilities.%s()", desired), e);

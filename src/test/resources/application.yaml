@@ -9,7 +9,6 @@ webdevice:
     LocalFirefox:
       driver: org.openqa.selenium.firefox.FirefoxDriver
       aliases: Firefox, Local Firefox
-      capabilites-ref: localFirefoxCapabilities
     LocalChrome:
       driver: org.openqa.selenium.chrome.ChromeDriver
       aliases: Chrome, Local Chrome
