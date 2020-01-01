@@ -4,16 +4,21 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 
 import java.util.Objects;
 
 import static io.webdevice.driver.ConfidentialCapabilities.mask;
 import static java.util.UUID.randomUUID;
+import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
 
+@Scope(SCOPE_SINGLETON)
 public class LocalWebDeviceProvider<Driver extends WebDriver>
         extends BaseWebDeviceProvider<LocalWebDevice<Driver>> {
     private final Class<Driver> type;
 
+    @Autowired
     public LocalWebDeviceProvider(String name, Class<Driver> type) {
         super(name);
         this.type = type;

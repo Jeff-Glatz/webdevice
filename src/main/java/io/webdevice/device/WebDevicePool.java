@@ -3,6 +3,7 @@ package io.webdevice.device;
 import org.openqa.selenium.remote.SessionId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Deque;
 import java.util.concurrent.BlockingDeque;
@@ -22,6 +23,7 @@ public class WebDevicePool<Device extends WebDevice>
     private final BlockingDeque<Device> used = new LinkedBlockingDeque<>();
     private final WebDeviceProvider<Device> provider;
 
+    @Autowired
     public WebDevicePool(WebDeviceProvider<Device> provider) {
         this.provider = provider;
     }

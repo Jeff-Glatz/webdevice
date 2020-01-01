@@ -22,7 +22,6 @@ import java.util.stream.Stream;
 import static io.webdevice.driver.ConfidentialCapabilities.mark;
 import static java.lang.String.format;
 import static java.util.Objects.hash;
-import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_BY_TYPE;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
 public class Device
@@ -237,8 +236,7 @@ public class Device
                     .addConstructorArgValue(name)
                     .addConstructorArgValue(driver);
         }
-        return addCapabilities(definition)
-                .setAutowireMode(AUTOWIRE_BY_TYPE);
+        return addCapabilities(definition);
     }
 
     @Override
