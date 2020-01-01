@@ -1,8 +1,8 @@
 package io.webdevice.cucumber.steps;
 
+import io.cucumber.java.en.Given;
 import io.webdevice.device.Browser;
 import io.webdevice.wiring.WebDeviceWiring;
-import io.cucumber.java.en.Given;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -20,6 +20,11 @@ public class TestSteps {
     @Given("a {string} browser")
     public void useBrowser(String name) {
         browser.use(name);
+    }
+
+    @Given("a browser")
+    public void useBrowser() {
+        browser.use();
     }
 
     @Given("I navigate home")

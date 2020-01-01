@@ -1,26 +1,42 @@
 package io.webdevice.device;
 
 import io.webdevice.driver.WebDriverDecorator;
+import io.webdevice.wiring.Settings;
 import org.openqa.selenium.remote.SessionId;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static io.cucumber.spring.CucumberTestContext.SCOPE_CUCUMBER_GLUE;
 import static java.lang.String.format;
 
+@Primary
+@Component
+@Scope(SCOPE_CUCUMBER_GLUE)
 public class Browser
         extends WebDriverDecorator<WebDevice>
         implements WebDevice {
-    private final ApplicationContext context;
-    private final String defaultDevice;
+    private final WebDeviceProviders providers;
+    private final Settings settings;
 
     private URL baseUrl;
 
-    public Browser(ApplicationContext context, String defaultDevice) {
-        this.context = context;
-        this.defaultDevice = defaultDevice;
+    @Autowired
+    public Browser(WebDeviceProviders providers, Settings settings) {
+        this.providers = providers;
+        this.settings = settings;
+    }
+
+    @PostConstruct
+    public void initialize() {
+        // Initialize baseUrl from settings, but this can be redefined in hooks or steps as needed
+        setBaseUrl(settings.getBaseUrl());
     }
 
     public URL getBaseUrl() {
@@ -50,10 +66,14 @@ public class Browser
             throw new IllegalStateException("Browser has already been acquired for the current scenario");
         }
         log.info("Acquiring {} browser...", name);
-        delegate = provider(name)
+        delegate = providers.providerOf(name)
                 .get();
         log.info("Acquired {} browser {}", name, delegate.getSessionId());
         return this;
+    }
+
+    public Browser use() {
+        return use(settings.getDefaultDevice());
     }
 
     @Override
@@ -71,12 +91,14 @@ public class Browser
         return delegate.usable();
     }
 
-    public void home() {
+    public Browser home() {
         delegate.navigate().to(baseUrl);
+        return this;
     }
 
-    public void navigateTo(String relativePath) {
+    public Browser navigateTo(String relativePath) {
         delegate.navigate().to(absolute(relativePath));
+        return this;
     }
 
     @PreDestroy
@@ -84,16 +106,12 @@ public class Browser
         try {
             if (delegate != null) {
                 log.info("Releasing {} browser {}...", delegate.getName(), delegate.getSessionId());
-                provider(delegate.getName())
+                providers.providerOf(delegate)
                         .accept(delegate);
             }
             log.info("Browser released.");
         } finally {
             delegate = null;
         }
-    }
-
-    private WebDeviceProvider<WebDevice> provider(String name) {
-        return context.getBean(name, WebDeviceProvider.class);
     }
 }
