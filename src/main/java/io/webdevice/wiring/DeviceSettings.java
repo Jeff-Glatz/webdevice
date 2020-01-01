@@ -21,14 +21,19 @@ import java.util.stream.Stream;
 
 import static io.webdevice.driver.ConfidentialCapabilities.mark;
 import static java.lang.String.format;
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.hash;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
-public class Device
+public class DeviceSettings
         implements Serializable {
     private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Set<String> aliases = new LinkedHashSet<>();
+    private final Map<String, Object> capabilities = new LinkedHashMap<>();
+    private final Map<String, Object> extraOptions = new LinkedHashMap<>();
+    private final Set<String> confidential = new LinkedHashSet<>();
     private String name;
-    private Set<String> aliases = new LinkedHashSet<>();
     private boolean pooled = true;
     private Class<? extends WebDeviceProvider> provider;
     private Class<? extends WebDriver> driver;
@@ -36,10 +41,7 @@ public class Device
     private String capabilitiesRef;
     private Class<? extends MutableCapabilities> options;
     private String desired;
-    private Map<String, Object> capabilities = new LinkedHashMap<>();
     private String extraCapability;
-    private Map<String, Object> extraOptions = new LinkedHashMap<>();
-    private Set<String> confidential = new LinkedHashSet<>();
 
     public String getName() {
         return name;
@@ -49,20 +51,21 @@ public class Device
         this.name = name;
     }
 
-    public Device withName(String name) {
+    public DeviceSettings withName(String name) {
         setName(name);
         return this;
     }
 
     public Set<String> getAliases() {
-        return aliases;
+        return unmodifiableSet(aliases);
     }
 
     public void setAliases(Set<String> aliases) {
-        this.aliases = aliases;
+        this.aliases.clear();
+        this.aliases.addAll(aliases);
     }
 
-    public Device withAlias(String alias) {
+    public DeviceSettings withAlias(String alias) {
         aliases.add(alias);
         return this;
     }
@@ -79,7 +82,7 @@ public class Device
         this.pooled = pooled;
     }
 
-    public Device withPooled(boolean pooled) {
+    public DeviceSettings withPooled(boolean pooled) {
         setPooled(pooled);
         return this;
     }
@@ -92,7 +95,7 @@ public class Device
         this.provider = provider;
     }
 
-    public Device withProvider(Class<? extends WebDeviceProvider> provider) {
+    public DeviceSettings withProvider(Class<? extends WebDeviceProvider> provider) {
         setProvider(provider);
         return this;
     }
@@ -109,7 +112,7 @@ public class Device
         this.driver = driver;
     }
 
-    public Device withDriver(Class<? extends WebDriver> driver) {
+    public DeviceSettings withDriver(Class<? extends WebDriver> driver) {
         setDriver(driver);
         return this;
     }
@@ -122,7 +125,7 @@ public class Device
         this.remoteAddress = remoteAddress;
     }
 
-    public Device withRemoteAddress(URL remoteAddress) {
+    public DeviceSettings withRemoteAddress(URL remoteAddress) {
         setRemoteAddress(remoteAddress);
         return this;
     }
@@ -139,7 +142,7 @@ public class Device
         this.capabilitiesRef = capabilitiesRef;
     }
 
-    public Device withCapabilitiesRef(String capabilitiesRef) {
+    public DeviceSettings withCapabilitiesRef(String capabilitiesRef) {
         setCapabilitiesRef(capabilitiesRef);
         return this;
     }
@@ -152,7 +155,7 @@ public class Device
         this.options = options;
     }
 
-    public Device withOptions(Class<? extends MutableCapabilities> options) {
+    public DeviceSettings withOptions(Class<? extends MutableCapabilities> options) {
         setOptions(options);
         return this;
     }
@@ -165,20 +168,21 @@ public class Device
         this.desired = desired;
     }
 
-    public Device withDesired(String desired) {
+    public DeviceSettings withDesired(String desired) {
         setDesired(desired);
         return this;
     }
 
     public Map<String, Object> getCapabilities() {
-        return capabilities;
+        return unmodifiableMap(capabilities);
     }
 
     public void setCapabilities(Map<String, Object> capabilities) {
-        this.capabilities = capabilities;
+        this.capabilities.clear();
+        this.capabilities.putAll(capabilities);
     }
 
-    public Device withCapability(String capability, Object value) {
+    public DeviceSettings withCapability(String capability, Object value) {
         capabilities.put(capability, value);
         return this;
     }
@@ -191,33 +195,35 @@ public class Device
         this.extraCapability = extraCapability;
     }
 
-    public Device withExtraCapability(String extraCapability) {
+    public DeviceSettings withExtraCapability(String extraCapability) {
         this.extraCapability = extraCapability;
         return this;
     }
 
     public Map<String, Object> getExtraOptions() {
-        return extraOptions;
+        return unmodifiableMap(extraOptions);
     }
 
     public void setExtraOptions(Map<String, Object> extraOptions) {
-        this.extraOptions = extraOptions;
+        this.extraOptions.clear();
+        this.extraOptions.putAll(extraOptions);
     }
 
-    public Device withExtraOption(String option, Object value) {
+    public DeviceSettings withExtraOption(String option, Object value) {
         extraOptions.put(option, value);
         return this;
     }
 
     public Set<String> getConfidential() {
-        return confidential;
+        return unmodifiableSet(confidential);
     }
 
     public void setConfidential(Set<String> confidential) {
-        this.confidential = confidential;
+        this.confidential.clear();
+        this.confidential.addAll(confidential);
     }
 
-    public Device withConfidential(String mask) {
+    public DeviceSettings withConfidential(String mask) {
         confidential.add(mask);
         return this;
     }
@@ -243,7 +249,7 @@ public class Device
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Device device = (Device) o;
+        DeviceSettings device = (DeviceSettings) o;
         return pooled == device.pooled &&
                 Objects.equals(name, device.name) &&
                 Objects.equals(aliases, device.aliases) &&

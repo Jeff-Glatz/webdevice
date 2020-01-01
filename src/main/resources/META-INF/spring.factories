@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.webdevice.wiring.WebDeviceWiring
+io.webdevice.wiring.WebDevices

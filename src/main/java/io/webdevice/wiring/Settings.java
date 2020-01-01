@@ -1,67 +1,62 @@
 package io.webdevice.wiring;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.core.env.Environment;
 
 import java.io.Serializable;
-import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 import static io.webdevice.wiring.Settings.PREFIX;
+import static java.util.Collections.unmodifiableMap;
 
 @ConfigurationProperties(PREFIX)
 public class Settings
         implements Serializable {
     public static final String PREFIX = "webdevice";
 
-    private URL baseUrl;
-    private String defaultDevice;
-    private Map<String, Device> devices = new LinkedHashMap<>();
+    private final Map<String, DeviceSettings> devices = new LinkedHashMap<>();
+    private BrowserSettings browser;
 
-    public URL getBaseUrl() {
-        return baseUrl;
+    public static Settings settings(Environment environment) {
+        return Binder.get(environment)
+                .bind(PREFIX, Settings.class)
+                .get();
     }
 
-    public void setBaseUrl(URL baseUrl) {
-        this.baseUrl = baseUrl;
+    public Map<String, DeviceSettings> getDevices() {
+        return unmodifiableMap(devices);
     }
 
-    public Settings withBaseUrl(URL baseUrl) {
-        setBaseUrl(baseUrl);
-        return this;
-    }
-
-    public String getDefaultDevice() {
-        return defaultDevice;
-    }
-
-    public void setDefaultDevice(String defaultDevice) {
-        this.defaultDevice = defaultDevice;
-    }
-
-    public Settings withDefaultDevice(String defaultDevice) {
-        setDefaultDevice(defaultDevice);
-        return this;
-    }
-
-    public Map<String, Device> getDevices() {
-        return devices;
-    }
-
-    public void setDevices(Map<String, Device> devices) {
-        this.devices = devices;
+    public void setDevices(Map<String, DeviceSettings> devices) {
+        this.devices.clear();
+        this.devices.putAll(devices);
         this.devices.forEach((name, device) -> device.setName(name));
     }
 
-    public Settings withDevice(Device device) {
+    public Settings withDevice(DeviceSettings device) {
         devices.put(device.getName(), device);
         return this;
     }
 
-    public Stream<Device> devices() {
+    public Stream<DeviceSettings> devices() {
         return devices.values().stream();
+    }
+
+    public BrowserSettings getBrowser() {
+        return browser;
+    }
+
+    public void setBrowser(BrowserSettings browser) {
+        this.browser = browser;
+    }
+
+    public Settings withBrowser(BrowserSettings browser) {
+        setBrowser(browser);
+        return this;
     }
 
     @Override
@@ -69,13 +64,12 @@ public class Settings
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Settings settings = (Settings) o;
-        return Objects.equals(baseUrl, settings.baseUrl) &&
-                Objects.equals(defaultDevice, settings.defaultDevice) &&
-                Objects.equals(devices, settings.devices);
+        return Objects.equals(devices, settings.devices) &&
+                Objects.equals(browser, settings.browser);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(baseUrl, defaultDevice, devices);
+        return Objects.hash(devices, browser);
     }
 }

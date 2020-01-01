@@ -1,6 +1,7 @@
 package io.webdevice.device;
 
 import io.webdevice.driver.WebDriverDecorator;
+import io.webdevice.wiring.BrowserSettings;
 import io.webdevice.wiring.Settings;
 import org.openqa.selenium.remote.SessionId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +36,12 @@ public class Browser
 
     @PostConstruct
     public void initialize() {
-        // Initialize baseUrl from settings, but this can be redefined in hooks or steps as needed
+        BrowserSettings settings = this.settings.getBrowser();
         setBaseUrl(settings.getBaseUrl());
-        // TODO: Introduce setting to eagerly acquire default device
+        if (settings.isEager()) {
+            log.info("Eagerly acquiring default device");
+            use();
+        }
     }
 
     public URL getBaseUrl() {
@@ -75,7 +79,7 @@ public class Browser
     }
 
     public Browser use() {
-        return use(settings.getDefaultDevice());
+        return use(settings.getBrowser().getDefaultDevice());
     }
 
     @Override
