@@ -37,6 +37,7 @@ public class Browser
     public void initialize() {
         // Initialize baseUrl from settings, but this can be redefined in hooks or steps as needed
         setBaseUrl(settings.getBaseUrl());
+        // TODO: Introduce setting to eagerly acquire default device
     }
 
     public URL getBaseUrl() {
@@ -63,6 +64,7 @@ public class Browser
 
     public Browser use(String name) {
         if (delegate != null) {
+            // TODO: Introduce setting to raise exception or release
             throw new IllegalStateException("Browser has already been acquired for the current scenario");
         }
         log.info("Acquiring {} browser...", name);
