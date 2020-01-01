@@ -94,12 +94,14 @@ public class Browser
     }
 
     public Browser home() {
-        delegate.navigate().to(baseUrl);
+        delegate.navigate()
+                .to(baseUrl);
         return this;
     }
 
     public Browser navigateTo(String relativePath) {
-        delegate.navigate().to(absolute(relativePath));
+        delegate.navigate()
+                .to(absolute(relativePath));
         return this;
     }
 

@@ -13,18 +13,16 @@ import static java.lang.String.format;
 
 /**
  * A naive and unoptimized {@link WebDevice} pool
- *
- * @param <Device> The {@link WebDevice} type being pooled
  */
-public class WebDevicePool<Device extends WebDevice>
-        implements WebDeviceProvider<Device> {
+public class WebDevicePool
+        implements WebDeviceProvider {
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private final BlockingDeque<Device> free = new LinkedBlockingDeque<>();
-    private final BlockingDeque<Device> used = new LinkedBlockingDeque<>();
-    private final WebDeviceProvider<Device> provider;
+    private final BlockingDeque<WebDevice> free = new LinkedBlockingDeque<>();
+    private final BlockingDeque<WebDevice> used = new LinkedBlockingDeque<>();
+    private final WebDeviceProvider provider;
 
     @Autowired
-    public WebDevicePool(WebDeviceProvider<Device> provider) {
+    public WebDevicePool(WebDeviceProvider provider) {
         this.provider = provider;
     }
 
@@ -34,13 +32,13 @@ public class WebDevicePool<Device extends WebDevice>
     }
 
     /**
-     * Acquires a {@link Device} for exclusive use
+     * Acquires a {@link WebDevice} for exclusive use
      *
-     * @return a {@link Device} for exclusive use
+     * @return a {@link WebDevice} for exclusive use
      */
     @Override
-    public synchronized Device get() {
-        Device device = free.poll();
+    public synchronized WebDevice get() {
+        WebDevice device = free.poll();
         if (device == null) {
             device = create();
         } else {
@@ -57,12 +55,12 @@ public class WebDevicePool<Device extends WebDevice>
     }
 
     /**
-     * Marks the {@link Device} as free for use
+     * Marks the {@link WebDevice} as free for use
      *
-     * @param device The {@link Device} to be made available
+     * @param device The {@link WebDevice} to be made available
      */
     @Override
-    public synchronized void accept(Device device) {
+    public synchronized void accept(WebDevice device) {
         log.info("Removing device {} from used deque in {} pool", device.getSessionId(), getName());
         if (used.remove(device)) {
             log.info("Adding device {} to free deque in {} pool", device.getSessionId(), getName());
@@ -79,14 +77,14 @@ public class WebDevicePool<Device extends WebDevice>
         log.info("Pool {} shut down.", getName());
     }
 
-    private Device create() {
+    private WebDevice create() {
         log.info("Obtaining new device from provider {}...", getName());
-        Device device = provider.get();
+        WebDevice device = provider.get();
         log.info("Obtained new device {} from provider {}.", device.getSessionId(), getName());
         return device;
     }
 
-    private void release(Device device) {
+    private void release(WebDevice device) {
         SessionId sessionId = device.getSessionId();
         log.info("Releasing {} from use in {} pool", device.getSessionId(), getName());
         try {
@@ -96,8 +94,8 @@ public class WebDevicePool<Device extends WebDevice>
         }
     }
 
-    private void drain(Deque<Device> devices) {
-        for (Device device = devices.poll();
+    private void drain(Deque<WebDevice> devices) {
+        for (WebDevice device = devices.poll();
              device != null;
              device = devices.poll()) {
             release(device);

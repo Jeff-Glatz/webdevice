@@ -30,7 +30,7 @@ public class Device
     private String name;
     private Set<String> aliases = new LinkedHashSet<>();
     private boolean pooled = true;
-    private Class<? extends WebDeviceProvider<?>> provider;
+    private Class<? extends WebDeviceProvider> provider;
     private Class<? extends WebDriver> driver;
     private URL remoteAddress;
     private String capabilitiesRef;
@@ -84,15 +84,15 @@ public class Device
         return this;
     }
 
-    public Class<? extends WebDeviceProvider<?>> getProvider() {
+    public Class<? extends WebDeviceProvider> getProvider() {
         return provider;
     }
 
-    public void setProvider(Class<? extends WebDeviceProvider<?>> provider) {
+    public void setProvider(Class<? extends WebDeviceProvider> provider) {
         this.provider = provider;
     }
 
-    public Device withProvider(Class<? extends WebDeviceProvider<?>> provider) {
+    public Device withProvider(Class<? extends WebDeviceProvider> provider) {
         setProvider(provider);
         return this;
     }

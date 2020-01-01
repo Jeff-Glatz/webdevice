@@ -15,7 +15,7 @@ import static org.springframework.beans.factory.config.ConfigurableBeanFactory.S
 
 @Scope(SCOPE_SINGLETON)
 public class LocalWebDeviceProvider<Driver extends WebDriver>
-        extends BaseWebDeviceProvider<LocalWebDevice<Driver>> {
+        extends BaseWebDeviceProvider<LocalWebDeviceProvider<Driver>> {
     private final Class<Driver> type;
 
     @Autowired

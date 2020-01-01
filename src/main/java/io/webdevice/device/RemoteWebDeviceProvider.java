@@ -13,7 +13,7 @@ import static org.springframework.beans.factory.config.ConfigurableBeanFactory.S
 
 @Scope(SCOPE_SINGLETON)
 public class RemoteWebDeviceProvider
-        extends BaseWebDeviceProvider<RemoteWebDevice> {
+        extends BaseWebDeviceProvider<RemoteWebDeviceProvider> {
     private final URL remoteAddress;
 
     @Autowired

@@ -5,8 +5,8 @@ import javax.annotation.PreDestroy;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public interface WebDeviceProvider<Device extends WebDevice>
-        extends Supplier<Device>, Consumer<Device> {
+public interface WebDeviceProvider
+        extends Supplier<WebDevice>, Consumer<WebDevice> {
 
     String getName();
 

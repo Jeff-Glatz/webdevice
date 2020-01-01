@@ -6,8 +6,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-public abstract class BaseWebDeviceProvider<Device extends WebDevice>
-        implements WebDeviceProvider<Device> {
+public abstract class BaseWebDeviceProvider<Provider extends BaseWebDeviceProvider<Provider>>
+        implements WebDeviceProvider {
     protected final Logger log = LoggerFactory.getLogger(getClass());
     protected final String name;
 
@@ -30,8 +30,14 @@ public abstract class BaseWebDeviceProvider<Device extends WebDevice>
         this.capabilities = capabilities;
     }
 
+    @SuppressWarnings("unchecked")
+    public Provider withCapabilities(Capabilities capabilities) {
+        setCapabilities(capabilities);
+        return (Provider) this;
+    }
+
     @Override
-    public void accept(Device device) {
+    public void accept(WebDevice device) {
         log.info("Provider {} quitting device {}", name, device.getSessionId());
         device.quit();
     }
