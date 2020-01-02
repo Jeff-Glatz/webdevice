@@ -4,22 +4,22 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.SessionId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
 import java.util.Objects;
 
-import static io.webdevice.driver.ConfidentialCapabilities.mask;
 import static java.util.UUID.randomUUID;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
 
 @Scope(SCOPE_SINGLETON)
-public class LocalWebDeviceProvider<Driver extends WebDriver>
-        extends BaseWebDeviceProvider<LocalWebDeviceProvider<Driver>> {
+public class LocalDeviceProvider<Driver extends WebDriver>
+        extends BaseDeviceProvider<Driver> {
     private final Class<Driver> type;
 
     @Autowired
-    public LocalWebDeviceProvider(String name, Class<Driver> type) {
+    public LocalDeviceProvider(String name, Class<Driver> type) {
         super(name);
         this.type = type;
     }
@@ -32,9 +32,10 @@ public class LocalWebDeviceProvider<Driver extends WebDriver>
     }
 
     @Override
-    public LocalWebDevice<Driver> get() {
+    public Device<Driver> get() {
         log.info("Providing new device named {}", name);
-        return new LocalWebDevice<>(newDriver(), name, randomUUID());
+        final SessionId sessionId = new SessionId(randomUUID());
+        return new Device<>(name, newDriver(), () -> sessionId, (d) -> true);
     }
 
     @Override
@@ -42,7 +43,7 @@ public class LocalWebDeviceProvider<Driver extends WebDriver>
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        LocalWebDeviceProvider<?> that = (LocalWebDeviceProvider<?>) o;
+        LocalDeviceProvider<?> that = (LocalDeviceProvider<?>) o;
         return Objects.equals(type, that.type);
     }
 
@@ -58,7 +59,7 @@ public class LocalWebDeviceProvider<Driver extends WebDriver>
                 return type.getDeclaredConstructor()
                         .newInstance();
             } else {
-                log.info("Instantiating {} with capabilities {}", type, mask(capabilities));
+                log.info("Instantiating {} with capabilities {}", type, capabilities);
                 return type.getDeclaredConstructor(Capabilities.class)
                         .newInstance(capabilities);
             }

@@ -1,8 +1,8 @@
 package io.webdevice.cucumber.steps;
 
 import io.cucumber.java.en.Given;
-import io.webdevice.device.Browser;
-import io.webdevice.wiring.WebDevices;
+import io.webdevice.device.WebDevice;
+import io.webdevice.wiring.WebDeviceRuntime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -11,11 +11,11 @@ import org.springframework.boot.test.context.SpringBootTest;
  * for Spring. This is detected by cucumber-spring library and will serve
  * as the "entry point" for Spring configuration
  */
-@SpringBootTest(classes = WebDevices.class)
+@SpringBootTest(classes = WebDeviceRuntime.class)
 public class TestSteps {
 
     @Autowired
-    private Browser browser;
+    private WebDevice browser;
 
     @Given("a {string} browser")
     public void useBrowser(String name) {
@@ -24,7 +24,7 @@ public class TestSteps {
 
     @Given("a browser")
     public void useBrowser() {
-        browser.use();
+        browser.useDefault();
     }
 
     @Given("I navigate home")

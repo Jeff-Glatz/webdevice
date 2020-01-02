@@ -1,23 +1,23 @@
 package io.webdevice.device;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-public abstract class BaseWebDeviceProvider<Provider extends BaseWebDeviceProvider<Provider>>
-        implements WebDeviceProvider {
+public abstract class BaseDeviceProvider<Driver extends WebDriver>
+        implements DeviceProvider<Driver> {
     protected final Logger log = LoggerFactory.getLogger(getClass());
     protected final String name;
 
     protected Capabilities capabilities;
 
-    protected BaseWebDeviceProvider(String name) {
+    protected BaseDeviceProvider(String name) {
         this.name = name;
     }
 
-    @Override
     public String getName() {
         return name;
     }
@@ -30,18 +30,6 @@ public abstract class BaseWebDeviceProvider<Provider extends BaseWebDeviceProvid
         this.capabilities = capabilities;
     }
 
-    @SuppressWarnings("unchecked")
-    public Provider withCapabilities(Capabilities capabilities) {
-        setCapabilities(capabilities);
-        return (Provider) this;
-    }
-
-    @Override
-    public void accept(WebDevice device) {
-        log.info("Provider {} quitting device {}", name, device.getSessionId());
-        device.quit();
-    }
-
     @Override
     public void dispose() {
         log.info("Provider {} shut down.", name);
@@ -51,7 +39,7 @@ public abstract class BaseWebDeviceProvider<Provider extends BaseWebDeviceProvid
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BaseWebDeviceProvider<?> that = (BaseWebDeviceProvider<?>) o;
+        BaseDeviceProvider<Driver> that = (BaseDeviceProvider<Driver>) o;
         return Objects.equals(name, that.name) &&
                 Objects.equals(capabilities, that.capabilities);
     }

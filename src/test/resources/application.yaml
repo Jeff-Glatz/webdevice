@@ -79,8 +79,7 @@ webdevice:
         browserName: Safari
       confidential:
         - accessKey
-  browser:
-    base-url: http://www.apple.com
-    default-device: Firefox
-    eager: false
-    strict: true
+  base-url: http://www.apple.com
+  default-device: Firefox
+  eager: false
+  strict: true
