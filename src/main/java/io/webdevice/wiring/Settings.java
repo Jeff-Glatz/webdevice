@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.env.Environment;
 
 import java.io.Serializable;
+import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -19,7 +20,10 @@ public class Settings
     public static final String PREFIX = "webdevice";
 
     private final Map<String, DeviceSettings> devices = new LinkedHashMap<>();
-    private BrowserSettings browser;
+    private URL baseUrl;
+    private String defaultDevice;
+    private boolean eager = false;
+    private boolean strict = true;
 
     public static Settings settings(Environment environment) {
         return Binder.get(environment)
@@ -46,16 +50,55 @@ public class Settings
         return devices.values().stream();
     }
 
-    public BrowserSettings getBrowser() {
-        return browser;
+    public URL getBaseUrl() {
+        return baseUrl;
     }
 
-    public void setBrowser(BrowserSettings browser) {
-        this.browser = browser;
+    public void setBaseUrl(URL baseUrl) {
+        this.baseUrl = baseUrl;
     }
 
-    public Settings withBrowser(BrowserSettings browser) {
-        setBrowser(browser);
+    public Settings withBaseUrl(URL baseUrl) {
+        setBaseUrl(baseUrl);
+        return this;
+    }
+
+    public String getDefaultDevice() {
+        return defaultDevice;
+    }
+
+    public void setDefaultDevice(String defaultDevice) {
+        this.defaultDevice = defaultDevice;
+    }
+
+    public Settings withDefaultDevice(String defaultDevice) {
+        setDefaultDevice(defaultDevice);
+        return this;
+    }
+
+    public boolean isEager() {
+        return eager;
+    }
+
+    public void setEager(boolean eager) {
+        this.eager = eager;
+    }
+
+    public Settings withEager(boolean eager) {
+        setEager(eager);
+        return this;
+    }
+
+    public boolean isStrict() {
+        return strict;
+    }
+
+    public void setStrict(boolean strict) {
+        this.strict = strict;
+    }
+
+    public Settings withStrict(boolean strict) {
+        setStrict(strict);
         return this;
     }
 
@@ -64,12 +107,15 @@ public class Settings
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Settings settings = (Settings) o;
-        return Objects.equals(devices, settings.devices) &&
-                Objects.equals(browser, settings.browser);
+        return eager == settings.eager &&
+                strict == settings.strict &&
+                Objects.equals(devices, settings.devices) &&
+                Objects.equals(baseUrl, settings.baseUrl) &&
+                Objects.equals(defaultDevice, settings.defaultDevice);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(devices, browser);
+        return Objects.hash(devices, baseUrl, defaultDevice, eager, strict);
     }
 }

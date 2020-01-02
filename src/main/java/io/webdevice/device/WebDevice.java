@@ -1,6 +1,5 @@
 package io.webdevice.device;
 
-import io.webdevice.wiring.BrowserSettings;
 import io.webdevice.wiring.Settings;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
@@ -25,19 +24,15 @@ import static java.lang.String.format;
 public class WebDevice {
     protected final Logger log = LoggerFactory.getLogger(getClass());
     private final DeviceRegistry registry;
-    private final BrowserSettings settings;
+    private final Settings settings;
 
     private URL baseUrl;
     private Device<?> device;
 
-    public WebDevice(DeviceRegistry registry, BrowserSettings settings) {
-        this.registry = registry;
-        this.settings = settings;
-    }
-
     @Autowired
     public WebDevice(DeviceRegistry registry, Settings settings) {
-        this(registry, settings.getBrowser());
+        this.registry = registry;
+        this.settings = settings;
     }
 
     @PostConstruct
