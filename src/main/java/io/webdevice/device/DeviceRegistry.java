@@ -1,32 +1,32 @@
 package io.webdevice.device;
 
 import org.openqa.selenium.WebDriver;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
+import static io.cucumber.spring.CucumberTestContext.SCOPE_CUCUMBER_GLUE;
 
 @Component
-@Scope(SCOPE_SINGLETON)
+@Scope(SCOPE_CUCUMBER_GLUE)
 public class DeviceRegistry {
-    private final ApplicationContext context;
+    private final BeanFactory factory;
 
     @Autowired
-    public DeviceRegistry(ApplicationContext context) {
-        this.context = context;
+    public DeviceRegistry(BeanFactory factory) {
+        this.factory = factory;
     }
 
     @SuppressWarnings("unchecked")
     public <Driver extends WebDriver> Device<Driver> provide(String device) {
-        DeviceProvider<Driver> provider = context.getBean(device, DeviceProvider.class);
+        DeviceProvider<Driver> provider = factory.getBean(device, DeviceProvider.class);
         return provider.get();
     }
 
     @SuppressWarnings("unchecked")
     public <Driver extends WebDriver> void done(Device<Driver> device) {
-        DeviceProvider<Driver> provider = context.getBean(device.getName(), DeviceProvider.class);
+        DeviceProvider<Driver> provider = factory.getBean(device.getName(), DeviceProvider.class);
         provider.accept(device);
     }
 }

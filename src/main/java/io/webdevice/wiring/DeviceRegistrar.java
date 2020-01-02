@@ -58,6 +58,7 @@ public class DeviceRegistrar
             registry.registerBeanDefinition(pool,
                     genericBeanDefinition(DevicePool.class)
                             .addConstructorArgReference(provider)
+                            .addConstructorArgValue(device.getName())
                             .getBeanDefinition());
         }
         return pool;

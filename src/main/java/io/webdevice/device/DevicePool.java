@@ -21,15 +21,12 @@ public class DevicePool<Driver extends WebDriver>
     private final BlockingDeque<Device<Driver>> free = new LinkedBlockingDeque<>();
     private final BlockingDeque<Device<Driver>> used = new LinkedBlockingDeque<>();
     private final DeviceProvider<Driver> provider;
+    private final String name;
 
     @Autowired
-    public DevicePool(DeviceProvider<Driver> provider) {
+    public DevicePool(DeviceProvider<Driver> provider, String name) {
         this.provider = provider;
-    }
-
-    @Override
-    public String getName() {
-        return provider.getName();
+        this.name = name;
     }
 
     /**
@@ -44,13 +41,13 @@ public class DevicePool<Driver extends WebDriver>
             device = create();
         } else {
             if (!device.usable()) {
-                log.info("Device {} in {} pool is not usable", device.getSessionId(), getName());
+                log.info("Device {} in {} pool is not usable", device.getSessionId(), name);
                 release(device);
                 device = create();
             }
         }
         used.push(device);
-        log.info("Acquired {} in {} pool", device.getSessionId(), getName());
+        log.info("Acquired {} in {} pool", device.getSessionId(), name);
         logStats();
         return device;
     }
@@ -62,9 +59,9 @@ public class DevicePool<Driver extends WebDriver>
      */
     @Override
     public synchronized void accept(Device<Driver> device) {
-        log.info("Removing device {} from used deque in {} pool", device.getSessionId(), getName());
+        log.info("Removing device {} from used deque in {} pool", device.getSessionId(), name);
         if (used.remove(device)) {
-            log.info("Adding device {} to free deque in {} pool", device.getSessionId(), getName());
+            log.info("Adding device {} to free deque in {} pool", device.getSessionId(), name);
             free.push(device);
         }
         logStats();
@@ -72,26 +69,26 @@ public class DevicePool<Driver extends WebDriver>
 
     @Override
     public synchronized void dispose() {
-        log.info("Shutting down {} pool...", getName());
+        log.info("Shutting down {} pool...", name);
         drain(free);
         drain(used);
-        log.info("Pool {} shut down.", getName());
+        log.info("Pool {} shut down.", name);
     }
 
     private Device<Driver> create() {
-        log.info("Obtaining new device from provider {}...", getName());
+        log.info("Obtaining new device from provider {}...", name);
         Device<Driver> device = provider.get();
-        log.info("Obtained new device {} from provider {}.", device.getSessionId(), getName());
+        log.info("Obtained new device {} from provider {}.", device.getSessionId(), name);
         return device;
     }
 
     private void release(Device<Driver> device) {
         SessionId sessionId = device.getSessionId();
-        log.info("Releasing {} from use in {} pool", device.getSessionId(), getName());
+        log.info("Releasing {} from use in {} pool", device.getSessionId(), name);
         try {
             provider.accept(device);
         } catch (Exception e) {
-            log.warn(format("Failure releasing device %s from %s pool", sessionId, getName()), e);
+            log.warn(format("Failure releasing device %s from %s pool", sessionId, name), e);
         }
     }
 
@@ -104,6 +101,6 @@ public class DevicePool<Driver extends WebDriver>
     }
 
     private void logStats() {
-        log.info("Pool: {}, Free: {}, Used: {}", getName(), free.size(), used.size());
+        log.info("DevicePool: {}, Free: {}, Used: {}", name, free.size(), used.size());
     }
 }

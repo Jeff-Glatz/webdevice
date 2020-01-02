@@ -9,24 +9,24 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class Device<Driver extends WebDriver> {
-    private final String name;
     private final Driver driver;
+    private final String name;
     private final Supplier<SessionId> sessionId;
     private final Function<Driver, Boolean> usable;
 
-    public Device(String name, Driver driver, Supplier<SessionId> sessionId, Function<Driver, Boolean> usable) {
-        this.name = name;
+    public Device(Driver driver, String name, Supplier<SessionId> sessionId, Function<Driver, Boolean> usable) {
         this.driver = driver;
+        this.name = name;
         this.sessionId = sessionId;
         this.usable = usable;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public Driver getDriver() {
         return driver;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public SessionId getSessionId() {

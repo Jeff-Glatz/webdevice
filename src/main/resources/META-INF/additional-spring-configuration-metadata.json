@@ -1,4 +1,44 @@
 {
+  "groups": [
+    {
+      "name": "webdevice",
+      "type": "io.webdevice.wiring.Settings",
+      "sourceType": "io.webdevice.wiring.Settings"
+    }
+  ],
+  "properties": [
+    {
+      "name": "webdevice.base-url",
+      "type": "java.net.URL",
+      "description": "Default browser base url.",
+      "sourceType": "io.webdevice.wiring.Settings"
+    },
+    {
+      "name": "webdevice.default-device",
+      "type": "java.lang.String",
+      "description": "Default browser device.",
+      "sourceType": "io.webdevice.wiring.Settings"
+    },
+    {
+      "name": "webdevice.devices",
+      "type": "java.util.Map<java.lang.String,io.webdevice.wiring.DeviceSettings>",
+      "sourceType": "io.webdevice.wiring.Settings"
+    },
+    {
+      "name": "webdevice.eager",
+      "type": "java.lang.Boolean",
+      "description": "Instructs the browser to acquire the default device when initialized.",
+      "sourceType": "io.webdevice.wiring.Settings",
+      "defaultValue": false
+    },
+    {
+      "name": "webdevice.strict",
+      "type": "java.lang.Boolean",
+      "description": "Instructs the browser to raise an exception upon use if a device has previously been acquired during the current scenario.",
+      "sourceType": "io.webdevice.wiring.Settings",
+      "defaultValue": true
+    }
+  ],
   "hints": [
     {
       "name": "webdevice.devices.keys",
@@ -22,32 +62,6 @@
           "value": "phantomjs"
         }
       ]
-    }
-  ],
-  "properties": [
-    {
-      "name": "webdevice.browser.base-url",
-      "type": "java.lang.String",
-      "sourceType": "io.webdevice.wiring.Settings",
-      "description": "Default browser base url."
-    },
-    {
-      "name": "webdevice.browser.default-device",
-      "type": "java.lang.String",
-      "sourceType": "io.webdevice.wiring.Settings",
-      "description": "Default browser device."
-    },
-    {
-      "name": "webdevice.browser.eager",
-      "type": "java.lang.String",
-      "sourceType": "io.webdevice.wiring.Settings",
-      "description": "Instructs the browser to acquire the default device when initialized."
-    },
-    {
-      "name": "webdevice.browser.strict",
-      "type": "java.lang.String",
-      "sourceType": "io.webdevice.wiring.Settings",
-      "description": "Instructs the browser to raise an exception upon use if a device has previously been acquired during the current scenario."
     }
   ]
 }

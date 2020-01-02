@@ -18,7 +18,6 @@ public abstract class BaseDeviceProvider<Driver extends WebDriver>
         this.name = name;
     }
 
-    @Override
     public String getName() {
         return name;
     }
@@ -29,12 +28,6 @@ public abstract class BaseDeviceProvider<Driver extends WebDriver>
 
     public void setCapabilities(Capabilities capabilities) {
         this.capabilities = capabilities;
-    }
-
-    @Override
-    public void accept(Device<Driver> device) {
-        log.info("Provider {} quitting device {}", name, device.getSessionId());
-        device.perform(WebDriver::quit);
     }
 
     @Override
