@@ -9,24 +9,24 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class Device<Driver extends WebDriver> {
-    private final Driver driver;
     private final String name;
+    private final Driver driver;
     private final Supplier<SessionId> sessionId;
     private final Function<Driver, Boolean> usable;
 
-    public Device(Driver driver, String name, Supplier<SessionId> sessionId, Function<Driver, Boolean> usable) {
-        this.driver = driver;
+    public Device(String name, Driver driver, Supplier<SessionId> sessionId, Function<Driver, Boolean> usable) {
         this.name = name;
+        this.driver = driver;
         this.sessionId = sessionId;
         this.usable = usable;
     }
 
-    public Driver getDriver() {
-        return driver;
-    }
-
     public String getName() {
         return name;
+    }
+
+    public Driver getDriver() {
+        return driver;
     }
 
     public SessionId getSessionId() {
@@ -37,8 +37,13 @@ public class Device<Driver extends WebDriver> {
         return usable.apply(driver);
     }
 
-    public void perform(Consumer<Driver> function) {
-        function.accept(driver);
+    public Device<Driver> perform(Consumer<Driver> consumer) {
+        consumer.accept(driver);
+        return this;
+    }
+
+    public <R> R invoke(Function<Driver, R> function) {
+        return function.apply(driver);
     }
 
     @Override
@@ -47,12 +52,12 @@ public class Device<Driver extends WebDriver> {
         if (o == null || getClass() != o.getClass()) return false;
         Device<?> that = (Device<?>) o;
         return Objects.equals(name, that.name) &&
-                Objects.equals(driver, that.driver) &&
-                Objects.equals(sessionId, that.sessionId);
+                Objects.equals(driver.getClass(), that.driver.getClass()) &&
+                Objects.equals(getSessionId(), that.getSessionId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, driver, sessionId);
+        return Objects.hash(name, driver.getClass(), getSessionId());
     }
 }

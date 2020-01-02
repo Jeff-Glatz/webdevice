@@ -25,7 +25,7 @@ public class DeviceRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <Driver extends WebDriver> void done(Device<Driver> device) {
+    public <Driver extends WebDriver> void release(Device<Driver> device) {
         DeviceProvider<Driver> provider = factory.getBean(device.getName(), DeviceProvider.class);
         provider.accept(device);
     }

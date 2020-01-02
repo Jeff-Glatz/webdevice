@@ -14,6 +14,7 @@ import javax.annotation.PreDestroy;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static io.cucumber.spring.CucumberTestContext.SCOPE_CUCUMBER_GLUE;
 import static java.lang.String.format;
@@ -35,15 +36,6 @@ public class WebDevice {
         this.settings = settings;
     }
 
-    @PostConstruct
-    public void initialize() {
-        setBaseUrl(settings.getBaseUrl());
-        if (settings.isEager()) {
-            log.info("Eagerly acquiring default device");
-            useDefault();
-        }
-    }
-
     public URL getBaseUrl() {
         return baseUrl;
     }
@@ -55,6 +47,15 @@ public class WebDevice {
     public WebDevice withBaseUrl(URL baseUrl) {
         setBaseUrl(baseUrl);
         return this;
+    }
+
+    @PostConstruct
+    public void initialize() {
+        setBaseUrl(settings.getBaseUrl());
+        if (settings.isEager()) {
+            log.info("Eagerly acquiring default device");
+            useDefault();
+        }
     }
 
     public URL absolute(String relativePath) {
@@ -95,8 +96,13 @@ public class WebDevice {
 
     @SuppressWarnings("unchecked")
     public <Driver extends WebDriver> WebDevice perform(Consumer<Driver> consumer) {
-        device.perform(driver -> consumer.accept((Driver) driver));
+        consumer.accept((Driver) device.getDriver());
         return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <Driver extends WebDriver, R> R invoke(Function<Driver, R> function) {
+        return function.apply((Driver) device.getDriver());
     }
 
     @PreDestroy
@@ -104,7 +110,7 @@ public class WebDevice {
         try {
             if (device != null) {
                 log.info("Releasing {} browser {}...", device.getName(), device.getSessionId());
-                registry.done(device);
+                registry.release(device);
             }
             log.info("Browser released.");
         } finally {

@@ -20,11 +20,11 @@ public class DevicePool<Driver extends WebDriver>
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final BlockingDeque<Device<Driver>> free = new LinkedBlockingDeque<>();
     private final BlockingDeque<Device<Driver>> used = new LinkedBlockingDeque<>();
-    private final DeviceProvider<Driver> provider;
     private final String name;
+    private final DeviceProvider<Driver> provider;
 
     @Autowired
-    public DevicePool(DeviceProvider<Driver> provider, String name) {
+    public DevicePool(String name, DeviceProvider<Driver> provider) {
         this.provider = provider;
         this.name = name;
     }

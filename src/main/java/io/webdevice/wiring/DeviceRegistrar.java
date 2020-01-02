@@ -57,8 +57,8 @@ public class DeviceRegistrar
             log.info("Registering WebDevicePool definition named {}", pool);
             registry.registerBeanDefinition(pool,
                     genericBeanDefinition(DevicePool.class)
-                            .addConstructorArgReference(provider)
                             .addConstructorArgValue(device.getName())
+                            .addConstructorArgReference(provider)
                             .getBeanDefinition());
         }
         return pool;
