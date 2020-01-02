@@ -1,5 +1,5 @@
 # Important
-- [ ] How to test device for usability (i.e. sauce session timeout)
+- [ ] Pooling: How to test device for usability (i.e. sauce session timeout)
 
 # Enhancements
 - [ ] Confidential Capabilities (mask protected capabilities)

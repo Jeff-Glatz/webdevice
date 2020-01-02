@@ -214,18 +214,18 @@ Here is an example definition adding sauce options:
 webdevice:
     devices:
         ChromeLatestMojave:
-        remote-address: https://ondemand.saucelabs.com:443/wd/hub
-        pooled: false
-        options: org.openqa.selenium.chrome.ChromeOptions
-        capabilities:
-            w3c: true
-            platformName: macOS 10.14
-            browserVersion: latest
-        extra-capability: sauce:options
-        extra-options:
-            username: ${saucelabs_username}
-            accessKey: ${saucelabs_accessKey}
-            extendedDebugging: true
+            remote-address: https://ondemand.saucelabs.com:443/wd/hub
+            pooled: false
+            options: org.openqa.selenium.chrome.ChromeOptions
+            capabilities:
+                w3c: true
+                platformName: macOS 10.14
+                browserVersion: latest
+            extra-capability: sauce:options
+            extra-options:
+                username: ${saucelabs_username}
+                accessKey: ${saucelabs_accessKey}
+                extendedDebugging: true
 ```
 
 ## Programmatic Device Definition
