@@ -29,6 +29,10 @@ public class Device<Driver extends WebDriver> {
         return driver;
     }
 
+    public <T> T as(Class<T> type) {
+        return type.cast(driver);
+    }
+
     public SessionId getSessionId() {
         return sessionId.get();
     }
