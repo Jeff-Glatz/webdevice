@@ -1,5 +1,6 @@
 package io.webdevice.device;
 
+import io.webdevice.driver.Navigator;
 import io.webdevice.wiring.Settings;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
@@ -72,12 +73,20 @@ public class WebDevice
         }
     }
 
-    public URL absolute(String relativePath) {
-        try {
-            return new URL(baseUrl, relativePath);
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException(format("%s could not be combined with %s",
-                    baseUrl, relativePath));
+    public URL absolute(String url) {
+        if (!url.contains("://")) {
+            try {
+                return new URL(baseUrl, url);
+            } catch (MalformedURLException e) {
+                throw new IllegalArgumentException(format("%s could not be combined with %s",
+                        baseUrl, url));
+            }
+        } else {
+            try {
+                return new URL(url);
+            } catch (MalformedURLException e) {
+                throw new IllegalArgumentException(e);
+            }
         }
     }
 
@@ -146,7 +155,7 @@ public class WebDevice
 
     @Override
     public void get(String url) {
-        if (url.startsWith("/")) {
+        if (!url.contains("://")) {
             url = absolute(url)
                     .toExternalForm();
         }
@@ -216,8 +225,9 @@ public class WebDevice
 
     @Override
     public Navigation navigate() {
-        return device.as(WebDriver.class)
+        Navigation navigation = device.as(WebDriver.class)
                 .navigate();
+        return new Navigator(navigation, this::absolute);
     }
 
     @Override
