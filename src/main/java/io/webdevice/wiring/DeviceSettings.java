@@ -1,6 +1,6 @@
 package io.webdevice.wiring;
 
-import io.webdevice.device.ConfidentialWebDeviceProvider;
+import io.webdevice.device.RemoteWebDeviceProvider;
 import io.webdevice.device.LocalWebDeviceProvider;
 import io.webdevice.device.WebDeviceProvider;
 import org.openqa.selenium.MutableCapabilities;
@@ -233,7 +233,7 @@ public class DeviceSettings
             definition = genericBeanDefinition(provider)
                     .addConstructorArgValue(name);
         } else if (isRemote()) {
-            definition = genericBeanDefinition(ConfidentialWebDeviceProvider.class)
+            definition = genericBeanDefinition(RemoteWebDeviceProvider.class)
                     .addConstructorArgValue(name)
                     .addConstructorArgValue(remoteAddress)
                     .addConstructorArgValue(confidential);

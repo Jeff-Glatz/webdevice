@@ -4,6 +4,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.SessionId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
@@ -31,9 +32,9 @@ public class LocalWebDeviceProvider<Driver extends WebDriver>
     }
 
     @Override
-    public LocalWebDevice<Driver> get() {
+    public WebDevice<Driver> get() {
         log.info("Providing new device named {}", name);
-        return new LocalWebDevice<>(newDriver(), name, randomUUID());
+        return new WebDevice<>(name, newDriver(), new SessionId(randomUUID()));
     }
 
     @Override
