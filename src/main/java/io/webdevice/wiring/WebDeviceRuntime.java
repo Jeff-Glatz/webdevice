@@ -9,5 +9,5 @@ import org.springframework.context.annotation.Import;
 @Import(DeviceRegistrar.class)
 @ComponentScan("io.webdevice.device")
 @EnableConfigurationProperties(Settings.class)
-public class WebDevices {
+public class WebDeviceRuntime {
 }

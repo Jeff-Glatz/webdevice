@@ -14,6 +14,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 @Target(TYPE)
 @Retention(RUNTIME)
-@Import(WebDevices.class)
-public @interface EnableWebDevices {
+@Import(WebDeviceRuntime.class)
+public @interface EnableWebDevice {
 }

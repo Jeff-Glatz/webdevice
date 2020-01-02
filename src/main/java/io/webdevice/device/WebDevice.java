@@ -22,7 +22,7 @@ import static java.lang.String.format;
 @Primary
 @Component
 @Scope(SCOPE_CUCUMBER_GLUE)
-public class Browser {
+public class WebDevice {
     protected final Logger log = LoggerFactory.getLogger(getClass());
     private final DeviceRegistry registry;
     private final BrowserSettings settings;
@@ -30,13 +30,13 @@ public class Browser {
     private URL baseUrl;
     private Device<?> device;
 
-    public Browser(DeviceRegistry registry, BrowserSettings settings) {
+    public WebDevice(DeviceRegistry registry, BrowserSettings settings) {
         this.registry = registry;
         this.settings = settings;
     }
 
     @Autowired
-    public Browser(DeviceRegistry registry, Settings settings) {
+    public WebDevice(DeviceRegistry registry, Settings settings) {
         this(registry, settings.getBrowser());
     }
 
@@ -57,7 +57,7 @@ public class Browser {
         this.baseUrl = baseUrl;
     }
 
-    public Browser withBaseUrl(URL baseUrl) {
+    public WebDevice withBaseUrl(URL baseUrl) {
         setBaseUrl(baseUrl);
         return this;
     }
@@ -71,7 +71,7 @@ public class Browser {
         }
     }
 
-    public Browser use(String name) {
+    public WebDevice use(String name) {
         if (device != null) {
             if (settings.isStrict()) {
                 throw new IllegalStateException("Browser has already been acquired for the current scenario");
@@ -84,23 +84,23 @@ public class Browser {
         return this;
     }
 
-    public Browser use() {
+    public WebDevice use() {
         return use(settings.getDefaultDevice());
     }
 
 
-    public Browser home() {
+    public WebDevice home() {
         device.perform(driver -> driver.navigate().to(baseUrl));
         return this;
     }
 
-    public Browser navigateTo(String relativePath) {
+    public WebDevice navigateTo(String relativePath) {
         device.perform(driver -> driver.navigate().to(absolute(relativePath)));
         return this;
     }
 
     @SuppressWarnings("unchecked")
-    public <Driver extends WebDriver> Browser perform(Consumer<Driver> consumer) {
+    public <Driver extends WebDriver> WebDevice perform(Consumer<Driver> consumer) {
         device.perform(driver -> consumer.accept((Driver) driver));
         return this;
     }
