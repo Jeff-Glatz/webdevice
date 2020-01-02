@@ -1,5 +1,6 @@
 package io.webdevice.device;
 
+import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
@@ -17,23 +18,15 @@ public class WebDeviceProviders {
         this.context = context;
     }
 
-    /**
-     * Returns the provider for the named device.
-     *
-     * @param device The name of the device
-     * @return The named {@link WebDeviceProvider}
-     */
-    public WebDeviceProvider providerOf(String device) {
-        return context.getBean(device, WebDeviceProvider.class);
+    @SuppressWarnings("unchecked")
+    public <Driver extends WebDriver> WebDevice<Driver> provide(String device) {
+        WebDeviceProvider<Driver> provider = context.getBean(device, WebDeviceProvider.class);
+        return provider.get();
     }
 
-    /**
-     * Returns the provider for the device.
-     *
-     * @param device The device
-     * @return The named {@link WebDeviceProvider}
-     */
-    public WebDeviceProvider providerOf(WebDevice device) {
-        return providerOf(device.getName());
+    @SuppressWarnings("unchecked")
+    public <Driver extends WebDriver> void done(WebDevice<Driver> device) {
+        WebDeviceProvider<Driver> provider = context.getBean(device.getName(), WebDeviceProvider.class);
+        provider.accept(device);
     }
 }

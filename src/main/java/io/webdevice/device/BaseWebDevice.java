@@ -1,23 +1,33 @@
 package io.webdevice.device;
 
-import io.webdevice.driver.WebDriverDecorator;
 import org.openqa.selenium.WebDriver;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public abstract class BaseWebDevice<Driver extends WebDriver>
-        extends WebDriverDecorator<Driver>
-        implements WebDevice {
-    private final String name;
+        implements WebDevice<Driver> {
+    protected final Driver driver;
+    protected final String name;
 
     protected BaseWebDevice(Driver driver, String name) {
-        super(driver);
+        this.driver = driver;
         this.name = name;
+    }
+
+    @Override
+    public Driver getDriver() {
+        return driver;
     }
 
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public void perform(Consumer<Driver> function) {
+        function.accept(driver);
     }
 
     @Override

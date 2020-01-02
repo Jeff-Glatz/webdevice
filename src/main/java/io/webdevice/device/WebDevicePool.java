@@ -1,5 +1,6 @@
 package io.webdevice.device;
 
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,15 +15,15 @@ import static java.lang.String.format;
 /**
  * A naive and unoptimized {@link WebDevice} pool
  */
-public class WebDevicePool
-        implements WebDeviceProvider {
+public class WebDevicePool<Driver extends WebDriver>
+        implements WebDeviceProvider<Driver> {
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private final BlockingDeque<WebDevice> free = new LinkedBlockingDeque<>();
-    private final BlockingDeque<WebDevice> used = new LinkedBlockingDeque<>();
-    private final WebDeviceProvider provider;
+    private final BlockingDeque<WebDevice<Driver>> free = new LinkedBlockingDeque<>();
+    private final BlockingDeque<WebDevice<Driver>> used = new LinkedBlockingDeque<>();
+    private final WebDeviceProvider<Driver> provider;
 
     @Autowired
-    public WebDevicePool(WebDeviceProvider provider) {
+    public WebDevicePool(WebDeviceProvider<Driver> provider) {
         this.provider = provider;
     }
 
@@ -37,8 +38,8 @@ public class WebDevicePool
      * @return a {@link WebDevice} for exclusive use
      */
     @Override
-    public synchronized WebDevice get() {
-        WebDevice device = free.poll();
+    public synchronized WebDevice<Driver> get() {
+        WebDevice<Driver> device = free.poll();
         if (device == null) {
             device = create();
         } else {
@@ -60,7 +61,7 @@ public class WebDevicePool
      * @param device The {@link WebDevice} to be made available
      */
     @Override
-    public synchronized void accept(WebDevice device) {
+    public synchronized void accept(WebDevice<Driver> device) {
         log.info("Removing device {} from used deque in {} pool", device.getSessionId(), getName());
         if (used.remove(device)) {
             log.info("Adding device {} to free deque in {} pool", device.getSessionId(), getName());
@@ -77,14 +78,14 @@ public class WebDevicePool
         log.info("Pool {} shut down.", getName());
     }
 
-    private WebDevice create() {
+    private WebDevice<Driver> create() {
         log.info("Obtaining new device from provider {}...", getName());
-        WebDevice device = provider.get();
+        WebDevice<Driver> device = provider.get();
         log.info("Obtained new device {} from provider {}.", device.getSessionId(), getName());
         return device;
     }
 
-    private void release(WebDevice device) {
+    private void release(WebDevice<Driver> device) {
         SessionId sessionId = device.getSessionId();
         log.info("Releasing {} from use in {} pool", device.getSessionId(), getName());
         try {
@@ -94,8 +95,8 @@ public class WebDevicePool
         }
     }
 
-    private void drain(Deque<WebDevice> devices) {
-        for (WebDevice device = devices.poll();
+    private void drain(Deque<WebDevice<Driver>> devices) {
+        for (WebDevice<Driver> device = devices.poll();
              device != null;
              device = devices.poll()) {
             release(device);

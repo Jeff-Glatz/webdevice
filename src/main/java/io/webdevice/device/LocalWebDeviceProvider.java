@@ -9,13 +9,12 @@ import org.springframework.context.annotation.Scope;
 
 import java.util.Objects;
 
-import static io.webdevice.driver.ConfidentialCapabilities.mask;
 import static java.util.UUID.randomUUID;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
 
 @Scope(SCOPE_SINGLETON)
 public class LocalWebDeviceProvider<Driver extends WebDriver>
-        extends BaseWebDeviceProvider<LocalWebDeviceProvider<Driver>> {
+        extends BaseWebDeviceProvider<Driver> {
     private final Class<Driver> type;
 
     @Autowired
@@ -58,7 +57,7 @@ public class LocalWebDeviceProvider<Driver extends WebDriver>
                 return type.getDeclaredConstructor()
                         .newInstance();
             } else {
-                log.info("Instantiating {} with capabilities {}", type, mask(capabilities));
+                log.info("Instantiating {} with capabilities {}", type, capabilities);
                 return type.getDeclaredConstructor(Capabilities.class)
                         .newInstance(capabilities);
             }

@@ -1,25 +1,27 @@
 package io.webdevice.device;
 
+import io.webdevice.driver.ConfidentialWebDriver;
 import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
 import java.net.URL;
 import java.util.Objects;
+import java.util.Set;
 
-import static io.webdevice.driver.ConfidentialCapabilities.mask;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
 
 @Scope(SCOPE_SINGLETON)
-public class RemoteWebDeviceProvider
-        extends BaseWebDeviceProvider<RemoteWebDeviceProvider> {
+public class ConfidentialWebDeviceProvider
+        extends BaseWebDeviceProvider<ConfidentialWebDriver> {
     private final URL remoteAddress;
+    private final Set<String> confidential;
 
     @Autowired
-    public RemoteWebDeviceProvider(String name, URL remoteAddress) {
+    public ConfidentialWebDeviceProvider(String name, URL remoteAddress, Set<String> confidential) {
         super(name);
         this.remoteAddress = remoteAddress;
+        this.confidential = confidential;
     }
 
     @Override
@@ -30,10 +32,10 @@ public class RemoteWebDeviceProvider
     }
 
     @Override
-    public RemoteWebDevice get() {
+    public ConfidentialWebDevice get() {
         log.info("Providing new device named {} connecting to {} with capabilities {}",
-                name, remoteAddress, mask(capabilities));
-        return new RemoteWebDevice(new RemoteWebDriver(remoteAddress, capabilities), name);
+                name, remoteAddress, capabilities);
+        return new ConfidentialWebDevice(new ConfidentialWebDriver(remoteAddress, capabilities, confidential), name);
     }
 
     @Override
@@ -41,7 +43,7 @@ public class RemoteWebDeviceProvider
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        RemoteWebDeviceProvider that = (RemoteWebDeviceProvider) o;
+        ConfidentialWebDeviceProvider that = (ConfidentialWebDeviceProvider) o;
         return Objects.equals(remoteAddress, that.remoteAddress);
     }
 

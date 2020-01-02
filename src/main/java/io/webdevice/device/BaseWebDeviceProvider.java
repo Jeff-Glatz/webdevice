@@ -1,13 +1,14 @@
 package io.webdevice.device;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-public abstract class BaseWebDeviceProvider<Provider extends BaseWebDeviceProvider<Provider>>
-        implements WebDeviceProvider {
+public abstract class BaseWebDeviceProvider<Driver extends WebDriver>
+        implements WebDeviceProvider<Driver> {
     protected final Logger log = LoggerFactory.getLogger(getClass());
     protected final String name;
 
@@ -30,16 +31,10 @@ public abstract class BaseWebDeviceProvider<Provider extends BaseWebDeviceProvid
         this.capabilities = capabilities;
     }
 
-    @SuppressWarnings("unchecked")
-    public Provider withCapabilities(Capabilities capabilities) {
-        setCapabilities(capabilities);
-        return (Provider) this;
-    }
-
     @Override
-    public void accept(WebDevice device) {
+    public void accept(WebDevice<Driver> device) {
         log.info("Provider {} quitting device {}", name, device.getSessionId());
-        device.quit();
+        device.perform(WebDriver::quit);
     }
 
     @Override
@@ -51,7 +46,7 @@ public abstract class BaseWebDeviceProvider<Provider extends BaseWebDeviceProvid
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BaseWebDeviceProvider<?> that = (BaseWebDeviceProvider<?>) o;
+        BaseWebDeviceProvider<Driver> that = (BaseWebDeviceProvider<Driver>) o;
         return Objects.equals(name, that.name) &&
                 Objects.equals(capabilities, that.capabilities);
     }

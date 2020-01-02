@@ -22,7 +22,6 @@ public class LocalWebDevice<Driver extends WebDriver>
 
     @Override
     public boolean usable() {
-        // TODO: How to determine liveness?
         return true;
     }
 

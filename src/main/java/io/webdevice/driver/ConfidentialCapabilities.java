@@ -10,52 +10,31 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.lang.String.valueOf;
-import static java.util.Collections.emptySet;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
 
-// TODO: How to best protect confidential capabilities
-public class ConfidentialCapabilities {
-    private static final String CONFIDENTIAL_CAPABILITY = "meta:confidential";
+public class ConfidentialCapabilities
+        extends MutableCapabilities {
     private static final String MASK = "********";
 
-    /**
-     * Retrieves the set of capabilities that should be considered confidential.
-     *
-     * @param capabilities The {@link Capabilities} instance to check.
-     * @return The set of capabilities considered confidential.
-     */
-    public static Set<String> confidential(Capabilities capabilities) {
-        Set<String> confidential = (Set<String>) capabilities
-                .getCapability(CONFIDENTIAL_CAPABILITY);
-        return confidential != null ? confidential : emptySet();
-    }
+    private final Set<String> confidential;
 
-    /**
-     * Marks the supplied {@link MutableCapabilities} instance with the set of capabilities
-     * that should be considered confidential.
-     *
-     * @param capabilities The {@link MutableCapabilities} instance to modify.
-     * @param confidential The set of capabilities considered confidential.
-     * @return The supplied {@link MutableCapabilities} instance.
-     */
-    public static MutableCapabilities mark(MutableCapabilities capabilities, Set<String> confidential) {
-        capabilities.setCapability(CONFIDENTIAL_CAPABILITY, confidential);
-        return capabilities;
+    public ConfidentialCapabilities(Capabilities other, Set<String> confidential) {
+        super(other);
+        this.confidential = confidential;
     }
 
     /**
      * Mimics {@link MutableCapabilities#toString()} behavior, masking capability values marked
      * as confidential.
      *
-     * @param capabilities The {@link Capabilities} instance to stringify.
-     * @return The string representation of the supplied {@link Capabilities} instance.
+     * @return The string representation of this {@link Capabilities} instance.
      */
-    public static String mask(Capabilities capabilities) {
-        return mask(new IdentityHashMap<>(), capabilities.asMap(), confidential(capabilities));
+    public String toString() {
+        return mask(new IdentityHashMap<>(), asMap());
     }
 
-    private static String mask(Map<Object, String> seen, Object stringify, Set<String> confidential) {
+    private String mask(Map<Object, String> seen, Object stringify) {
         if (stringify == null) {
             return "null";
         }
@@ -66,25 +45,24 @@ public class ConfidentialCapabilities {
             value.append("[");
             value.append(
                     Stream.of((Object[]) stringify)
-                            .map(item -> mask(seen, item, confidential))
+                            .map(item -> mask(seen, item))
                             .collect(joining(", ")));
             value.append("]");
         } else if (stringify instanceof Collection) {
             value.append("[");
             value.append(
                     ((Collection<?>) stringify).stream()
-                            .map(item -> mask(seen, item, confidential))
+                            .map(item -> mask(seen, item))
                             .collect(joining(", ")));
             value.append("]");
         } else if (stringify instanceof Map) {
             value.append("{");
             value.append(
                     ((Map<?, ?>) stringify).entrySet().stream()
-                            .filter(entry -> !entry.getKey().equals(CONFIDENTIAL_CAPABILITY))
                             .sorted(comparing(entry -> valueOf(entry.getKey())))
                             .map(entry -> entry.getKey() + ": " +
                                     (!confidential.contains(entry.getKey()) ?
-                                            mask(seen, entry.getValue(), confidential) :
+                                            mask(seen, entry.getValue()) :
                                             MASK))
                             .collect(joining(", ")));
             value.append("}");

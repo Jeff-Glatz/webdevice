@@ -1,7 +1,7 @@
 package io.webdevice.wiring;
 
+import io.webdevice.device.ConfidentialWebDeviceProvider;
 import io.webdevice.device.LocalWebDeviceProvider;
-import io.webdevice.device.RemoteWebDeviceProvider;
 import io.webdevice.device.WebDeviceProvider;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
@@ -19,7 +19,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static io.webdevice.driver.ConfidentialCapabilities.mark;
 import static java.lang.String.format;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
@@ -234,9 +233,10 @@ public class DeviceSettings
             definition = genericBeanDefinition(provider)
                     .addConstructorArgValue(name);
         } else if (isRemote()) {
-            definition = genericBeanDefinition(RemoteWebDeviceProvider.class)
+            definition = genericBeanDefinition(ConfidentialWebDeviceProvider.class)
                     .addConstructorArgValue(name)
-                    .addConstructorArgValue(remoteAddress);
+                    .addConstructorArgValue(remoteAddress)
+                    .addConstructorArgValue(confidential);
         } else {
             definition = genericBeanDefinition(LocalWebDeviceProvider.class)
                     .addConstructorArgValue(name)
@@ -299,7 +299,7 @@ public class DeviceSettings
 
     private MutableCapabilities fromOptions() {
         log.info("{} capabilities will originate from {}", name, options.getName());
-        return mark(withExtraCapability(withCapabilities(options())), confidential);
+        return withExtraCapability(withCapabilities(options()));
     }
 
     private DesiredCapabilities desired() {
@@ -315,12 +315,12 @@ public class DeviceSettings
 
     private MutableCapabilities fromDesiredCapabilities() {
         log.info("{} capabilities will originate from DesiredCapabilities.{}()", name, desired);
-        return mark(withExtraCapability(withCapabilities(desired())), confidential);
+        return withExtraCapability(withCapabilities(desired()));
     }
 
     private MutableCapabilities fromCapabilities() {
         log.info("{} capabilities will originate from custom capabilities", name);
-        return mark(withExtraCapability(new DesiredCapabilities(capabilities)), confidential);
+        return withExtraCapability(new DesiredCapabilities(capabilities));
     }
 
     private MutableCapabilities capabilitiesOf() {
