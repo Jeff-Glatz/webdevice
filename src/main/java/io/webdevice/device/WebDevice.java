@@ -88,7 +88,6 @@ public class WebDevice {
         return use(settings.getDefaultDevice());
     }
 
-
     public WebDevice home() {
         device.perform(driver -> driver.navigate().to(baseUrl));
         return this;

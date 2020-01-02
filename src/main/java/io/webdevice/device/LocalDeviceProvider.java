@@ -34,7 +34,8 @@ public class LocalDeviceProvider<Driver extends WebDriver>
     @Override
     public Device<Driver> get() {
         log.info("Providing new device named {}", name);
-        return new Device<>(name, newDriver(), new SessionId(randomUUID()));
+        final SessionId sessionId = new SessionId(randomUUID());
+        return new Device<>(name, newDriver(), () -> sessionId, (d) -> true);
     }
 
     @Override
