@@ -1,7 +1,7 @@
 package io.webdevice.wiring;
 
 import io.webdevice.device.RemoteDeviceProvider;
-import io.webdevice.device.LocalDeviceProvider;
+import io.webdevice.device.DirectDeviceProvider;
 import io.webdevice.device.DeviceProvider;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
@@ -238,7 +238,7 @@ public class DeviceSettings
                     .addConstructorArgValue(remoteAddress)
                     .addConstructorArgValue(confidential);
         } else {
-            definition = genericBeanDefinition(LocalDeviceProvider.class)
+            definition = genericBeanDefinition(DirectDeviceProvider.class)
                     .addConstructorArgValue(name)
                     .addConstructorArgValue(driver);
         }

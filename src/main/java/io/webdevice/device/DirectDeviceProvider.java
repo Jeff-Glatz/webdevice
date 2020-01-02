@@ -14,12 +14,12 @@ import static java.util.UUID.randomUUID;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
 
 @Scope(SCOPE_SINGLETON)
-public class LocalDeviceProvider<Driver extends WebDriver>
+public class DirectDeviceProvider<Driver extends WebDriver>
         extends BaseDeviceProvider<Driver> {
     private final Class<Driver> type;
 
     @Autowired
-    public LocalDeviceProvider(String name, Class<Driver> type) {
+    public DirectDeviceProvider(String name, Class<Driver> type) {
         super(name);
         this.type = type;
     }
@@ -35,7 +35,7 @@ public class LocalDeviceProvider<Driver extends WebDriver>
     public Device<Driver> get() {
         log.info("Providing new device named {}", name);
         final SessionId sessionId = new SessionId(randomUUID());
-        return new Device<>(name, newDriver(), () -> sessionId, (d) -> true);
+        return new Device<>(name, newDriver(), (d) -> sessionId, (d) -> true);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class LocalDeviceProvider<Driver extends WebDriver>
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        LocalDeviceProvider<?> that = (LocalDeviceProvider<?>) o;
+        DirectDeviceProvider<?> that = (DirectDeviceProvider<?>) o;
         return Objects.equals(type, that.type);
     }
 

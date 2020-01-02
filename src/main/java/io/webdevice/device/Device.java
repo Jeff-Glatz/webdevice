@@ -6,18 +6,17 @@ import org.openqa.selenium.remote.SessionId;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class Device<Driver extends WebDriver> {
     private final String name;
     private final Driver driver;
-    private final Supplier<SessionId> sessionId;
+    private final Function<Driver, SessionId> session;
     private final Function<Driver, Boolean> usable;
 
-    public Device(String name, Driver driver, Supplier<SessionId> sessionId, Function<Driver, Boolean> usable) {
+    public Device(String name, Driver driver, Function<Driver, SessionId> session, Function<Driver, Boolean> usable) {
         this.name = name;
         this.driver = driver;
-        this.sessionId = sessionId;
+        this.session = session;
         this.usable = usable;
     }
 
@@ -34,7 +33,7 @@ public class Device<Driver extends WebDriver> {
     }
 
     public SessionId getSessionId() {
-        return sessionId.get();
+        return session.apply(driver);
     }
 
     public boolean usable() {
