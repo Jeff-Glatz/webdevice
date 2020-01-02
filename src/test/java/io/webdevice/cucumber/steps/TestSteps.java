@@ -24,7 +24,7 @@ public class TestSteps {
 
     @Given("a browser")
     public void useBrowser() {
-        browser.use();
+        browser.useDefault();
     }
 
     @Given("I navigate home")

@@ -45,7 +45,7 @@ public class WebDevice {
         setBaseUrl(settings.getBaseUrl());
         if (settings.isEager()) {
             log.info("Eagerly acquiring default device");
-            use();
+            useDefault();
         }
     }
 
@@ -84,7 +84,7 @@ public class WebDevice {
         return this;
     }
 
-    public WebDevice use() {
+    public WebDevice useDefault() {
         return use(settings.getDefaultDevice());
     }
 

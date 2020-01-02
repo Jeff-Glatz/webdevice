@@ -36,8 +36,8 @@ public class RemoteDeviceProvider
     public Device<RemoteWebDriver> get() {
         log.info("Providing new device named {} connecting to {} with capabilities {}",
                 name, remoteAddress, capabilities);
-        ConfidentialWebDriver driver = new ConfidentialWebDriver(remoteAddress, capabilities, confidential);
-        return new Device<>(name, driver, () -> driver.getSessionId(), (d) -> true);
+        final ConfidentialWebDriver driver = new ConfidentialWebDriver(remoteAddress, capabilities, confidential);
+        return new Device<>(name, driver, driver::getSessionId, (d) -> true);
     }
 
     @Override
