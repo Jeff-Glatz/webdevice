@@ -1,6 +1,6 @@
 package io.webdevice.wiring;
 
-import io.webdevice.device.WebDevicePool;
+import io.webdevice.device.DevicePool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +15,13 @@ import static java.lang.String.format;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
 @Order
-public class WebDeviceRegistrar
+public class DeviceRegistrar
         implements ImportBeanDefinitionRegistrar {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final Environment environment;
 
     @Autowired
-    public WebDeviceRegistrar(Environment environment) {
+    public DeviceRegistrar(Environment environment) {
         this.environment = environment;
     }
 
@@ -56,7 +56,7 @@ public class WebDeviceRegistrar
         if (!registry.isBeanNameInUse(pool)) {
             log.info("Registering WebDevicePool definition named {}", pool);
             registry.registerBeanDefinition(pool,
-                    genericBeanDefinition(WebDevicePool.class)
+                    genericBeanDefinition(DevicePool.class)
                             .addConstructorArgReference(provider)
                             .getBeanDefinition());
         }

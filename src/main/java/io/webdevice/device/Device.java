@@ -6,12 +6,12 @@ import org.openqa.selenium.remote.SessionId;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public class WebDevice<Driver extends WebDriver> {
+public class Device<Driver extends WebDriver> {
     private final String name;
     private final Driver driver;
     private final SessionId sessionId;
 
-    public WebDevice(String name, Driver driver, SessionId sessionId) {
+    public Device(String name, Driver driver, SessionId sessionId) {
         this.name = name;
         this.driver = driver;
         this.sessionId = sessionId;
@@ -29,7 +29,6 @@ public class WebDevice<Driver extends WebDriver> {
         return sessionId;
     }
 
-
     public void perform(Consumer<Driver> function) {
         function.accept(driver);
     }
@@ -42,7 +41,7 @@ public class WebDevice<Driver extends WebDriver> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        WebDevice<?> that = (WebDevice<?>) o;
+        Device<?> that = (Device<?>) o;
         return Objects.equals(name, that.name) &&
                 Objects.equals(driver, that.driver) &&
                 Objects.equals(sessionId, that.sessionId);

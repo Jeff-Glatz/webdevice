@@ -1,8 +1,8 @@
 package io.webdevice.wiring;
 
-import io.webdevice.device.RemoteWebDeviceProvider;
-import io.webdevice.device.LocalWebDeviceProvider;
-import io.webdevice.device.WebDeviceProvider;
+import io.webdevice.device.RemoteDeviceProvider;
+import io.webdevice.device.LocalDeviceProvider;
+import io.webdevice.device.DeviceProvider;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -34,7 +34,7 @@ public class DeviceSettings
     private final Set<String> confidential = new LinkedHashSet<>();
     private String name;
     private boolean pooled = true;
-    private Class<? extends WebDeviceProvider> provider;
+    private Class<? extends DeviceProvider> provider;
     private Class<? extends WebDriver> driver;
     private URL remoteAddress;
     private String capabilitiesRef;
@@ -86,15 +86,15 @@ public class DeviceSettings
         return this;
     }
 
-    public Class<? extends WebDeviceProvider> getProvider() {
+    public Class<? extends DeviceProvider> getProvider() {
         return provider;
     }
 
-    public void setProvider(Class<? extends WebDeviceProvider> provider) {
+    public void setProvider(Class<? extends DeviceProvider> provider) {
         this.provider = provider;
     }
 
-    public DeviceSettings withProvider(Class<? extends WebDeviceProvider> provider) {
+    public DeviceSettings withProvider(Class<? extends DeviceProvider> provider) {
         setProvider(provider);
         return this;
     }
@@ -233,12 +233,12 @@ public class DeviceSettings
             definition = genericBeanDefinition(provider)
                     .addConstructorArgValue(name);
         } else if (isRemote()) {
-            definition = genericBeanDefinition(RemoteWebDeviceProvider.class)
+            definition = genericBeanDefinition(RemoteDeviceProvider.class)
                     .addConstructorArgValue(name)
                     .addConstructorArgValue(remoteAddress)
                     .addConstructorArgValue(confidential);
         } else {
-            definition = genericBeanDefinition(LocalWebDeviceProvider.class)
+            definition = genericBeanDefinition(LocalDeviceProvider.class)
                     .addConstructorArgValue(name)
                     .addConstructorArgValue(driver);
         }

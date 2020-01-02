@@ -7,14 +7,14 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-public abstract class BaseWebDeviceProvider<Driver extends WebDriver>
-        implements WebDeviceProvider<Driver> {
+public abstract class BaseDeviceProvider<Driver extends WebDriver>
+        implements DeviceProvider<Driver> {
     protected final Logger log = LoggerFactory.getLogger(getClass());
     protected final String name;
 
     protected Capabilities capabilities;
 
-    protected BaseWebDeviceProvider(String name) {
+    protected BaseDeviceProvider(String name) {
         this.name = name;
     }
 
@@ -32,7 +32,7 @@ public abstract class BaseWebDeviceProvider<Driver extends WebDriver>
     }
 
     @Override
-    public void accept(WebDevice<Driver> device) {
+    public void accept(Device<Driver> device) {
         log.info("Provider {} quitting device {}", name, device.getSessionId());
         device.perform(WebDriver::quit);
     }
@@ -46,7 +46,7 @@ public abstract class BaseWebDeviceProvider<Driver extends WebDriver>
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BaseWebDeviceProvider<Driver> that = (BaseWebDeviceProvider<Driver>) o;
+        BaseDeviceProvider<Driver> that = (BaseDeviceProvider<Driver>) o;
         return Objects.equals(name, that.name) &&
                 Objects.equals(capabilities, that.capabilities);
     }

@@ -7,8 +7,8 @@ import javax.annotation.PreDestroy;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public interface WebDeviceProvider<Driver extends WebDriver>
-        extends Supplier<WebDevice<Driver>>, Consumer<WebDevice<Driver>> {
+public interface DeviceProvider<Driver extends WebDriver>
+        extends Supplier<Device<Driver>>, Consumer<Device<Driver>> {
 
     String getName();
 

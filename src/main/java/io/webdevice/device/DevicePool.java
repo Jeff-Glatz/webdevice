@@ -13,17 +13,17 @@ import java.util.concurrent.LinkedBlockingDeque;
 import static java.lang.String.format;
 
 /**
- * A naive and unoptimized {@link WebDevice} pool
+ * A naive and unoptimized {@link Device} pool
  */
-public class WebDevicePool<Driver extends WebDriver>
-        implements WebDeviceProvider<Driver> {
+public class DevicePool<Driver extends WebDriver>
+        implements DeviceProvider<Driver> {
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private final BlockingDeque<WebDevice<Driver>> free = new LinkedBlockingDeque<>();
-    private final BlockingDeque<WebDevice<Driver>> used = new LinkedBlockingDeque<>();
-    private final WebDeviceProvider<Driver> provider;
+    private final BlockingDeque<Device<Driver>> free = new LinkedBlockingDeque<>();
+    private final BlockingDeque<Device<Driver>> used = new LinkedBlockingDeque<>();
+    private final DeviceProvider<Driver> provider;
 
     @Autowired
-    public WebDevicePool(WebDeviceProvider<Driver> provider) {
+    public DevicePool(DeviceProvider<Driver> provider) {
         this.provider = provider;
     }
 
@@ -33,13 +33,13 @@ public class WebDevicePool<Driver extends WebDriver>
     }
 
     /**
-     * Acquires a {@link WebDevice} for exclusive use
+     * Acquires a {@link Device} for exclusive use
      *
-     * @return a {@link WebDevice} for exclusive use
+     * @return a {@link Device} for exclusive use
      */
     @Override
-    public synchronized WebDevice<Driver> get() {
-        WebDevice<Driver> device = free.poll();
+    public synchronized Device<Driver> get() {
+        Device<Driver> device = free.poll();
         if (device == null) {
             device = create();
         } else {
@@ -56,12 +56,12 @@ public class WebDevicePool<Driver extends WebDriver>
     }
 
     /**
-     * Marks the {@link WebDevice} as free for use
+     * Marks the {@link Device} as free for use
      *
-     * @param device The {@link WebDevice} to be made available
+     * @param device The {@link Device} to be made available
      */
     @Override
-    public synchronized void accept(WebDevice<Driver> device) {
+    public synchronized void accept(Device<Driver> device) {
         log.info("Removing device {} from used deque in {} pool", device.getSessionId(), getName());
         if (used.remove(device)) {
             log.info("Adding device {} to free deque in {} pool", device.getSessionId(), getName());
@@ -78,14 +78,14 @@ public class WebDevicePool<Driver extends WebDriver>
         log.info("Pool {} shut down.", getName());
     }
 
-    private WebDevice<Driver> create() {
+    private Device<Driver> create() {
         log.info("Obtaining new device from provider {}...", getName());
-        WebDevice<Driver> device = provider.get();
+        Device<Driver> device = provider.get();
         log.info("Obtained new device {} from provider {}.", device.getSessionId(), getName());
         return device;
     }
 
-    private void release(WebDevice<Driver> device) {
+    private void release(Device<Driver> device) {
         SessionId sessionId = device.getSessionId();
         log.info("Releasing {} from use in {} pool", device.getSessionId(), getName());
         try {
@@ -95,8 +95,8 @@ public class WebDevicePool<Driver extends WebDriver>
         }
     }
 
-    private void drain(Deque<WebDevice<Driver>> devices) {
-        for (WebDevice<Driver> device = devices.poll();
+    private void drain(Deque<Device<Driver>> devices) {
+        for (Device<Driver> device = devices.poll();
              device != null;
              device = devices.poll()) {
             release(device);

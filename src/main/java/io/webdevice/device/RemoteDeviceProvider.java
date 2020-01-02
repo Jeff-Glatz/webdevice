@@ -13,13 +13,13 @@ import java.util.Set;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
 
 @Scope(SCOPE_SINGLETON)
-public class RemoteWebDeviceProvider
-        extends BaseWebDeviceProvider<RemoteWebDriver> {
+public class RemoteDeviceProvider
+        extends BaseDeviceProvider<RemoteWebDriver> {
     private final URL remoteAddress;
     private final Set<String> confidential;
 
     @Autowired
-    public RemoteWebDeviceProvider(String name, URL remoteAddress, Set<String> confidential) {
+    public RemoteDeviceProvider(String name, URL remoteAddress, Set<String> confidential) {
         super(name);
         this.remoteAddress = remoteAddress;
         this.confidential = confidential;
@@ -33,11 +33,11 @@ public class RemoteWebDeviceProvider
     }
 
     @Override
-    public WebDevice<RemoteWebDriver> get() {
+    public Device<RemoteWebDriver> get() {
         log.info("Providing new device named {} connecting to {} with capabilities {}",
                 name, remoteAddress, capabilities);
         ConfidentialWebDriver driver = new ConfidentialWebDriver(remoteAddress, capabilities, confidential);
-        return new WebDevice<>(name, driver, driver.getSessionId());
+        return new Device<>(name, driver, driver.getSessionId());
     }
 
     @Override
@@ -45,7 +45,7 @@ public class RemoteWebDeviceProvider
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        RemoteWebDeviceProvider that = (RemoteWebDeviceProvider) o;
+        RemoteDeviceProvider that = (RemoteDeviceProvider) o;
         return Objects.equals(remoteAddress, that.remoteAddress);
     }
 

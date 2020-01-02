@@ -10,23 +10,23 @@ import static org.springframework.beans.factory.config.ConfigurableBeanFactory.S
 
 @Component
 @Scope(SCOPE_SINGLETON)
-public class WebDeviceProviders {
+public class DeviceProviders {
     private final ApplicationContext context;
 
     @Autowired
-    public WebDeviceProviders(ApplicationContext context) {
+    public DeviceProviders(ApplicationContext context) {
         this.context = context;
     }
 
     @SuppressWarnings("unchecked")
-    public <Driver extends WebDriver> WebDevice<Driver> provide(String device) {
-        WebDeviceProvider<Driver> provider = context.getBean(device, WebDeviceProvider.class);
+    public <Driver extends WebDriver> Device<Driver> provide(String device) {
+        DeviceProvider<Driver> provider = context.getBean(device, DeviceProvider.class);
         return provider.get();
     }
 
     @SuppressWarnings("unchecked")
-    public <Driver extends WebDriver> void done(WebDevice<Driver> device) {
-        WebDeviceProvider<Driver> provider = context.getBean(device.getName(), WebDeviceProvider.class);
+    public <Driver extends WebDriver> void done(Device<Driver> device) {
+        DeviceProvider<Driver> provider = context.getBean(device.getName(), DeviceProvider.class);
         provider.accept(device);
     }
 }

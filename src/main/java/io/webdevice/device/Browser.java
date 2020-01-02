@@ -2,6 +2,7 @@ package io.webdevice.device;
 
 import io.webdevice.wiring.BrowserSettings;
 import io.webdevice.wiring.Settings;
+import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.function.Consumer;
 
 import static io.cucumber.spring.CucumberTestContext.SCOPE_CUCUMBER_GLUE;
 import static java.lang.String.format;
@@ -22,19 +24,19 @@ import static java.lang.String.format;
 @Scope(SCOPE_CUCUMBER_GLUE)
 public class Browser {
     protected final Logger log = LoggerFactory.getLogger(getClass());
-    private final WebDeviceProviders providers;
+    private final DeviceProviders providers;
     private final BrowserSettings settings;
 
     private URL baseUrl;
-    private WebDevice<?> device;
+    private Device<?> device;
 
-    public Browser(WebDeviceProviders providers, BrowserSettings settings) {
+    public Browser(DeviceProviders providers, BrowserSettings settings) {
         this.providers = providers;
         this.settings = settings;
     }
 
     @Autowired
-    public Browser(WebDeviceProviders providers, Settings settings) {
+    public Browser(DeviceProviders providers, Settings settings) {
         this(providers, settings.getBrowser());
     }
 
@@ -94,6 +96,12 @@ public class Browser {
 
     public Browser navigateTo(String relativePath) {
         device.perform(driver -> driver.navigate().to(absolute(relativePath)));
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <Driver extends WebDriver> Browser perform(Consumer<Driver> consumer) {
+        device.perform(driver -> consumer.accept((Driver) driver));
         return this;
     }
 
