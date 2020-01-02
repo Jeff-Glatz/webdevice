@@ -24,20 +24,20 @@ import static java.lang.String.format;
 @Scope(SCOPE_CUCUMBER_GLUE)
 public class Browser {
     protected final Logger log = LoggerFactory.getLogger(getClass());
-    private final DeviceProviders providers;
+    private final DeviceRegistry registry;
     private final BrowserSettings settings;
 
     private URL baseUrl;
     private Device<?> device;
 
-    public Browser(DeviceProviders providers, BrowserSettings settings) {
-        this.providers = providers;
+    public Browser(DeviceRegistry registry, BrowserSettings settings) {
+        this.registry = registry;
         this.settings = settings;
     }
 
     @Autowired
-    public Browser(DeviceProviders providers, Settings settings) {
-        this(providers, settings.getBrowser());
+    public Browser(DeviceRegistry registry, Settings settings) {
+        this(registry, settings.getBrowser());
     }
 
     @PostConstruct
@@ -79,7 +79,7 @@ public class Browser {
             release();
         }
         log.info("Acquiring {} browser...", name);
-        device = providers.provide(name);
+        device = registry.provide(name);
         log.info("Acquired {} browser {}", name, device.getSessionId());
         return this;
     }
@@ -110,7 +110,7 @@ public class Browser {
         try {
             if (device != null) {
                 log.info("Releasing {} browser {}...", device.getName(), device.getSessionId());
-                providers.done(device);
+                registry.done(device);
             }
             log.info("Browser released.");
         } finally {

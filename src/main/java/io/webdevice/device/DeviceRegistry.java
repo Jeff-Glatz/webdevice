@@ -10,11 +10,11 @@ import static org.springframework.beans.factory.config.ConfigurableBeanFactory.S
 
 @Component
 @Scope(SCOPE_SINGLETON)
-public class DeviceProviders {
+public class DeviceRegistry {
     private final ApplicationContext context;
 
     @Autowired
-    public DeviceProviders(ApplicationContext context) {
+    public DeviceRegistry(ApplicationContext context) {
         this.context = context;
     }
 
