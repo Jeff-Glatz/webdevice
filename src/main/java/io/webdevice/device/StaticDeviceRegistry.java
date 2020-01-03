@@ -1,9 +1,15 @@
 package io.webdevice.device;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.SessionId;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import static io.webdevice.device.DeviceProvider.providing;
 
 public class StaticDeviceRegistry
         implements DeviceRegistry {
@@ -13,6 +19,19 @@ public class StaticDeviceRegistry
     public <Driver extends WebDriver> StaticDeviceRegistry withProvider(String device, DeviceProvider<Driver> provider) {
         providers.put(device, provider);
         return this;
+    }
+
+    public <Driver extends WebDriver> StaticDeviceRegistry withProvider(String device,
+                                                                        Supplier<Driver> supplier,
+                                                                        Function<Driver, SessionId> session,
+                                                                        Function<Driver, Boolean> usable) {
+        return withProvider(device, providing(device, supplier, session, usable));
+    }
+
+    public <Driver extends RemoteWebDriver> StaticDeviceRegistry withProvider(String device,
+                                                                              Supplier<Driver> supplier,
+                                                                              Function<Driver, Boolean> usable) {
+        return withProvider(device, providing(device, supplier, usable));
     }
 
     @Override

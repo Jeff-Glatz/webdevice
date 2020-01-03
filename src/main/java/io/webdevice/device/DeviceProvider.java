@@ -1,6 +1,7 @@
 package io.webdevice.device;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +19,17 @@ public interface DeviceProvider<Driver extends WebDriver>
         return supplier::get;
     }
 
-    static <Driver extends WebDriver> DeviceProvider<Driver> providing(String name,
+    static <Driver extends WebDriver> DeviceProvider<Driver> providing(String device,
                                                                        Supplier<Driver> supplier,
                                                                        Function<Driver, SessionId> session,
                                                                        Function<Driver, Boolean> usable) {
-        return () -> new Device<>(name, supplier.get(), session, usable);
+        return () -> new Device<>(device, supplier.get(), session, usable);
+    }
+
+    static <Driver extends RemoteWebDriver> DeviceProvider<Driver> providing(String device,
+                                                                             Supplier<Driver> supplier,
+                                                                             Function<Driver, Boolean> usable) {
+        return () -> new Device<>(device, supplier.get(), RemoteWebDriver::getSessionId, usable);
     }
 
     @PostConstruct
