@@ -5,20 +5,15 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.SessionId;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 
 import java.util.Objects;
 
 import static java.util.UUID.randomUUID;
-import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
 
-@Scope(SCOPE_SINGLETON)
 public class DirectDeviceProvider<Driver extends WebDriver>
         extends BaseDeviceProvider<Driver> {
     private final Class<Driver> type;
 
-    @Autowired
     public DirectDeviceProvider(String name, Class<Driver> type) {
         super(name);
         this.type = type;

@@ -1,10 +1,12 @@
 Feature: Contact Us page
 
+  @direct
   Scenario: Contact Us page can be viewed with Firefox
     Given a "LocalFirefox" browser
     When I navigate home
     And I navigate to "/contact"
 
+  @direct
   Scenario: Contact Us page can be viewed with Chrome
     Given a "LocalChrome" browser
     When I navigate home

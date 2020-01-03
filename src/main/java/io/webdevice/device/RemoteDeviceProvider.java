@@ -3,22 +3,16 @@ package io.webdevice.device;
 import io.webdevice.driver.ConfidentialWebDriver;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 
 import java.net.URL;
 import java.util.Objects;
 import java.util.Set;
 
-import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
-
-@Scope(SCOPE_SINGLETON)
 public class RemoteDeviceProvider
         extends BaseDeviceProvider<RemoteWebDriver> {
     private final URL remoteAddress;
     private final Set<String> confidential;
 
-    @Autowired
     public RemoteDeviceProvider(String name, URL remoteAddress, Set<String> confidential) {
         super(name);
         this.remoteAddress = remoteAddress;

@@ -1,8 +1,8 @@
 package io.webdevice.wiring;
 
-import io.webdevice.device.RemoteDeviceProvider;
-import io.webdevice.device.DirectDeviceProvider;
 import io.webdevice.device.DeviceProvider;
+import io.webdevice.device.DirectDeviceProvider;
+import io.webdevice.device.RemoteDeviceProvider;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -23,6 +23,7 @@ import static java.lang.String.format;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.hash;
+import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
 public class DeviceSettings
@@ -236,11 +237,13 @@ public class DeviceSettings
             definition = genericBeanDefinition(RemoteDeviceProvider.class)
                     .addConstructorArgValue(name)
                     .addConstructorArgValue(remoteAddress)
-                    .addConstructorArgValue(confidential);
+                    .addConstructorArgValue(confidential)
+                    .setAutowireMode(AUTOWIRE_CONSTRUCTOR);
         } else {
             definition = genericBeanDefinition(DirectDeviceProvider.class)
                     .addConstructorArgValue(name)
-                    .addConstructorArgValue(driver);
+                    .addConstructorArgValue(driver)
+                    .setAutowireMode(AUTOWIRE_CONSTRUCTOR);
         }
         return addCapabilities(definition);
     }

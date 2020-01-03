@@ -4,7 +4,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Deque;
 import java.util.concurrent.BlockingDeque;
@@ -23,7 +22,6 @@ public class DevicePool<Driver extends WebDriver>
     private final String name;
     private final DeviceProvider<Driver> provider;
 
-    @Autowired
     public DevicePool(String name, DeviceProvider<Driver> provider) {
         this.provider = provider;
         this.name = name;

@@ -1,10 +1,12 @@
 Feature: About Us page
 
+  @direct
   Scenario: About Us page can be viewed with Firefox
     Given a "LocalFirefox" browser
     When I navigate home
     And I navigate to "/about"
 
+  @direct
   Scenario: About Us page can be viewed with Chrome
     Given a "LocalChrome" browser
     When I navigate home

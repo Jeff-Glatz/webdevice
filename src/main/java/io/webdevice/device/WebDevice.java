@@ -1,7 +1,6 @@
 package io.webdevice.device;
 
 import io.webdevice.driver.Navigator;
-import io.webdevice.wiring.Settings;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
@@ -15,10 +14,6 @@ import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Sequence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -30,25 +25,21 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static io.cucumber.spring.CucumberTestContext.SCOPE_CUCUMBER_GLUE;
 import static java.lang.String.format;
 
-@Primary
-@Component
-@Scope(SCOPE_CUCUMBER_GLUE)
 public class WebDevice
         implements WebDriver, JavascriptExecutor, HasCapabilities, Interactive, TakesScreenshot {
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final DeviceRegistry registry;
-    private final Settings settings;
 
     private URL baseUrl;
+    private String defaultDevice;
+    private boolean eager = false;
+    private boolean strict = true;
     private Device<?> device;
 
-    @Autowired
-    public WebDevice(DeviceRegistry registry, Settings settings) {
+    public WebDevice(DeviceRegistry registry) {
         this.registry = registry;
-        this.settings = settings;
     }
 
     public URL getBaseUrl() {
@@ -64,13 +55,53 @@ public class WebDevice
         return this;
     }
 
+    public String getDefaultDevice() {
+        return defaultDevice;
+    }
+
+    public void setDefaultDevice(String defaultDevice) {
+        this.defaultDevice = defaultDevice;
+    }
+
+    public WebDevice withDefaultDevice(String defaultDevice) {
+        setDefaultDevice(defaultDevice);
+        return this;
+    }
+
+    public boolean isEager() {
+        return eager;
+    }
+
+    public void setEager(boolean eager) {
+        this.eager = eager;
+    }
+
+    public WebDevice withEager(boolean eager) {
+        setEager(eager);
+        return this;
+    }
+
+    public boolean isStrict() {
+        return strict;
+    }
+
+    public void setStrict(boolean strict) {
+        this.strict = strict;
+    }
+
+    public WebDevice withStrict(boolean strict) {
+        setStrict(strict);
+        return this;
+    }
+
     @PostConstruct
     public void initialize() {
-        setBaseUrl(settings.getBaseUrl());
-        if (settings.isEager()) {
+        log.info("Initializing WebDevice...");
+        if (eager) {
             log.info("Eagerly acquiring default device");
             useDefault();
         }
+        log.info("WebDevice initialized.");
     }
 
     public URL absolute(String url) {
@@ -92,7 +123,7 @@ public class WebDevice
 
     public WebDevice use(String name) {
         if (device != null) {
-            if (settings.isStrict()) {
+            if (strict) {
                 throw new IllegalStateException("Browser has already been acquired for the current scenario");
             }
             release();
@@ -104,7 +135,7 @@ public class WebDevice
     }
 
     public WebDevice useDefault() {
-        return use(settings.getDefaultDevice());
+        return use(defaultDevice);
     }
 
     public WebDevice home() {
@@ -252,10 +283,10 @@ public class WebDevice
     public void release() {
         try {
             if (device != null) {
-                log.info("Releasing {} browser {}...", device.getName(), device.getSessionId());
+                log.info("Releasing {} device {}...", device.getName(), device.getSessionId());
                 registry.release(device);
             }
-            log.info("Browser released.");
+            log.info("WebDevice released.");
         } finally {
             device = null;
         }

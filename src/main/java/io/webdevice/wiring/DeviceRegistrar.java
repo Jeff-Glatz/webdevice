@@ -12,6 +12,7 @@ import org.springframework.core.type.AnnotationMetadata;
 
 import static io.webdevice.wiring.Settings.settings;
 import static java.lang.String.format;
+import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
 @Order
@@ -27,20 +28,11 @@ public class DeviceRegistrar
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
-        log.info("Registering devices ...");
-        settings(environment).devices()
-                .filter(device -> !registry.isBeanNameInUse(device.getName()))
-                .forEach(device -> {
-                    String provider = maybeDefineProvider(device, registry);
-                    if (device.isPooled()) {
-                        provider = maybeDefinePool(device, provider, registry);
-                    }
-                    registerAliases(provider, device, registry);
-                });
-        log.info("Devices registered.");
+        Settings settings = settings(environment);
+        registerDevices(settings, registry);
     }
 
-    private String maybeDefineProvider(DeviceSettings device, BeanDefinitionRegistry registry) {
+    private String maybeRegisterProvider(DeviceSettings device, BeanDefinitionRegistry registry) {
         String provider = format("%s-provider", device.getName());
         if (!registry.isBeanNameInUse(provider)) {
             log.info("Registering WebDeviceProvider definition named {}", provider);
@@ -51,7 +43,7 @@ public class DeviceRegistrar
         return provider;
     }
 
-    private String maybeDefinePool(DeviceSettings device, String provider, BeanDefinitionRegistry registry) {
+    private String maybeRegisterPool(DeviceSettings device, String provider, BeanDefinitionRegistry registry) {
         String pool = format("%s-pool", device.getName());
         if (!registry.isBeanNameInUse(pool)) {
             log.info("Registering WebDevicePool definition named {}", pool);
@@ -59,6 +51,7 @@ public class DeviceRegistrar
                     genericBeanDefinition(DevicePool.class)
                             .addConstructorArgValue(device.getName())
                             .addConstructorArgReference(provider)
+                            .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
                             .getBeanDefinition());
         }
         return pool;
@@ -71,5 +64,19 @@ public class DeviceRegistrar
             log.info("Registering alias '{}' for '{}'", alias, canonical);
             registry.registerAlias(canonical, alias);
         });
+    }
+
+    private void registerDevices(Settings settings, BeanDefinitionRegistry registry) {
+        log.info("Registering devices ...");
+        settings.devices()
+                .filter(device -> !registry.isBeanNameInUse(device.getName()))
+                .forEach(device -> {
+                    String provider = maybeRegisterProvider(device, registry);
+                    if (device.isPooled()) {
+                        provider = maybeRegisterPool(device, provider, registry);
+                    }
+                    registerAliases(provider, device, registry);
+                });
+        log.info("Devices registered.");
     }
 }
