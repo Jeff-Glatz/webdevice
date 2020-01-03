@@ -1,6 +1,6 @@
 package io.webdevice.device;
 
-import io.webdevice.driver.ProtectedWebDriver;
+import io.webdevice.support.ProtectedWebDriver;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 

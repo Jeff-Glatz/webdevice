@@ -1,6 +1,6 @@
 package io.webdevice.device;
 
-import io.webdevice.driver.Navigator;
+import io.webdevice.support.Navigator;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;

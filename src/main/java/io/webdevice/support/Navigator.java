@@ -1,6 +1,5 @@
-package io.webdevice.driver;
+package io.webdevice.support;
 
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriver.Navigation;
 
 import java.net.URL;

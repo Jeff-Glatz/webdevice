@@ -1,4 +1,4 @@
-package io.webdevice.driver;
+package io.webdevice.support;
 
 import org.junit.Before;
 import org.junit.Test;

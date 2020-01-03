@@ -1,5 +1,8 @@
-package io.webdevice.device;
+package io.webdevice.support;
 
+import io.webdevice.device.Device;
+import io.webdevice.device.DeviceProvider;
+import io.webdevice.device.DeviceRegistry;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;

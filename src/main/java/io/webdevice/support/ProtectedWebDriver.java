@@ -1,4 +1,4 @@
-package io.webdevice.driver;
+package io.webdevice.support;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;

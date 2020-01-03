@@ -9,7 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import static io.webdevice.driver.ProtectedCapabilities.mask;
+import static io.webdevice.support.ProtectedCapabilities.mask;
 import static java.util.Collections.unmodifiableSet;
 
 public abstract class BaseDeviceProvider<Driver extends WebDriver>
