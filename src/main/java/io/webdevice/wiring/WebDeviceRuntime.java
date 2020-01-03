@@ -15,7 +15,7 @@ import static io.cucumber.spring.CucumberTestContext.SCOPE_CUCUMBER_GLUE;
 
 @Configuration
 @Import(DeviceRegistrar.class)
-@ComponentScan("io.webdevice.wiring")
+@ComponentScan({"io.webdevice.support", "io.webdevice.wiring"})
 @EnableConfigurationProperties(Settings.class)
 public class WebDeviceRuntime {
     private final Settings settings;

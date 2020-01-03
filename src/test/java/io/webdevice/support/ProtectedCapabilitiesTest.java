@@ -9,7 +9,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ConfidentialCapabilitiesTest {
+public class ProtectedCapabilitiesTest {
     private Set<String> confidential;
     private ProtectedCapabilities capabilities;
 

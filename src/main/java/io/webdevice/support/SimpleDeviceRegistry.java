@@ -14,24 +14,24 @@ import java.util.function.Supplier;
 
 import static io.webdevice.device.DeviceProvider.providing;
 
-public class StaticDeviceRegistry
+public class SimpleDeviceRegistry
         implements DeviceRegistry {
     private final Map<String, DeviceProvider<? extends WebDriver>> providers =
             new LinkedHashMap<>();
 
-    public <Driver extends WebDriver> StaticDeviceRegistry withProvider(String device, DeviceProvider<Driver> provider) {
+    public <Driver extends WebDriver> SimpleDeviceRegistry withProvider(String device, DeviceProvider<Driver> provider) {
         providers.put(device, provider);
         return this;
     }
 
-    public <Driver extends WebDriver> StaticDeviceRegistry withProvider(String device,
+    public <Driver extends WebDriver> SimpleDeviceRegistry withProvider(String device,
                                                                         Supplier<Driver> supplier,
                                                                         Function<Driver, SessionId> session,
                                                                         Function<Driver, Boolean> usable) {
         return withProvider(device, providing(device, supplier, session, usable));
     }
 
-    public <Driver extends RemoteWebDriver> StaticDeviceRegistry withProvider(String device,
+    public <Driver extends RemoteWebDriver> SimpleDeviceRegistry withProvider(String device,
                                                                               Supplier<Driver> supplier,
                                                                               Function<Driver, Boolean> usable) {
         return withProvider(device, providing(device, supplier, usable));
