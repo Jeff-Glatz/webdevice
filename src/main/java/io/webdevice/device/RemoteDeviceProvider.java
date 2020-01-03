@@ -1,6 +1,6 @@
 package io.webdevice.device;
 
-import io.webdevice.driver.ConfidentialWebDriver;
+import io.webdevice.driver.ProtectedWebDriver;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -29,8 +29,8 @@ public class RemoteDeviceProvider
     @Override
     public Device<RemoteWebDriver> get() {
         log.info("Providing new device named {} connecting to {} with capabilities {}",
-                name, remoteAddress, capabilities);
-        final ConfidentialWebDriver driver = new ConfidentialWebDriver(remoteAddress, capabilities, confidential);
+                name, remoteAddress, masked());
+        final ProtectedWebDriver driver = new ProtectedWebDriver(remoteAddress, capabilities, confidential);
         return new Device<>(name, driver, RemoteWebDriver::getSessionId, (d) -> true);
     }
 

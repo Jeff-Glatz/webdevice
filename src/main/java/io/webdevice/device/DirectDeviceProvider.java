@@ -54,7 +54,7 @@ public class DirectDeviceProvider<Driver extends WebDriver>
                 return type.getDeclaredConstructor()
                         .newInstance();
             } else {
-                log.info("Instantiating {} with capabilities {}", type, capabilities);
+                log.info("Instantiating {} with capabilities {}", type, masked());
                 return type.getDeclaredConstructor(Capabilities.class)
                         .newInstance(capabilities);
             }

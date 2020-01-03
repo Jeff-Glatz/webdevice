@@ -5,11 +5,17 @@ import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
+
+import static io.webdevice.driver.ProtectedCapabilities.mask;
+import static java.util.Collections.unmodifiableSet;
 
 public abstract class BaseDeviceProvider<Driver extends WebDriver>
         implements DeviceProvider<Driver> {
     protected final Logger log = LoggerFactory.getLogger(getClass());
+    protected final Set<String> confidential = new LinkedHashSet<>();
     protected final String name;
 
     protected Capabilities capabilities;
@@ -30,6 +36,15 @@ public abstract class BaseDeviceProvider<Driver extends WebDriver>
         this.capabilities = capabilities;
     }
 
+    public Set<String> getConfidential() {
+        return unmodifiableSet(confidential);
+    }
+
+    public void setConfidential(Set<String> confidential) {
+        this.confidential.clear();
+        this.confidential.addAll(confidential);
+    }
+
     @Override
     public void dispose() {
         log.info("Provider {} shut down.", name);
@@ -47,5 +62,9 @@ public abstract class BaseDeviceProvider<Driver extends WebDriver>
     @Override
     public int hashCode() {
         return Objects.hash(name, capabilities);
+    }
+
+    protected String masked() {
+        return mask(capabilities, confidential);
     }
 }

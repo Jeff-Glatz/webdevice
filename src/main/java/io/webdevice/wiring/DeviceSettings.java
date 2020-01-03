@@ -245,7 +245,7 @@ public class DeviceSettings
                     .addConstructorArgValue(driver)
                     .setAutowireMode(AUTOWIRE_CONSTRUCTOR);
         }
-        return addCapabilities(definition);
+        return addConfidential(addCapabilities(definition));
     }
 
     @Override
@@ -293,7 +293,8 @@ public class DeviceSettings
 
     private MutableCapabilities options() {
         try {
-            return options.getDeclaredConstructor().newInstance();
+            return options.getDeclaredConstructor()
+                    .newInstance();
         } catch (Exception e) {
             throw new IllegalArgumentException(
                     format("Failure invoking new %s()", options.getName()), e);
@@ -347,6 +348,11 @@ public class DeviceSettings
             log.info("{} adding capabilities reference to BeanDefinition", name);
             definition.addPropertyReference("capabilities", capabilitiesRef);
         }
+        return definition;
+    }
+
+    private BeanDefinitionBuilder addConfidential(BeanDefinitionBuilder definition) {
+        definition.addPropertyValue("confidential", confidential);
         return definition;
     }
 }
