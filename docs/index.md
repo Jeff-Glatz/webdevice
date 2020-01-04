@@ -233,16 +233,27 @@ If the declarative abilities of WebDevice.IO are not sufficient, then simply pro
 implementation(s):
 
 ```java
+import io.webdevice.device.DeviceProvider;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import static io.webdevice.device.Devices.remoteProvider;
+import static org.openqa.selenium.remote.RemoteWebDriver.builder;
+
 @Configuration
-public class TestConfiguration {
-    
+public class CustomProviderWiring {
+
     @Bean
-    public DeviceProvider<WebDriver> customProvider() {
-        RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
-                .addMetadata("key", "value");
-        return DeviceProvider.providing("customProvider", builder::build,
-                (driver) -> ((RemoteWebDriver) driver).getSessionId(),
-                (driver) -> true);
+    public DeviceProvider<RemoteWebDriver> customRemoteProvider() {
+        return remoteProvider("customRemoteProvider",
+                this::customRemoteDriver, (driver) -> true);
+    }
+
+    private RemoteWebDriver customRemoteDriver() {
+        return (RemoteWebDriver) builder()
+                .addMetadata("key", "value")
+                .build();
     }
 }
 ```
