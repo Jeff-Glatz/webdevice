@@ -9,7 +9,7 @@ import org.openqa.selenium.WebDriver;
 
 import java.net.URL;
 
-import static io.webdevice.device.Devices.fixedSession;
+import static io.webdevice.device.Devices.direct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.BDDMockito.given;
@@ -29,8 +29,8 @@ public class WebDeviceTest
     @Before
     public void setUp()
             throws Exception {
-        device = new Device<>("iphone", mockWebDriver, fixedSession());
-        device2 = new Device<>("ipad", mockWebDriver, fixedSession());
+        device = direct("iphone", mockWebDriver);
+        device2 = direct("ipad", mockWebDriver);
         webDevice = new WebDevice(mockDeviceRegistry)
                 .withBaseUrl(new URL("http://localhost"));
     }

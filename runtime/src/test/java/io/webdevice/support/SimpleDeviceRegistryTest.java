@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.openqa.selenium.WebDriver;
 
-import static io.webdevice.device.Devices.fixedSession;
+import static io.webdevice.device.Devices.direct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -25,7 +25,7 @@ public class SimpleDeviceRegistryTest
 
     @Before
     public void setUp() {
-        device = new Device<>("iphone", mockWebDriver, fixedSession());
+        device = direct("iphone", mockWebDriver);
         registry = new SimpleDeviceRegistry();
     }
 
