@@ -11,13 +11,11 @@ public class Device<Driver extends WebDriver> {
     private final String name;
     private final Driver driver;
     private final Function<Driver, SessionId> session;
-    private final Function<Driver, Boolean> usable;
 
-    public Device(String name, Driver driver, Function<Driver, SessionId> session, Function<Driver, Boolean> usable) {
+    public Device(String name, Driver driver, Function<Driver, SessionId> session) {
         this.name = name;
         this.driver = driver;
         this.session = session;
-        this.usable = usable;
     }
 
     public String getName() {
@@ -34,10 +32,6 @@ public class Device<Driver extends WebDriver> {
 
     public SessionId getSessionId() {
         return session.apply(driver);
-    }
-
-    public boolean usable() {
-        return usable.apply(driver);
     }
 
     public Device<Driver> perform(Consumer<Driver> consumer) {

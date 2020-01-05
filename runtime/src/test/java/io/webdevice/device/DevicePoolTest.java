@@ -9,6 +9,7 @@ import org.openqa.selenium.remote.SessionId;
 
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.function.Function;
 
 import static io.webdevice.device.Devices.randomSessionId;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,6 +27,8 @@ public class DevicePoolTest
     private Device<WebDriver> mockDevice2;
     @Mock
     private DeviceProvider<WebDriver> mockProvider;
+    @Mock
+    private Function<Device<WebDriver>, Boolean> mockTestFunction;
 
     private BlockingDeque<Device<WebDriver>> free;
     private BlockingDeque<Device<WebDriver>> used;
@@ -37,7 +40,7 @@ public class DevicePoolTest
     public void setUp() {
         free = new LinkedBlockingDeque<>();
         used = new LinkedBlockingDeque<>();
-        pool = new DevicePool<>("device", mockProvider, free, used);
+        pool = new DevicePool<>("device", mockProvider, mockTestFunction, free, used);
 
         sessionId = randomSessionId();
     }
@@ -73,7 +76,7 @@ public class DevicePoolTest
     public void getShouldProvidePooledDeviceWhenUsableDeviceIsAcquiredFromFree() {
         free.add(mockDevice);
 
-        given(mockDevice.usable())
+        given(mockTestFunction.apply(mockDevice))
                 .willReturn(true);
         given(mockDevice.getSessionId())
                 .willReturn(sessionId);
@@ -87,8 +90,8 @@ public class DevicePoolTest
         assertThat(used)
                 .contains(actual);
 
-        verify(mockDevice, atLeastOnce())
-                .usable();
+        verify(mockTestFunction, atLeastOnce())
+                .apply(mockDevice);
         verify(mockDevice, atLeastOnce())
                 .getSessionId();
 
@@ -99,7 +102,7 @@ public class DevicePoolTest
     public void getShouldReleaseDeviceToProviderAndCreateNewOneWhenUnusableDeviceIsAcquiredFromFree() {
         // Device 1 is in pool, but not usable
         free.add(mockDevice);
-        given(mockDevice.usable())
+        given(mockTestFunction.apply(mockDevice))
                 .willReturn(false);
         given(mockDevice.getSessionId())
                 .willReturn(sessionId);
@@ -120,8 +123,8 @@ public class DevicePoolTest
         assertThat(used)
                 .contains(actual);
 
-        verify(mockDevice, atLeastOnce())
-                .usable();
+        verify(mockTestFunction, atLeastOnce())
+                .apply(mockDevice);
         verify(mockDevice, atLeastOnce())
                 .getSessionId();
         verify(mockDevice2, atLeastOnce())
@@ -141,7 +144,7 @@ public class DevicePoolTest
     public void getShouldReleaseDeviceToProviderConsumingExceptionAndCreateNewOneWhenUnusableDeviceIsAcquiredFromFree() {
         // Device 1 is in pool, but not usable
         free.add(mockDevice);
-        given(mockDevice.usable())
+        given(mockTestFunction.apply(mockDevice))
                 .willReturn(false);
         given(mockDevice.getSessionId())
                 .willReturn(sessionId);
@@ -167,8 +170,8 @@ public class DevicePoolTest
         assertThat(used)
                 .contains(actual);
 
-        verify(mockDevice, atLeastOnce())
-                .usable();
+        verify(mockTestFunction, atLeastOnce())
+                .apply(mockDevice);
         verify(mockDevice, atLeastOnce())
                 .getSessionId();
         verify(mockDevice2, atLeastOnce())

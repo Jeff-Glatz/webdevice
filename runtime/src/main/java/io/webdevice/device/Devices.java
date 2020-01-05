@@ -27,16 +27,12 @@ public class Devices {
         return RemoteWebDriver::getSessionId;
     }
 
-    public static <Driver extends RemoteWebDriver> Device<Driver> remote(String name,
-                                                                         Driver driver,
-                                                                         Function<Driver, Boolean> usable) {
-        return new Device<>(name, driver, remoteSession(), usable);
+    public static <Driver extends RemoteWebDriver> Device<Driver> remote(String name, Driver driver) {
+        return new Device<>(name, driver, remoteSession());
     }
 
-    public static <Driver extends WebDriver> Device<Driver> direct(String name,
-                                                                   Driver driver,
-                                                                   Function<Driver, Boolean> usable) {
-        return new Device<>(name, driver, fixedSession(), usable);
+    public static <Driver extends WebDriver> Device<Driver> direct(String name, Driver driver) {
+        return new Device<>(name, driver, fixedSession());
     }
 
     public static <Driver extends WebDriver> DeviceProvider<Driver> provider(Supplier<Device<Driver>> supplier) {
@@ -45,20 +41,17 @@ public class Devices {
 
     public static <Driver extends WebDriver> DeviceProvider<Driver> provider(String device,
                                                                              Supplier<Driver> supplier,
-                                                                             Function<Driver, SessionId> session,
-                                                                             Function<Driver, Boolean> usable) {
-        return () -> new Device<>(device, supplier.get(), session, usable);
+                                                                             Function<Driver, SessionId> session) {
+        return () -> new Device<>(device, supplier.get(), session);
     }
 
     public static <Driver extends RemoteWebDriver> DeviceProvider<Driver> directProvider(String device,
-                                                                                         Supplier<Driver> supplier,
-                                                                                         Function<Driver, Boolean> usable) {
-        return () -> direct(device, supplier.get(), usable);
+                                                                                         Supplier<Driver> supplier) {
+        return () -> direct(device, supplier.get());
     }
 
     public static <Driver extends RemoteWebDriver> DeviceProvider<Driver> remoteProvider(String device,
-                                                                                         Supplier<Driver> supplier,
-                                                                                         Function<Driver, Boolean> usable) {
-        return () -> remote(device, supplier.get(), usable);
+                                                                                         Supplier<Driver> supplier) {
+        return () -> remote(device, supplier.get());
     }
 }

@@ -32,8 +32,7 @@ public class RemoteDeviceProvider
     public Device<RemoteWebDriver> get() {
         log.info("Providing new device named {} connecting to {} with capabilities {}",
                 name, remoteAddress, maskedCapabilities());
-        // TODO: How to determine remote driver aliveness?
-        return remote(name, new ProtectedWebDriver(remoteAddress, capabilities, confidential), (d) -> true);
+        return remote(name, new ProtectedWebDriver(remoteAddress, capabilities, confidential));
     }
 
     @Override

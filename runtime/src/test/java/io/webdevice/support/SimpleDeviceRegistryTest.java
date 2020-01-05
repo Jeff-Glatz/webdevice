@@ -25,7 +25,7 @@ public class SimpleDeviceRegistryTest
 
     @Before
     public void setUp() {
-        device = new Device<>("iphone", mockWebDriver, fixedSession(), (d) -> true);
+        device = new Device<>("iphone", mockWebDriver, fixedSession());
         registry = new SimpleDeviceRegistry();
     }
 

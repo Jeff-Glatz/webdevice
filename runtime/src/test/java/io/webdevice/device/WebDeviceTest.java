@@ -29,8 +29,8 @@ public class WebDeviceTest
     @Before
     public void setUp()
             throws Exception {
-        device = new Device<>("iphone", mockWebDriver, fixedSession(), (d) -> true);
-        device2 = new Device<>("ipad", mockWebDriver, fixedSession(), (d) -> true);
+        device = new Device<>("iphone", mockWebDriver, fixedSession());
+        device2 = new Device<>("ipad", mockWebDriver, fixedSession());
         webDevice = new WebDevice(mockDeviceRegistry)
                 .withBaseUrl(new URL("http://localhost"));
     }

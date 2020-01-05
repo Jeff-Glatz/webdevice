@@ -1,6 +1,8 @@
 package io.webdevice.wiring;
 
+import io.webdevice.device.Device;
 import io.webdevice.device.DevicePool;
+import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,8 @@ import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
+
+import java.util.function.Function;
 
 import static io.webdevice.wiring.Settings.settings;
 import static java.lang.String.format;
@@ -51,6 +55,8 @@ public class DeviceRegistrar
                     genericBeanDefinition(DevicePool.class)
                             .addConstructorArgValue(device.getName())
                             .addConstructorArgReference(provider)
+                            // TODO: Externalize the pool testing function
+                            .addConstructorArgValue((Function<Device<? extends WebDriver>, Boolean>) this::test)
                             .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
                             .getBeanDefinition());
         }
@@ -78,5 +84,9 @@ public class DeviceRegistrar
                     registerAliases(provider, device, registry);
                 });
         log.info("Devices registered.");
+    }
+
+    protected Boolean test(Device<? extends WebDriver> device) {
+        return true;
     }
 }

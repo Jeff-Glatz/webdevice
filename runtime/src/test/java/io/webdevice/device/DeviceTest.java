@@ -21,15 +21,13 @@ public class DeviceTest
     private WebDriver mockWebDriver;
     @Mock
     private Function<WebDriver, SessionId> mockSessionFunction;
-    @Mock
-    private Function<WebDriver, Boolean> mockUsableFunction;
 
     private Device<WebDriver> device;
     private SessionId sessionId;
 
     @Before
     public void setUp() {
-        device = new Device<>("iphone", mockWebDriver, mockSessionFunction, mockUsableFunction);
+        device = new Device<>("iphone", mockWebDriver, mockSessionFunction);
         sessionId = randomSessionId();
     }
 
@@ -60,15 +58,6 @@ public class DeviceTest
 
         assertThat(device.getSessionId())
                 .isSameAs(sessionId);
-    }
-
-    @Test
-    public void shouldUseFunctionToComputeUsability() {
-        given(mockUsableFunction.apply(mockWebDriver))
-                .willReturn(true);
-
-        assertThat(device.usable())
-                .isSameAs(true);
     }
 
     @Test

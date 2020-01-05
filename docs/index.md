@@ -247,7 +247,7 @@ public class CustomProviderWiring {
     @Bean
     public DeviceProvider<RemoteWebDriver> customRemoteProvider() {
         return remoteProvider("customRemoteProvider",
-                this::customRemoteDriver, (driver) -> true);
+                this::customRemoteDriver);
     }
 
     private RemoteWebDriver customRemoteDriver() {

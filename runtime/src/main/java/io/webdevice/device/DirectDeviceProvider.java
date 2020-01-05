@@ -28,8 +28,7 @@ public class DirectDeviceProvider<Driver extends WebDriver>
     @Override
     public Device<Driver> get() {
         log.info("Providing new device named {}", name);
-        // TODO: How to determine direct driver aliveness?
-        return direct(name, newDriver(), (d) -> true);
+        return direct(name, newDriver());
     }
 
     @Override

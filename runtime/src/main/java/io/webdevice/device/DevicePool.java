@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Deque;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.function.Function;
 
 import static java.lang.String.format;
 
@@ -21,19 +22,22 @@ public class DevicePool<Driver extends WebDriver>
     private final BlockingDeque<Device<Driver>> used;
     private final String name;
     private final DeviceProvider<Driver> provider;
+    private final Function<Device<Driver>, Boolean> test;
 
     protected DevicePool(String name,
                          DeviceProvider<Driver> provider,
+                         Function<Device<Driver>, Boolean> test,
                          BlockingDeque<Device<Driver>> free,
                          BlockingDeque<Device<Driver>> used) {
         this.name = name;
         this.provider = provider;
+        this.test = test;
         this.free = free;
         this.used = used;
     }
 
-    public DevicePool(String name, DeviceProvider<Driver> provider) {
-        this(name, provider, new LinkedBlockingDeque<>(), new LinkedBlockingDeque<>());
+    public DevicePool(String name, DeviceProvider<Driver> provider, Function<Device<Driver>, Boolean> test) {
+        this(name, provider, test, new LinkedBlockingDeque<>(), new LinkedBlockingDeque<>());
     }
 
     /**
@@ -47,7 +51,7 @@ public class DevicePool<Driver extends WebDriver>
         if (device == null) {
             device = create();
         } else {
-            if (!device.usable()) {
+            if (!test.apply(device)) {
                 log.info("Device {} in {} pool is not usable", device.getSessionId(), name);
                 release(device);
                 device = create();
