@@ -4,10 +4,15 @@ import io.webdevice.test.UnitTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.interactions.Interactive;
 
 import java.net.URL;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static io.webdevice.device.Devices.direct;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,11 +25,21 @@ public class WebDeviceTest
         extends UnitTest {
     @Mock
     private DeviceRegistry mockDeviceRegistry;
-    @Mock(extraInterfaces = JavascriptExecutor.class)
+    @Mock(extraInterfaces = {
+            JavascriptExecutor.class, HasCapabilities.class,
+            Interactive.class, TakesScreenshot.class
+    })
     private WebDriver mockWebDriver;
     private Device<WebDriver> device;
     private Device<WebDriver> device2;
     private WebDevice webDevice;
+    @Mock
+    private Consumer<WebDriver> mockConsumer;
+    // This function can return anything, for the test this will behave like perform()
+    @Mock
+    private Function<WebDriver, WebDevice> mockFunction;
+    @Mock
+    private WebDriver.Navigation mockNavigation;
 
     @Before
     public void setUp()
@@ -100,7 +115,7 @@ public class WebDeviceTest
     }
 
     @Test
-    public void useShouldReleaseDeviceWhenLenientAndDeviceAlreadyAcquired() {
+    public void useShouldReleaseDeviceWhenNotStrictAndDeviceAlreadyAcquired() {
         given(mockDeviceRegistry.provide("iphone"))
                 .willReturn(device);
         given(mockDeviceRegistry.provide("ipad"))
@@ -114,8 +129,10 @@ public class WebDeviceTest
         assertThat(webDevice.device())
                 .isSameAs(device);
 
-        webDevice.use("ipad");
+        WebDevice fluent = webDevice.use("ipad");
 
+        assertThat(fluent)
+                .isSameAs(webDevice);
         assertThat(webDevice.device())
                 .isSameAs(device2);
 
@@ -136,10 +153,71 @@ public class WebDeviceTest
         assertThat(webDevice.acquired())
                 .isFalse();
 
-        webDevice.useDefault();
+        WebDevice fluent = webDevice.useDefault();
 
+        assertThat(fluent)
+                .isSameAs(webDevice);
         assertThat(webDevice.device())
                 .isSameAs(device);
+    }
+
+    @Test
+    public void homeShouldNavigateToBaseUrl()
+            throws Exception {
+        given(mockWebDriver.navigate())
+                .willReturn(mockNavigation);
+        given(mockDeviceRegistry.provide("iphone"))
+                .willReturn(device);
+
+        webDevice.withDefaultDevice("iphone")
+                .withEager(true)
+                .withStrict(true)
+                .initialize();
+
+        WebDevice fluent = webDevice.home();
+
+        assertThat(fluent)
+                .isSameAs(webDevice);
+        verify(mockNavigation)
+                .to(new URL("http://localhost"));
+    }
+
+    @Test
+    public void performShouldExecuteWithDriver() {
+        given(mockDeviceRegistry.provide("iphone"))
+                .willReturn(device);
+
+        webDevice.withDefaultDevice("iphone")
+                .withEager(true)
+                .withStrict(true)
+                .initialize();
+
+        WebDevice fluent = webDevice.perform(mockConsumer);
+
+        assertThat(fluent)
+                .isSameAs(webDevice);
+        verify(mockConsumer)
+                .accept(mockWebDriver);
+    }
+
+    @Test
+    public void invokeShouldExecuteWithDriver() {
+        given(mockDeviceRegistry.provide("iphone"))
+                .willReturn(device);
+        given(mockFunction.apply(mockWebDriver))
+                .willReturn(webDevice);
+
+        webDevice.withDefaultDevice("iphone")
+                .withEager(true)
+                .withStrict(true)
+                .initialize();
+
+        WebDevice fluent = webDevice.invoke(mockFunction);
+
+        assertThat(fluent)
+                .isSameAs(webDevice);
+        verify(mockFunction)
+                .apply(mockWebDriver);
     }
 
     @Test

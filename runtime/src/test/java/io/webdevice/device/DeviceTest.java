@@ -4,8 +4,11 @@ import io.webdevice.test.UnitTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.remote.SessionId;
 
 import java.util.function.Function;
@@ -17,7 +20,10 @@ import static org.mockito.Mockito.verify;
 
 public class DeviceTest
         extends UnitTest {
-    @Mock(extraInterfaces = JavascriptExecutor.class)
+    @Mock(extraInterfaces = {
+            JavascriptExecutor.class, HasCapabilities.class,
+            Interactive.class, TakesScreenshot.class
+    })
     private WebDriver mockWebDriver;
     @Mock
     private Function<WebDriver, SessionId> mockSessionFunction;
