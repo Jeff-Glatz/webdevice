@@ -237,7 +237,6 @@ public class DeviceSettings
             definition = genericBeanDefinition(RemoteDeviceProvider.class)
                     .addConstructorArgValue(name)
                     .addConstructorArgValue(remoteAddress)
-                    .addConstructorArgValue(confidential)
                     .setAutowireMode(AUTOWIRE_CONSTRUCTOR);
         } else {
             definition = genericBeanDefinition(DirectDeviceProvider.class)

@@ -6,19 +6,16 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.net.URL;
 import java.util.Objects;
-import java.util.Set;
 
 import static io.webdevice.device.Devices.remote;
 
 public class RemoteDeviceProvider
         extends BaseDeviceProvider<RemoteWebDriver> {
     private final URL remoteAddress;
-    private final Set<String> confidential;
 
-    public RemoteDeviceProvider(String name, URL remoteAddress, Set<String> confidential) {
+    public RemoteDeviceProvider(String name, URL remoteAddress) {
         super(name);
         this.remoteAddress = remoteAddress;
-        this.confidential = confidential;
     }
 
     @Override

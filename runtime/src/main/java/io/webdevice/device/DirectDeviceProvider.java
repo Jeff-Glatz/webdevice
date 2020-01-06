@@ -6,21 +6,29 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 import static io.webdevice.device.Devices.direct;
 
 public class DirectDeviceProvider<Driver extends WebDriver>
         extends BaseDeviceProvider<Driver> {
     private final Class<Driver> type;
+    private final Function<Class<Driver>, WebDriverManager> factory;
 
-    public DirectDeviceProvider(String name, Class<Driver> type) {
+    DirectDeviceProvider(String name, Class<Driver> type,
+                         Function<Class<Driver>, WebDriverManager> factory) {
         super(name);
         this.type = type;
+        this.factory = factory;
+    }
+
+    public DirectDeviceProvider(String name, Class<Driver> type) {
+        this(name, type, WebDriverManager::getInstance);
     }
 
     @Override
     public void initialize() {
-        WebDriverManager manager = WebDriverManager.getInstance(type);
+        WebDriverManager manager = factory.apply(type);
         log.info("Setting up {}", type);
         manager.setup();
     }
