@@ -8,15 +8,20 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.openqa.selenium.WebDriver;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 import static io.webdevice.device.Devices.directDevice;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-public class SimpleDeviceRegistryTest
+public class SpringDeviceRegistryTest
         extends UnitTest {
-    private SimpleDeviceRegistry registry;
+    @Mock
+    private BeanFactory mockBeanFactory;
+    private SpringDeviceRegistry registry;
+
     @Mock
     private WebDriver mockWebDriver;
     private Device<WebDriver> device;
@@ -25,18 +30,22 @@ public class SimpleDeviceRegistryTest
 
     @Before
     public void setUp() {
-        registry = new SimpleDeviceRegistry();
+        registry = new SpringDeviceRegistry(mockBeanFactory);
         device = directDevice("iphone", mockWebDriver);
     }
 
     @Test(expected = DeviceNotProvidedException.class)
     public void provideShouldRaiseDeviceNotProvidedExceptionWhenProviderNotRegistered() {
+        given(mockBeanFactory.getBean("iphone", DeviceProvider.class))
+                .willThrow(new NoSuchBeanDefinitionException("iphone"));
+
         registry.provide("iphone");
     }
 
     @Test
     public void provideShouldReturnDeviceFromProvider() {
-        registry.withProvider("iphone", mockProvider);
+        given(mockBeanFactory.getBean("iphone", DeviceProvider.class))
+                .willReturn(mockProvider);
 
         given(mockProvider.get())
                 .willReturn(device);
@@ -47,13 +56,18 @@ public class SimpleDeviceRegistryTest
 
     @Test(expected = DeviceNotProvidedException.class)
     public void releaseShouldRaiseDeviceNotProvidedExceptionWhenProviderNotRegistered() {
+        given(mockBeanFactory.getBean("iphone", DeviceProvider.class))
+                .willThrow(new NoSuchBeanDefinitionException("iphone"));
+
         registry.release(device);
     }
 
     @Test
     public void releaseShouldReturnDeviceToProvider() {
-        registry.withProvider("iphone", mockProvider)
-                .release(device);
+        given(mockBeanFactory.getBean("iphone", DeviceProvider.class))
+                .willReturn(mockProvider);
+
+        registry.release(device);
 
         verify(mockProvider)
                 .accept(device);
