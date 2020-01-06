@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * as the "entry point" for Spring configuration
  */
 @SpringBootTest(classes = WebDeviceRuntime.class)
-public class TestSteps {
+public class WebDeviceSteps {
 
     @Autowired
     private WebDevice browser;

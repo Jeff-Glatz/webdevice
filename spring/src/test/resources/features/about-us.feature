@@ -36,7 +36,7 @@ Feature: About Us page
     When I navigate home
     And I navigate to "/about"
 
-  @sauce @ignore
+  @sauce
   Scenario: About Us page can be viewed with iPhone 8
     Given a "iPhone 8" browser
     When I navigate home

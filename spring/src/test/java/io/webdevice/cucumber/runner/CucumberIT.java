@@ -10,5 +10,5 @@ import org.junit.runner.RunWith;
         glue = {"io.webdevice.cucumber.steps"},
         features = {"src/test/resources/features"},
         plugin = {"pretty"})
-public class TestSuite {
+public class CucumberIT {
 }
