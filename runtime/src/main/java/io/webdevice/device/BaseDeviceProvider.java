@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Set;
 
 import static io.webdevice.support.ProtectedCapabilities.mask;
@@ -48,21 +47,6 @@ public abstract class BaseDeviceProvider<Driver extends WebDriver>
     @Override
     public void dispose() {
         log.info("Provider {} shut down.", name);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BaseDeviceProvider<Driver> that = (BaseDeviceProvider<Driver>) o;
-        return Objects.equals(name, that.name) &&
-                Objects.equals(capabilities, that.capabilities);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, capabilities);
     }
 
     protected String maskedCapabilities() {

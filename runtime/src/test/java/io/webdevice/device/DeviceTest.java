@@ -14,8 +14,10 @@ import org.openqa.selenium.remote.SessionId;
 import java.util.function.Function;
 
 import static io.webdevice.device.Devices.randomSessionId;
+import static java.util.Objects.hash;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 public class DeviceTest
@@ -88,5 +90,36 @@ public class DeviceTest
 
         assertThat(actual)
                 .isSameAs(sessionId);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void equalityShouldBeBasedOnNameDriverTypeAndSessionId() {
+        given(mockSessionFunction.apply(mockWebDriver))
+                .willReturn(sessionId);
+
+        Function<WebDriver, SessionId> mockSessionFunction2 = mock(Function.class);
+
+        given(mockSessionFunction2.apply(mockWebDriver))
+                .willReturn(randomSessionId());
+
+        assertThat(device.equals(new Device<>("iphone", mockWebDriver, mockSessionFunction)))
+                .isTrue();
+        assertThat(device.equals(new Device<>("ipad", mockWebDriver, mockSessionFunction)))
+                .isFalse();
+
+        given(mockSessionFunction2.apply(mockWebDriver))
+                .willReturn(randomSessionId());
+        assertThat(device.equals(new Device<>("iphone", mockWebDriver, mockSessionFunction2)))
+                .isFalse();
+    }
+
+    @Test
+    public void hashCodeShouldBeBasedOnNameDriverTypeAndSessionId() {
+        given(mockSessionFunction.apply(mockWebDriver))
+                .willReturn(sessionId);
+
+        assertThat(device.hashCode())
+                .isEqualTo(hash("iphone", mockWebDriver.getClass(), sessionId));
     }
 }

@@ -7,6 +7,9 @@ import org.openqa.selenium.MutableCapabilities;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import static io.webdevice.support.ProtectedCapabilities.mask;
+import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProtectedCapabilitiesTest {
@@ -58,5 +61,25 @@ public class ProtectedCapabilitiesTest {
 
         assertThat(capabilities.toString())
                 .isEqualTo("{sauce:options: {accessKey: ********}}");
+    }
+
+    @Test
+    public void maskShouldProtectConfidentialCapabilities() {
+        MutableCapabilities capabilities = new MutableCapabilities();
+        capabilities.setCapability("accessKey", "2secret4u");
+
+        assertThat(mask(capabilities, singleton("accessKey")))
+                .isEqualTo("{accessKey: ********}");
+    }
+
+    @Test
+    public void shouldMimicCapabilitiesToString() {
+        capabilities.setCapability("array", new String[]{"one", null});
+        capabilities.setCapability("list", singletonList("one"));
+        capabilities.setCapability("null", (String)null);
+        capabilities.setCapability("truncated", "1234567890123456789012345678901");
+
+        assertThat(capabilities.toString())
+                .isEqualTo("{array: [one, null], list: [one], truncated: 123456789012345678901234567...}");
     }
 }

@@ -105,25 +105,25 @@ public class WebDevice
         return device != null;
     }
 
-    public String absolute(String path) {
-        if (!path.contains("://")) {
+    public String canonicalize(String url) {
+        if (!url.contains("://")) {
             String root = baseUrl.toExternalForm();
             if (root.endsWith("/")) {
-                if (path.startsWith("/")) {
-                    return root.concat(path.substring(1));
+                if (url.startsWith("/")) {
+                    return root.concat(url.substring(1));
                 } else {
-                    return root.concat(path);
+                    return root.concat(url);
                 }
             } else {
-                if (path.startsWith("/")) {
-                    return root.concat(path);
+                if (url.startsWith("/")) {
+                    return root.concat(url);
                 } else {
-                    return root.concat("/").concat(path);
+                    return root.concat("/").concat(url);
                 }
             }
         }
         // Already absolute
-        return path;
+        return url;
     }
 
     public WebDevice use(String name) {
@@ -149,7 +149,7 @@ public class WebDevice
     }
 
     public WebDevice navigateTo(String relativePath) {
-        device.perform(driver -> driver.navigate().to(absolute(relativePath)));
+        device.perform(driver -> driver.navigate().to(canonicalize(relativePath)));
         return this;
     }
 
@@ -164,11 +164,15 @@ public class WebDevice
         return function.apply((Driver) device.getDriver());
     }
 
+    // HasCapabilities delegate
+
     @Override
     public Capabilities getCapabilities() {
         return device.as(HasCapabilities.class)
                 .getCapabilities();
     }
+
+    // JavascriptExecutor delegates
 
     @Override
     public Object executeScript(String script, Object... args) {
@@ -182,6 +186,8 @@ public class WebDevice
                 .executeAsyncScript(script, args);
     }
 
+    // TakesScreenshot delegate
+
     @Override
     public <X> X getScreenshotAs(OutputType<X> target)
             throws WebDriverException {
@@ -189,10 +195,12 @@ public class WebDevice
                 .getScreenshotAs(target);
     }
 
+    // WebDriver delegates
+
     @Override
     public void get(String url) {
         device.as(WebDriver.class)
-                .get(absolute(url));
+                .get(canonicalize(url));
     }
 
     @Override
@@ -259,7 +267,7 @@ public class WebDevice
     public Navigation navigate() {
         Navigation navigation = device.as(WebDriver.class)
                 .navigate();
-        return new RelativeNavigation(navigation, this::absolute);
+        return new RelativeNavigation(navigation, this::canonicalize);
     }
 
     @Override
@@ -267,6 +275,8 @@ public class WebDevice
         return device.as(WebDriver.class)
                 .manage();
     }
+
+    // Interactive delegates
 
     @Override
     public void perform(Collection<Sequence> actions) {

@@ -5,10 +5,9 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 
-import java.util.Objects;
 import java.util.function.Function;
 
-import static io.webdevice.device.Devices.direct;
+import static io.webdevice.device.Devices.directDevice;
 
 public class DirectDeviceProvider<Driver extends WebDriver>
         extends BaseDeviceProvider<Driver> {
@@ -36,21 +35,7 @@ public class DirectDeviceProvider<Driver extends WebDriver>
     @Override
     public Device<Driver> get() {
         log.info("Providing new device named {}", name);
-        return direct(name, newDriver());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        DirectDeviceProvider<?> that = (DirectDeviceProvider<?>) o;
-        return Objects.equals(type, that.type);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), type);
+        return directDevice(name, newDriver());
     }
 
     private Driver newDriver() {

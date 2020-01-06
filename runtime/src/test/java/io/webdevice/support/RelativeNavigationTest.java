@@ -39,4 +39,28 @@ public class RelativeNavigationTest
         verify(mockNavigation)
                 .to(url);
     }
+
+    @Test
+    public void backShouldDelegate() {
+        navigation.back();
+
+        verify(mockNavigation)
+                .back();
+    }
+
+    @Test
+    public void forwardShouldDelegate() {
+        navigation.forward();
+
+        verify(mockNavigation)
+                .forward();
+    }
+
+    @Test
+    public void refreshShouldDelegate() {
+        navigation.refresh();
+
+        verify(mockNavigation)
+                .refresh();
+    }
 }
