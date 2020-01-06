@@ -257,3 +257,11 @@ public class CustomProviderWiring {
     }
 }
 ```
+
+### Big Thanks!
+
+Cross-browser Testing Platform and Open Source ❤️ provided by [Sauce Labs](https://saucelabs.com)
+
+![Powered by Sauce Labs](docs/sauce-labs.svg | width=100)
+
+[homepage]: https://saucelabs.com
