@@ -20,13 +20,17 @@
         <cucumber.version>4.8.0</cucumber.version>
         <wdm.version>3.7.1</wdm.version>
         <!-- Plugin Versions -->
-        <java.version>1.8</java.version>
+        <maven.failsafe.version>2.22.2</maven.failsafe.version>
         <maven.jacoco.version>0.8.5</maven.jacoco.version>
         <maven.jar.version>3.2.0</maven.jar.version>
         <maven.source.version>3.2.1</maven.source.version>
+        <!-- Build Properties -->
+        <java.version>1.8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <skipTests>false</skipTests>
+        <skipITests>${skipTests}</skipITests>
     </properties>
 
     <dependencies>
@@ -124,6 +128,22 @@
                         <goals>
                             <goal>jar</goal>
                             <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${maven.failsafe.version}</version>
+                <configuration>
+                    <skip>${skipITests}</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
                         </goals>
                     </execution>
                 </executions>
