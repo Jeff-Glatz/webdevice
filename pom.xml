@@ -9,6 +9,34 @@
     <name>WebDevice.IO</name>
     <packaging>pom</packaging>
 
+    <url>https://github.com/ruffkat/webdevice</url>
+
+    <developers>
+        <developer>
+            <id>ruffkat</id>
+            <name>Jeff Glatz</name>
+            <email>jeff@bestquality.engineering</email>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>Apache 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git://github.com/ruffkat/webdevice.git</connection>
+        <developerConnection>scm:git:git@github.com:ruffkat/webdevice.git</developerConnection>
+        <url>https://github.com/ruffkat/webdevice</url>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/ruffkat/webdevice/issues</url>
+    </issueManagement>
+
     <properties>
         <!-- Plugin Versions -->
         <maven.failsafe.version>2.22.2</maven.failsafe.version>
