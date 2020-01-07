@@ -15,6 +15,7 @@
         <maven.jacoco.version>0.8.5</maven.jacoco.version>
         <maven.jar.version>3.2.0</maven.jar.version>
         <maven.source.version>3.2.1</maven.source.version>
+        <maven.surefire.version>2.22.2</maven.surefire.version>
         <!-- Build Properties -->
         <java.version>1.8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -52,6 +53,11 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven.surefire.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
