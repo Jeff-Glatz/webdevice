@@ -109,7 +109,7 @@ direct browser control as well as remote browser control. WebDevice definitions 
 `application.yaml` file.
 
 ### Direct WebDriver Definition
-WebDriver.IO leverages the `WebDriverManager` library to set up the environment for direct browser control. 
+WebDriver.IO leverages the [WebDriverManager](https://github.com/bonigarcia/webdrivermanager) library to set up the environment for direct browser control. 
 To indicate that a device definition is a direct `WebDriver`, the `driver` property must be defined:
 
 ```yaml
