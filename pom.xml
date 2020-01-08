@@ -37,6 +37,21 @@
         <url>https://github.com/ruffkat/webdevice/issues</url>
     </issueManagement>
 
+    <distributionManagement>
+        <site>
+            <id>wiki</id>
+            <url>https://github.com/ruffkat/webdevice/wiki</url>
+        </site>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+    </distributionManagement>
+
     <properties>
         <!-- Plugin Versions -->
         <maven.failsafe.version>2.22.2</maven.failsafe.version>
