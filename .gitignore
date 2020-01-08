@@ -1,3 +1,6 @@
 .idea/
+.vagrant/
 target/
 *.iml
+*.log
+*.asc

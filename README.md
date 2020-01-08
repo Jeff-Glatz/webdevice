@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/ruffkat/webdevice.svg?branch=master)](https://travis-ci.com/ruffkat/webdevice)
+
 # WebDevice.IO
 WebDevice.IO is a lightweight Java-based framework, initially for use within `Cucumber` test suites 
 based on `cucumber-spring`, for managing a collection of `WebDriver` devices that can be specified and
