@@ -1,6 +1,8 @@
 .idea/
-.vagrant/
 target/
 *.iml
 *.log
 *.asc
+*.gpg*
+release.properties
+pom.xml.releaseBackup

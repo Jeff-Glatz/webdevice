@@ -1,24 +1,34 @@
-env:
-  global:
-    - secure: NXmuxl8O181S3KAvuLXG5+YRe1oC5Z8CqGrMvS7JK0KHgRFbDHzPTWZgRD7GI91Sk747sqdZw/A6J2MPrekqW7fDDqnQzdlxksoct5ArmMVE6Nrq+uqisBsy8ItUxCF9U8ctueIB3cTwpjKx1iOpI6W1IJoLs6b6PiDuIF2VY7Al4LlpP6Jx/Z8KOImVlgW9wKjFliGQ4p0hWuDuAMqCPHvOTW84b5g3SwfkobqXtOhy/JoRD4ftjdt6zhg1GxfwMwDxCL5rAF9p0QOv4R9274agtyhijXp4GkyuXSBzxjhButOHHiGifLh9GjnHBrbtAMvJZjo5OnezyQrjBmPoMef+tKhoKwTPzS6Yhg/TUEGRZpuAbG4Z72KA+8ozzPo4DP+wzPyB+w61ZVuXlbM9aReik+kMVS3Z9btbSxn2ThPQ6qIzH1mgI/Kn9YGoPcjg3kfa0JaXtOAw9Lf5nmTzf9WoOCC3sKORQBgORzvV1vOsUH/OB3UQptN7GgKsGI9aF4sJloKJAE9ScKfGw6Ah5rFMOEKgoemL8+3EIhhU8oDf8RwzJBFQSgV24IHHutlzagXKxv7o21V8THGwbY6oVtvmUTOzc7jFUXofsYyRO9RwZLGn945v/QNJ9cV2Au0iKf3JLW0GLf8oX31R3T0m7Ra/EtvXKelIjQy47Ae488w=
-    - secure: eYHoYJLcv+os3c7JXdIuqr2+01SvAJbFb+T4iEAXRkST15lPvgO3nB16QBZ7teO2aZehL4Qbqey73U4KpmFBcDUtcVUk+6VZiy4+aBbb/zAbZuBr/5YFtQ2eycnaDOMfhKiVw2sJHHN5Q/WlfNkueALK18o/sjouYerNYJaPlYtuHyXY1AezvMoqGIVvTgc4wSu3fPF1yVtOyVa5IAHo2/P2ziuNhw0hSJC0xX3hCYL2Dc0EV/YnkXGbfjgVmNJZ07WLYUzjS1c1ovKWR9nWy3LWUEYc3/1VdiJY3sSBwnDWztQRvA91r/ydAPIE4+SRMaQsrVkmWUFAK1Ux4xEugHgzKrKEN3n7W1KPNEw62MLS3fmhzZC/49v8lwoYtDaYBbtppTQNK2HZTJE8N0hMHcQsj+EBSqLvuknNhPvGMgJt0BlkhKAcWluC35JnNMsnitYIH1+ZUwW40QtvFo9z9kaMb/kseKBw8zv4Xw9BQZUMoZKhR1bGV25TR2SbELEqbGGQP8HNaWHwnzzoskWe04Q+R3zJ4Fr7xXD4f7XT7bMCZWnlzizmb1ITijD6QXbMIycOtwI/5pY6g1GHHptsXpOyC3BAnY0BbhUBdXIMBl8qk0lHz3s1U1LxLepRQv599tm28ru2x2hX9IhV/PQZfhFE0aJ3wvn0I+SJOFc8RgQ=
-    - secure: mjI/WNydX8Tf99+aaHumXK56rhnJl+FQHvYTofmitR6SAEGqmaY1Webf1k2jW3ovvRt4QAzw9KoMvXgLMxDgsnpeyB620Zx49uVQObTiWVsD8jvioptMid2va0T3/boBXH/ObkSxXJr/c4v8DqV2YladiWi0ffvLENXxtO/6TRTC3f3Fhm16Gk0OF9BfBX2jS3PHsUQ6THbE8StbJ5AV6liuRvDF24UtAu0dHR0+kt33LXFHsjQzsTg936kFk/k/PdDpKpPgM3mNJNOGpAFW+Vqb/Cs3fy24nYnptqfoMEjoSeJpv8ydnnczfiHZBmWa4siUHOViGTuVdVfhzmcuHlDF63vYj6bt5cm3TQkxrfCJe2gRGU/yi3BScbIviGrvVRlfRd80lFQ2j/VC/j2mJ1BwazwB4FL2z6WG+vF9AF/70GuV4yiDjct002A1vz4Z7vnPhw6zkDdytKWVGSrtWrKoP/KdZrXvn0VfEgdByIofN31CaVAJ7nA447R5WZcgTUEMUTyTr6EPVkmxoVjyAqacAauNfP9uRAlsf5UUrU4OdUmVOBP8M8Ax+p3/6bIT3BBGenBfLQf39OBC2MzV4T6uROiVp4DZjTYYtKjCIxwA2bRLx/5+3kkN+2nwXZe2ebCNKUk28WGXFow3Icy2VXbCgR6yx+nDVgdMa3VEqw4=
+# Environment
+dist: bionic
 language: java
-sudo: false
-dist: xenial
 services:
   - xvfb
 addons:
   chrome: stable
   firefox: latest
+
+# Prerequisites
 before_install:
+  # Set up path
+  - export PATH=${PATH}:.
+  # Export display for direct browser control
   - export DISPLAY=:99.0
+  # Setup the code signing key; it will be used to publish snapshots and releases
   - openssl aes-256-cbc -K $encrypted_1cfd28b7d502_key -iv $encrypted_1cfd28b7d502_iv
-    -in deployment/signingkey.asc.enc -out deployment/signingkey.asc -d
-install: mvn -DskipTests -Dgpg.skip install
-after_success:
-  - gpg2 --keyring=$TRAVIS_BUILD_DIR/pubring.gpg --no-default-keyring --import deployment/signingkey.asc
-  - gpg2 --allow-secret-key-import --keyring=$TRAVIS_BUILD_DIR/secring.gpg --no-default-keyring
-    --import deployment/signingkey.asc
-  - mvn clean deploy --settings deployment/settings.xml -Dgpg.executable=gpg2 -Dgpg.keyname=18225EE148A2741CEDAC4A9FC9700D3CF6BA3B15
-    -Dgpg.passphrase=$PASSPHRASE -Dgpg.publicKeyring=$TRAVIS_BUILD_DIR/pubring.gpg -Dgpg.secretKeyring=$TRAVIS_BUILD_DIR/secring.gpg
+    -in deploy/code-signing-key.asc.enc -out /tmp/code-signing-key.asc -d
+  - gpg2 --batch --no-default-keyring --allow-secret-key-import --import /tmp/code-signing-key.asc
+  # Setup the github deploy key as the default SSH key
+  - openssl aes-256-cbc -K $encrypted_1cfd28b7d502_key -iv $encrypted_1cfd28b7d502_iv
+    -in deploy/id_rsa.enc -out ~/.ssh/id_rsa -d
+  - chmod 400 ~/.ssh/id_rsa
+  # Configure git
+  - git config --local user.name "Travis CI"
+  - git config --local user.email "travis@travis-ci.com"
+  - git remote add ssh-origin git@github.com:${TRAVIS_REPO_SLUG}.git
+
+# Pre-download all maven dependencies
+install: mvnw dependency:go-offline -e -B -ntp
+
+# Integrate the latest and deploy snapshot artifacts to OSSRH. The script
+# returns a success exit code to ensure build proceeds to deploy stage
+script: mvnw deploy -e -B -ntp -settings .mvn/settings.xml -P ossrh
