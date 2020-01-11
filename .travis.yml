@@ -33,7 +33,7 @@ before_install:
   - git remote add ssh-origin git@github.com:${TRAVIS_REPO_SLUG}.git
 
 # Pre-download all maven dependencies
-install: true
+install: mvnw -e -B -ntp -settings .mvn/settings.xml -P ossrh de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
 
 # Integrate the latest and deploy snapshot artifacts to OSSRH. The script
 # returns a success exit code to ensure build proceeds to deploy stage
