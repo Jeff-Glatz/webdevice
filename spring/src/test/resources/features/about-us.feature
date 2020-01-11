@@ -1,6 +1,6 @@
 Feature: About Us page
 
-  @direct @ignore
+  @direct
   Scenario: About Us page can be viewed with Firefox
     Given a "LocalFirefox" browser
     When I navigate home
