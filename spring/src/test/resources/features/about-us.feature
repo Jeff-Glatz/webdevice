@@ -6,7 +6,7 @@ Feature: About Us page
     When I navigate home
     And I navigate to "/about"
 
-  @direct @ignore
+  @direct
   Scenario: About Us page can be viewed with Chrome
     Given a "LocalChrome" browser
     When I navigate home
