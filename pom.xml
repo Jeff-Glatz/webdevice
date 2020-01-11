@@ -12,6 +12,11 @@
 
     <url>https://github.com/ruffkat/webdevice</url>
 
+    <organization>
+        <name>WebDevice.IO</name>
+        <url>https://webdevice.io</url>
+    </organization>
+
     <developers>
         <developer>
             <id>ruffkat</id>

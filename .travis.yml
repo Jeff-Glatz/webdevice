@@ -6,6 +6,10 @@ services:
 addons:
   chrome: stable
   firefox: latest
+sudo: false
+cache:
+  directories:
+    - $HOME/.m2
 
 # Prerequisites
 before_install:
