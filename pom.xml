@@ -4,7 +4,7 @@
 
     <groupId>io.webdevice</groupId>
     <artifactId>webdevice-parent</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4-SNAPSHOT</version>
     <name>WebDevice.IO</name>
     <description>WebDevice.IO Parent</description>
     <packaging>pom</packaging>
@@ -30,7 +30,7 @@
         <connection>scm:git:git://github.com/ruffkat/webdevice.git</connection>
         <developerConnection>scm:git:git@github.com:ruffkat/webdevice.git</developerConnection>
         <url>https://github.com/ruffkat/webdevice</url>
-        <tag>0.0.3</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
