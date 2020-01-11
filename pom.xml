@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.webdevice</groupId>
     <artifactId>webdevice-parent</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.2</version>
     <name>WebDevice.IO</name>
     <description>WebDevice.IO Parent</description>
     <packaging>pom</packaging>
@@ -31,7 +30,7 @@
         <connection>scm:git:git://github.com/ruffkat/webdevice.git</connection>
         <developerConnection>scm:git:git@github.com:ruffkat/webdevice.git</developerConnection>
         <url>https://github.com/ruffkat/webdevice</url>
-        <tag>HEAD</tag>
+        <tag>0.0.2</tag>
     </scm>
 
     <issueManagement>
