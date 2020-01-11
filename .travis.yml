@@ -1,6 +1,5 @@
 # Host Environment
 os: linux
-arch: arm64
 
 # Build Environment
 dist: bionic
