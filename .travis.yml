@@ -1,12 +1,15 @@
-# Environment
+# Host Environment
+os: linux
+arch: arm64
+
+# Build Environment
 dist: bionic
-language: java
 services:
   - xvfb
 addons:
   chrome: stable
   firefox: latest
-sudo: false
+language: java
 cache:
   directories:
     - $HOME/.m2
@@ -20,7 +23,7 @@ before_install:
   # Setup the code signing key; it will be used to publish snapshots and releases
   - openssl aes-256-cbc -K $encrypted_1cfd28b7d502_key -iv $encrypted_1cfd28b7d502_iv
     -in deploy/code-signing-key.asc.enc -out /tmp/code-signing-key.asc -d
-  - gpg2 --batch --no-default-keyring --allow-secret-key-import --import /tmp/code-signing-key.asc
+  - gpg --batch --no-default-keyring --allow-secret-key-import --import /tmp/code-signing-key.asc
   # Setup the github deploy key as the default SSH key
   - openssl aes-256-cbc -K $encrypted_1cfd28b7d502_key -iv $encrypted_1cfd28b7d502_iv
     -in deploy/id_rsa.enc -out ~/.ssh/id_rsa -d
