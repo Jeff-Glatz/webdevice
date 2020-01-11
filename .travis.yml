@@ -31,4 +31,12 @@ install: mvnw dependency:go-offline -e -B -ntp
 
 # Integrate the latest and deploy snapshot artifacts to OSSRH. The script
 # returns a success exit code to ensure build proceeds to deploy stage
-script: mvnw deploy -e -B -ntp -settings .mvn/settings.xml -P ossrh
+script: deploy/snapshot.sh
+
+# Perform a release when the repository has been tagged
+deploy:
+  - provider: script
+    script: deploy/release.sh
+    skip_cleanup: true
+    on:
+      tags: true
