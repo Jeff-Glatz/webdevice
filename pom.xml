@@ -202,7 +202,6 @@
                             <tagNameFormat>@{project.version}</tagNameFormat>
                             <autoVersionSubmodules>true</autoVersionSubmodules>
                             <useReleaseProfile>false</useReleaseProfile>
-                            <localCheckout>true</localCheckout>
                         </configuration>
                     </plugin>
                     <plugin>
