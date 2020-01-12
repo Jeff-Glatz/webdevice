@@ -36,7 +36,7 @@ before_install:
   - chmod 400 ~/.ssh/id_rsa
 
 # Pre-download all maven dependencies
-install: mvnw -e -B -ntp -s deploy/settings.xml -P ossrh -DskipTests=true clean install
+install: mvn -e -B -ntp -s deploy/settings.xml -P ossrh -DskipTests=true clean install
 
 # Integrate the latest and deploy snapshot artifacts to OSSRH. The script
 # returns a success exit code to ensure build proceeds to deploy stage
