@@ -1,9 +1,19 @@
-[![Build Status](https://travis-ci.com/ruffkat/webdevice.svg?branch=master)](https://travis-ci.com/ruffkat/webdevice)
+[![Build Status](https://img.shields.io/travis/ruffkat/webdevice/master?color=success)](https://travis-ci.com/ruffkat/webdevice)
+[![Maven Central](https://img.shields.io/maven-central/v/io.webdevice/webdevice-spring.svg?color=success&label=maven%20central)](https://search.maven.org/search?q=g:io.webdevice)
 
 # WebDevice.IO
 WebDevice.IO is a lightweight Java-based framework, initially for use within `Cucumber` test suites 
 based on `cucumber-spring`, for managing a collection of `WebDriver` devices that can be specified and
 activated at `Scenario` runtime.
+
+## Installation
+```xml
+<dependency>
+  <groupId>io.webdevice</groupId>
+  <artifactId>webdevice-spring</artifactId>
+  <version>0.0.4</version>
+</dependency>
+```
 
 ## Cucumber Integration
 ### Cucumber + Spring + JUnit
