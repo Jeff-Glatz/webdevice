@@ -19,7 +19,7 @@ mvn -e -B -ntp -s deploy/settings.xml -P ossrh -DgenerateBackupPoms=false -DnewV
 echo "Executing deploy goal for ${TRAVIS_TAG}"
 mvn -e -B -ntp -s deploy/settings.xml -P ossrh clean deploy
 
-echo "Committing changes to release/${TRAVIS_TAG}"
+echo "Pushing release/${TRAVIS_TAG}"
 find . -name pom.xml -exec git add {} \;
 git commit -m "Release ${TRAVIS_TAG} (build: ${TRAVIS_BUILD_NUMBER})"
 git push -u origin release/${TRAVIS_TAG}
@@ -28,13 +28,12 @@ echo "Merging release/${TRAVIS_TAG} into master"
 git checkout master
 git pull
 git merge release/${TRAVIS_TAG}
-git push -u origin master
 
 echo "Preparing next development version"
 mvn -e -B -ntp -s deploy/settings.xml -P ossrh release:update-versions
-
-echo "Executing deploy goal on next development version"
 mvn -e -B -ntp -s deploy/settings.xml -P ossrh -DskipTests=true clean deploy
+
+echo "Pushing next development version to master"
 find . -name pom.xml -exec git add {} \;
 git commit -m "Next development version (build: ${TRAVIS_BUILD_NUMBER})"
 git push -u origin master
