@@ -20,7 +20,7 @@ echo "Executing deploy goal for ${TRAVIS_TAG}"
 mvn -e -B -ntp -s deploy/settings.xml -P ossrh clean deploy
 
 echo "Committing changes to release/${TRAVIS_TAG}"
-git add pom.xml
+find . -name pom.xml -exec git add {} \;
 git commit -m "Release ${TRAVIS_TAG} (build: ${TRAVIS_BUILD_NUMBER})"
 git push -u origin release/${TRAVIS_TAG}
 
@@ -35,6 +35,6 @@ mvn -e -B -ntp -s deploy/settings.xml -P ossrh release:update-versions
 
 echo "Executing deploy goal on next development version"
 mvn -e -B -ntp -s deploy/settings.xml -P ossrh -DskipTests=true clean deploy
-git add pom.xml
+find . -name pom.xml -exec git add {} \;
 git commit -m "Next development version (build: ${TRAVIS_BUILD_NUMBER})"
 git push -u origin master
