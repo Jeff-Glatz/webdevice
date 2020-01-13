@@ -132,7 +132,7 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
                     <parallel>all</parallel>
-                    <threadCount>4</threadCount>
+                    <threadCount>5</threadCount>
                 </configuration>
             </plugin>
             <plugin>

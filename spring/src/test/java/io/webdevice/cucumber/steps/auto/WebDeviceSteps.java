@@ -1,17 +1,18 @@
-package io.webdevice.cucumber.steps;
+package io.webdevice.cucumber.steps.auto;
 
 import io.cucumber.java.en.Given;
 import io.webdevice.device.WebDevice;
-import io.webdevice.wiring.WebDeviceRuntime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * Only one step definition can be annotated as the @ContextConfiguration
- * for Spring. This is detected by cucumber-spring library and will serve
- * as the "entry point" for Spring configuration
+ * This demonstrates using WbeDevice with an existing
+ * configuration with auto configuration enabled
  */
-@SpringBootTest(classes = WebDeviceRuntime.class)
+@SpringBootTest
+@EnableAutoConfiguration
 public class WebDeviceSteps {
 
     @Autowired
@@ -35,5 +36,9 @@ public class WebDeviceSteps {
     @Given("I navigate to {string}")
     public void navigateTo(String relativePath) {
         browser.navigateTo(relativePath);
+    }
+
+    @Configuration
+    public static class Context {
     }
 }
