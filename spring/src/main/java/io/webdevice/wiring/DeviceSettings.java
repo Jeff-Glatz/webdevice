@@ -1,6 +1,5 @@
 package io.webdevice.wiring;
 
-import io.webdevice.device.Device;
 import io.webdevice.device.DeviceProvider;
 import io.webdevice.device.DirectDeviceProvider;
 import io.webdevice.device.RemoteDeviceProvider;
@@ -18,7 +17,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
@@ -37,7 +35,6 @@ public class DeviceSettings
     private final Set<String> confidential = new LinkedHashSet<>();
     private String name;
     private boolean pooled = true;
-    private Function<Device<? extends WebDriver>, Boolean> pooledDeviceTest;
     private Class<? extends DeviceProvider> provider;
     private Class<? extends WebDriver> driver;
     private URL remoteAddress;
@@ -87,19 +84,6 @@ public class DeviceSettings
 
     public DeviceSettings withPooled(boolean pooled) {
         setPooled(pooled);
-        return this;
-    }
-
-    public Function<Device<? extends WebDriver>, Boolean> getPooledDeviceTest() {
-        return pooledDeviceTest;
-    }
-
-    public void setPooledDeviceTest(Function<Device<? extends WebDriver>, Boolean> pooledDeviceTest) {
-        this.pooledDeviceTest = pooledDeviceTest;
-    }
-
-    public DeviceSettings withPooledDeviceTest(Function<Device<? extends WebDriver>, Boolean> pooledDeviceTest) {
-        setPooledDeviceTest(pooledDeviceTest);
         return this;
     }
 
@@ -263,20 +247,12 @@ public class DeviceSettings
         return addConfidential(addCapabilities(definition));
     }
 
-    public Function<Device<? extends WebDriver>, Boolean> pooledDeviceTest() {
-        if (pooledDeviceTest == null) {
-            return isRemote() ? (device) -> false : (device) -> true;
-        }
-        return pooledDeviceTest;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DeviceSettings device = (DeviceSettings) o;
         return pooled == device.pooled &&
-                Objects.equals(pooledDeviceTest, device.pooledDeviceTest) &&
                 Objects.equals(name, device.name) &&
                 Objects.equals(aliases, device.aliases) &&
                 Objects.equals(provider, device.provider) &&
@@ -293,7 +269,7 @@ public class DeviceSettings
 
     @Override
     public int hashCode() {
-        return hash(name, aliases, pooled, pooledDeviceTest, provider, driver,
+        return hash(name, aliases, pooled, provider, driver,
                 remoteAddress, capabilitiesRef, options, desired,
                 capabilities, extraCapability, extraOptions, confidential);
     }
