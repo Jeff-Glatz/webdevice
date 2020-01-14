@@ -25,9 +25,9 @@ public class WebDeviceRuntime {
         this.settings = settings;
     }
 
-    @Bean
     @Primary
     @Scope(SCOPE_CUCUMBER_GLUE)
+    @Bean(initMethod = "initialize", destroyMethod = "release")
     public WebDevice webDevice(DeviceRegistry registry) {
         return new WebDevice(registry)
                 .withBaseUrl(settings.getBaseUrl())

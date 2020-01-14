@@ -15,8 +15,6 @@ import org.openqa.selenium.interactions.Sequence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
@@ -91,7 +89,6 @@ public class WebDevice
         return this;
     }
 
-    @PostConstruct
     public void initialize() {
         log.info("Initializing WebDevice...");
         if (eager) {
@@ -235,12 +232,14 @@ public class WebDevice
 
     @Override
     public void close() {
+        // TODO: Only allow this when a caller has opened a window since this can result in a call to quit.
         device.as(WebDriver.class)
                 .close();
     }
 
     @Override
     public void quit() {
+        // TODO: Make this a no-op to prevent callers from interfering with lifecycle management
         device.as(WebDriver.class)
                 .quit();
     }
@@ -290,7 +289,6 @@ public class WebDevice
                 .resetInputState();
     }
 
-    @PreDestroy
     public void release() {
         try {
             if (device != null) {
