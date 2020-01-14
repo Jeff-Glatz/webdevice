@@ -55,8 +55,7 @@ public class DeviceRegistrar
                     genericBeanDefinition(DevicePool.class)
                             .addConstructorArgValue(device.getName())
                             .addConstructorArgReference(provider)
-                            // TODO: Externalize the pool testing function
-                            .addConstructorArgValue((Function<Device<? extends WebDriver>, Boolean>) this::test)
+                            .addConstructorArgValue((Function<Device<? extends WebDriver>, Boolean>) device.pooledDeviceTest())
                             .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
                             .getBeanDefinition());
         }
@@ -84,9 +83,5 @@ public class DeviceRegistrar
                     registerAliases(provider, device, registry);
                 });
         log.info("Devices registered.");
-    }
-
-    protected Boolean test(Device<? extends WebDriver> device) {
-        return true;
     }
 }
