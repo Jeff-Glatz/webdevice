@@ -116,8 +116,6 @@ public class DevicesTest
         // For testing purposes, this provider will always return the same device
         DeviceProvider<RemoteWebDriver> provider = provider(() -> singleton);
 
-        provider.initialize();
-
         Device<RemoteWebDriver> device = provider.get();
         assertThat(device)
                 .isSameAs(singleton);
@@ -133,8 +131,6 @@ public class DevicesTest
         provider.accept(device);
         verify(mockRemoteWebDriver)
                 .quit();
-
-        provider.dispose();
     }
 
     @Test
@@ -145,8 +141,6 @@ public class DevicesTest
 
         // For testing purposes, this provider will always return the same device
         DeviceProvider<RemoteWebDriver> provider = provider("iphone", () -> mockRemoteWebDriver, remoteSession());
-
-        provider.initialize();
 
         Device<RemoteWebDriver> device = provider.get();
         assertThat(device.getName())
@@ -161,8 +155,6 @@ public class DevicesTest
         provider.accept(device);
         verify(mockRemoteWebDriver)
                 .quit();
-
-        provider.dispose();
     }
 
     @Test
@@ -170,8 +162,6 @@ public class DevicesTest
 
         // For testing purposes, this provider will always return the same device
         DeviceProvider<WebDriver> provider = directProvider("iphone", () -> mockWebDriver);
-
-        provider.initialize();
 
         Device<WebDriver> device = provider.get();
         assertThat(device.getName())
@@ -188,8 +178,6 @@ public class DevicesTest
         provider.accept(device);
         verify(mockWebDriver)
                 .quit();
-
-        provider.dispose();
     }
 
     @Test
@@ -200,8 +188,6 @@ public class DevicesTest
 
         // For testing purposes, this provider will always return the same device
         DeviceProvider<RemoteWebDriver> provider = remoteProvider("iphone", () -> mockRemoteWebDriver);
-
-        provider.initialize();
 
         Device<RemoteWebDriver> device = provider.get();
         assertThat(device.getName())
@@ -216,7 +202,5 @@ public class DevicesTest
         provider.accept(device);
         verify(mockRemoteWebDriver)
                 .quit();
-
-        provider.dispose();
     }
 }

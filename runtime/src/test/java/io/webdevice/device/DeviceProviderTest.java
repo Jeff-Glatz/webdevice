@@ -21,20 +21,10 @@ public class DeviceProviderTest
     }
 
     @Test
-    public void initializeShouldNoOp() {
-        provider.initialize();
-    }
-
-    @Test
     public void acceptShouldQuitWebDriver() {
         provider.accept(directDevice("iphone", mockWebDriver));
 
         verify(mockWebDriver)
                 .quit();
-    }
-
-    @Test
-    public void disposeShouldNoOp() {
-        provider.dispose();
     }
 }

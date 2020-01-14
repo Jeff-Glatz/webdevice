@@ -21,7 +21,6 @@ public class RemoteDeviceProvider
         return remoteAddress;
     }
 
-    @Override
     public void initialize() {
         if (capabilities == null) {
             capabilities = new ImmutableCapabilities();

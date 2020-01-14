@@ -44,7 +44,6 @@ public abstract class BaseDeviceProvider<Driver extends WebDriver>
         this.confidential.addAll(confidential);
     }
 
-    @Override
     public void dispose() {
         log.info("Provider {} shut down.", name);
     }

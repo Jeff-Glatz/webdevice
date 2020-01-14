@@ -54,6 +54,7 @@ public class DeviceRegistrar
                             .addConstructorArgReference(provider)
                             .addConstructorArgValue(new SimpleDeviceCheck<>())
                             .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
+                            .setDestroyMethodName("dispose")
                             .getBeanDefinition());
         }
         return pool;

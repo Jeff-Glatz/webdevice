@@ -80,7 +80,6 @@ public class DevicePool<Driver extends WebDriver>
         logStats();
     }
 
-    @Override
     public synchronized void dispose() {
         log.info("Shutting down {} pool...", name);
         drain(free);

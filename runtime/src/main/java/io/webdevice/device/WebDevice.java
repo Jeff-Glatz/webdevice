@@ -239,9 +239,7 @@ public class WebDevice
 
     @Override
     public void quit() {
-        // TODO: Make this a no-op to prevent callers from interfering with lifecycle management
-        device.as(WebDriver.class)
-                .quit();
+        // The WebDriver lifecycle is managed by it's provider
     }
 
     @Override

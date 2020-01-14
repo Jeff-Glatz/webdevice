@@ -33,6 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.openqa.selenium.By.cssSelector;
 import static org.openqa.selenium.OutputType.BASE64;
@@ -438,13 +439,13 @@ public class WebDeviceTest
     }
 
     @Test
-    public void quiteShouldDelegate() {
+    public void quitShouldNotDelegate() {
         providing("iphone", device)
                 .initializeWith("iphone", true, true);
 
         webDevice.quit();
 
-        verify(mockWebDriver)
+        verify(mockWebDriver, never())
                 .quit();
     }
 

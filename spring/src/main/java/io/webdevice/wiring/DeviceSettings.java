@@ -237,12 +237,16 @@ public class DeviceSettings
             definition = genericBeanDefinition(RemoteDeviceProvider.class)
                     .addConstructorArgValue(name)
                     .addConstructorArgValue(remoteAddress)
-                    .setAutowireMode(AUTOWIRE_CONSTRUCTOR);
+                    .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
+                    .setInitMethodName("initialize")
+                    .setDestroyMethodName("dispose");
         } else {
             definition = genericBeanDefinition(DirectDeviceProvider.class)
                     .addConstructorArgValue(name)
                     .addConstructorArgValue(driver)
-                    .setAutowireMode(AUTOWIRE_CONSTRUCTOR);
+                    .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
+                    .setInitMethodName("initialize")
+                    .setDestroyMethodName("dispose");
         }
         return addConfidential(addCapabilities(definition));
     }

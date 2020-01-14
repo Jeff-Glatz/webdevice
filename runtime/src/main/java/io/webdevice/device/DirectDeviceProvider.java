@@ -25,7 +25,6 @@ public class DirectDeviceProvider<Driver extends WebDriver>
         this(name, type, WebDriverManager::getInstance);
     }
 
-    @Override
     public void initialize() {
         WebDriverManager manager = factory.apply(type);
         log.info("Setting up {}", type);
