@@ -232,14 +232,18 @@ public class WebDevice
 
     @Override
     public void close() {
-        // TODO: Only allow this when a caller has opened a window since this can result in a call to quit.
-        device.as(WebDriver.class)
-                .close();
+        // Only delegate when there is more than one window open, otherwise quit will be invoked
+        if (getWindowHandles().size() > 1) {
+            device.as(WebDriver.class)
+                    .close();
+        } else {
+            log.warn("Only the provider of the current device should manage the driver's lifecycle");
+        }
     }
 
     @Override
     public void quit() {
-        // The WebDriver lifecycle is managed by it's provider
+        log.warn("Only the provider of the current device should manage the driver's lifecycle");
     }
 
     @Override

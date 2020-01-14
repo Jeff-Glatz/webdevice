@@ -21,14 +21,17 @@ import org.openqa.selenium.remote.RemoteWebElement;
 
 import java.net.URL;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static io.webdevice.device.Devices.directDevice;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
+import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.BDDMockito.given;
@@ -428,13 +431,30 @@ public class WebDeviceTest
     }
 
     @Test
-    public void closeShouldDelegate() {
+    public void closeShouldDelegateWhenThereAreMultipleWindowsOpen() {
         providing("iphone", device)
                 .initializeWith("iphone", true, true);
+
+        given(mockWebDriver.getWindowHandles())
+                .willReturn(new LinkedHashSet<>(asList("handle-1", "handle-2")));
 
         webDevice.close();
 
         verify(mockWebDriver)
+                .close();
+    }
+
+    @Test
+    public void closeShouldNotDelegateWhenThereIsOneWindowOpen() {
+        providing("iphone", device)
+                .initializeWith("iphone", true, true);
+
+        given(mockWebDriver.getWindowHandles())
+                .willReturn(singleton("handle"));
+
+        webDevice.close();
+
+        verify(mockWebDriver, never())
                 .close();
     }
 
