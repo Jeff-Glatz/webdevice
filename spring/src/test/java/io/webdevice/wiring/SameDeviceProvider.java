@@ -4,11 +4,11 @@ import io.webdevice.device.Device;
 import io.webdevice.device.DeviceProvider;
 import org.openqa.selenium.WebDriver;
 
-public class SingletonDeviceProvider<Driver extends WebDriver>
+public class SameDeviceProvider<Driver extends WebDriver>
         implements DeviceProvider<Driver> {
     private final Device<Driver> singleton;
 
-    public SingletonDeviceProvider(Device<Driver> singleton) {
+    public SameDeviceProvider(Device<Driver> singleton) {
         this.singleton = singleton;
     }
 
