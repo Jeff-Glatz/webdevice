@@ -1,4 +1,4 @@
-package io.webdevice.cucumber.steps.simple;
+package io.webdevice.cucumber.steps.direct;
 
 import io.cucumber.java.en.Given;
 import io.webdevice.device.WebDevice;
@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
- * This demonstrates using WbeDevice without an existing
- * configuration by referencing the {@link WebDeviceRuntime}
+ * This demonstrates using WbeDevice without an existing configuration
+ * by directly referencing the {@link WebDeviceRuntime}
  */
 @SpringBootTest(classes = WebDeviceRuntime.class)
 public class WebDeviceSteps {
