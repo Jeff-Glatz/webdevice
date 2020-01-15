@@ -1,4 +1,4 @@
-package io.webdevice.cucumber.steps.auto;
+package io.webdevice.cucumber.split.steps.auto;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

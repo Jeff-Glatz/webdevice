@@ -3,7 +3,7 @@ Feature: Device definition
   Scenario: Eagerly acquires the default device and allows changing device in test
     When I navigate home
     And I navigate to "/about"
-    When a "Chrome" browser
+    When a "Chrome" browser is used
     And I navigate home
-    When a "Firefox" browser
+    When the default browser is used
     And I navigate home
