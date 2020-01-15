@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        tags = {"@local and not @ignore"},
+        tags = {"@direct and not @ignore"},
         glue = {"io.webdevice.cucumber.steps.enabled"},
         features = {"src/test/resources/features"},
         plugin = {"pretty"})

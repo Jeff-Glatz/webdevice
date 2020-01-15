@@ -5,14 +5,12 @@ import io.webdevice.device.WebDevice;
 import io.webdevice.wiring.EnableWebDevice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Configuration;
 
 /**
- * This demonstrates using WbeDevice with an existing
- * configuration with WebDevice enabled
+ * This demonstrates using WbeDevice with an existing configuration
+ * with the {@link EnableWebDevice} annotation
  */
-@SpringBootTest
-@EnableWebDevice
+@SpringBootTest(classes = TestConfiguration.class)
 public class WebDeviceSteps {
 
     @Autowired
@@ -36,9 +34,5 @@ public class WebDeviceSteps {
     @Given("I navigate to {string}")
     public void navigateTo(String relativePath) {
         browser.navigateTo(relativePath);
-    }
-
-    @Configuration
-    public static class Context {
     }
 }
