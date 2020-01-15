@@ -76,7 +76,7 @@ public class ProtectedCapabilitiesTest {
     public void shouldMimicCapabilitiesToString() {
         capabilities.setCapability("array", new String[]{"one", null});
         capabilities.setCapability("list", singletonList("one"));
-        capabilities.setCapability("null", (String)null);
+        capabilities.setCapability("null", (String) null);
         capabilities.setCapability("truncated", "1234567890123456789012345678901");
 
         assertThat(capabilities.toString())

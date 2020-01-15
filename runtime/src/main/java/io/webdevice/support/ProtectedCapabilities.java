@@ -24,11 +24,6 @@ public class ProtectedCapabilities
         this.confidential = confidential;
     }
 
-    public static String mask(Capabilities capabilities, Set<String> confidential) {
-        return new ProtectedCapabilities(capabilities, confidential)
-                .toString();
-    }
-
     /**
      * Mimics {@link MutableCapabilities#toString()} behavior, masking capability values marked
      * as confidential.
@@ -93,5 +88,10 @@ public class ProtectedCapabilities
 
         seen.put(stringify, value.toString());
         return value.toString();
+    }
+
+    public static String mask(Capabilities capabilities, Set<String> confidential) {
+        return new ProtectedCapabilities(capabilities, confidential)
+                .toString();
     }
 }

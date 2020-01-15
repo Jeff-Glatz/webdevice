@@ -25,12 +25,6 @@ public class Settings
     private boolean eager = false;
     private boolean strict = true;
 
-    public static Settings settings(Environment environment) {
-        return Binder.get(environment)
-                .bind(PREFIX, Settings.class)
-                .get();
-    }
-
     public Map<String, DeviceSettings> getDevices() {
         return unmodifiableMap(devices);
     }
@@ -117,5 +111,11 @@ public class Settings
     @Override
     public int hashCode() {
         return Objects.hash(devices, baseUrl, defaultDevice, eager, strict);
+    }
+
+    public static Settings settings(Environment environment) {
+        return Binder.get(environment)
+                .bind(PREFIX, Settings.class)
+                .get();
     }
 }
