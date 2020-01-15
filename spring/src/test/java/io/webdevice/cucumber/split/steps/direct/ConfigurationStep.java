@@ -1,14 +1,16 @@
 package io.webdevice.cucumber.split.steps.direct;
 
-import io.webdevice.cucumber.common.SimpleDeviceSteps;
+import io.cucumber.java8.En;
 import io.webdevice.wiring.WebDeviceRuntime;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 /**
- * This demonstrates using WbeDevice without an existing configuration
+ * This demonstrates using WebDevice without an existing configuration
  * by directly referencing the {@link WebDeviceRuntime}
  */
+@DirtiesContext
 @SpringBootTest(classes = WebDeviceRuntime.class)
-public class WebDeviceSteps
-        extends SimpleDeviceSteps {
+public class ConfigurationStep
+        implements En {
 }

@@ -4,10 +4,13 @@ import io.cucumber.java.en.Given;
 import io.webdevice.device.WebDevice;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public abstract class SimpleDeviceSteps {
+/**
+ * WebDevice steps common to all test scenarios
+ */
+public class WebDeviceSteps {
 
     @Autowired
-    protected WebDevice browser;
+    private WebDevice browser;
 
     @Given("the default browser is used")
     public void useBrowser() {
