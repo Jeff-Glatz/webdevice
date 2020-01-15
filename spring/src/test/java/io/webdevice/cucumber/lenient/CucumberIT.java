@@ -1,4 +1,4 @@
-package io.webdevice.cucumber.single;
+package io.webdevice.cucumber.lenient;
 
 import io.webdevice.cucumber.common.SimpleRunner;
 
