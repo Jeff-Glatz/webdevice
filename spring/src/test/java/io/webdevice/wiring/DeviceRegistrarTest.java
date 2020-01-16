@@ -56,6 +56,88 @@ public class DeviceRegistrarTest
     }
 
     @Test
+    public void shouldSkipRegisteringPoolIfAlreadyDefined()
+            throws Exception {
+        StandardEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.yaml");
+        DeviceRegistrar registrar = new DeviceRegistrar(environment);
+
+        given(mockRegistry.isBeanNameInUse("Direct"))
+                .willReturn(false);
+        given(mockRegistry.isBeanNameInUse("Direct-provider"))
+                .willReturn(false);
+        given(mockRegistry.isBeanNameInUse("Direct-pool"))
+                .willReturn(true);
+
+        registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
+
+        verify(mockRegistry)
+                .isBeanNameInUse("Direct");
+        verify(mockRegistry)
+                .isBeanNameInUse("Direct-provider");
+        verify(mockRegistry)
+                .registerBeanDefinition(eq("Direct-provider"), definitionCaptor.capture());
+        verify(mockRegistry)
+                .isBeanNameInUse("Direct-pool");
+        verify(mockRegistry)
+                .registerAlias("Direct-pool", "Direct");
+        verifyNoMoreInteractions(mockRegistry);
+
+        // Provider definition
+        GenericBeanDefinition provider = definitionCaptor.getValue();
+        DeviceSettings settings = settings(environment)
+                .device("Direct");
+        assertThat(provider)
+                .isEqualTo(settings.definitionOf().getBeanDefinition());
+    }
+
+    @Test
+    public void shouldSkipRegisteringProviderIfAlreadyDefined()
+            throws Exception {
+        StandardEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.yaml");
+        DeviceRegistrar registrar = new DeviceRegistrar(environment);
+
+        given(mockRegistry.isBeanNameInUse("Direct"))
+                .willReturn(false);
+        given(mockRegistry.isBeanNameInUse("Direct-provider"))
+                .willReturn(true);
+        given(mockRegistry.isBeanNameInUse("Direct-pool"))
+                .willReturn(false);
+
+        registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
+
+        verify(mockRegistry)
+                .isBeanNameInUse("Direct");
+        verify(mockRegistry)
+                .isBeanNameInUse("Direct-provider");
+        verify(mockRegistry)
+                .isBeanNameInUse("Direct-pool");
+        verify(mockRegistry)
+                .registerBeanDefinition(eq("Direct-pool"), definitionCaptor.capture());
+        verify(mockRegistry)
+                .registerAlias("Direct-pool", "Direct");
+        verifyNoMoreInteractions(mockRegistry);
+
+        // Pool definition
+        GenericBeanDefinition pool = definitionCaptor.getValue();
+        assertThat(pool.getBeanClass())
+                .isSameAs(DevicePool.class);
+        assertThat(pool.getAutowireMode())
+                .isSameAs(AUTOWIRE_CONSTRUCTOR);
+        assertThat(pool.getDestroyMethodName())
+                .isEqualTo("dispose");
+
+        ConstructorArgumentValues values = pool.getConstructorArgumentValues();
+        assertThat(values.getArgumentCount())
+                .isSameAs(3);
+        assertThat(values.getIndexedArgumentValue(0, String.class).getValue())
+                .isEqualTo("Direct");
+        assertThat(values.getIndexedArgumentValue(1, String.class).getValue())
+                .isEqualTo(new RuntimeBeanReference("Direct-provider"));
+        assertThat(values.getIndexedArgumentValue(2, String.class).getValue())
+                .isInstanceOf(SimpleDeviceCheck.class);
+    }
+
+    @Test
     public void shouldRegisterPooledDeviceAliasingPoolWithDeviceName()
             throws Exception {
         StandardEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.yaml");
