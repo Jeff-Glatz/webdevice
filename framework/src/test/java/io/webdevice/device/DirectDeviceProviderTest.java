@@ -138,13 +138,6 @@ public class DirectDeviceProviderTest
                 .isEqualTo("Instantiating class io.webdevice.device.WebDriverForTest with capabilities {accessKey: ********}");
     }
 
-    @Test
-    public void disposeShouldDoNothing() {
-        provider.dispose();
-
-        verifyNoMoreInteractions(mockManager, mockFactory);
-    }
-
     @Test(expected = UnsupportedOperationException.class)
     public void getConfidentialShouldReturnImmutableSet() {
         provider.getConfidential()

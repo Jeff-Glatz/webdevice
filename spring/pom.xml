@@ -34,7 +34,7 @@
     <dependencies>
         <dependency>
             <groupId>io.webdevice</groupId>
-            <artifactId>webdevice-runtime</artifactId>
+            <artifactId>webdevice-framework</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -84,7 +84,7 @@
         <!-- Test Dependencies -->
         <dependency>
             <groupId>io.webdevice</groupId>
-            <artifactId>webdevice-runtime</artifactId>
+            <artifactId>webdevice-framework</artifactId>
             <version>${project.version}</version>
             <classifier>tests</classifier>
             <type>test-jar</type>

@@ -44,10 +44,6 @@ public abstract class BaseDeviceProvider<Driver extends WebDriver>
         this.confidential.addAll(confidential);
     }
 
-    public void dispose() {
-        log.info("Provider {} shut down.", name);
-    }
-
     protected String maskedCapabilities() {
         return mask(capabilities, confidential);
     }

@@ -246,15 +246,13 @@ public class DeviceMetadata
                     .addConstructorArgValue(name)
                     .addConstructorArgValue(remoteAddress)
                     .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
-                    .setInitMethodName("initialize")
-                    .setDestroyMethodName("dispose");
+                    .setInitMethodName("initialize");
         } else {
             definition = genericBeanDefinition(DirectDeviceProvider.class)
                     .addConstructorArgValue(name)
                     .addConstructorArgValue(driver)
                     .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
-                    .setInitMethodName("initialize")
-                    .setDestroyMethodName("dispose");
+                    .setInitMethodName("initialize");
         }
         return addConfidential(addCapabilities(definition));
     }

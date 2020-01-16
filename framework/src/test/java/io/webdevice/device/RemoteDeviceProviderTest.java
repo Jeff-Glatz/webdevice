@@ -104,11 +104,6 @@ public class RemoteDeviceProviderTest
                 .isEqualTo(format("Providing new device named iphone connecting to %s with capabilities {accessKey: ********}", remoteAddress));
     }
 
-    @Test
-    public void disposeShouldDoNothing() {
-        provider.dispose();
-    }
-
     @Test(expected = UnsupportedOperationException.class)
     public void getConfidentialShouldReturnImmutableSet() {
         provider.getConfidential()

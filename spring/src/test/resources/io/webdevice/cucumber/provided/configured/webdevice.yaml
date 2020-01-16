@@ -4,4 +4,4 @@ webdevice:
   default-device: Provided
   devices:
     Provided:
-      provider: io.webdevice.cucumber.provided.common.CustomDeviceProvider
+      provider: io.webdevice.support.CustomFirefoxProvider

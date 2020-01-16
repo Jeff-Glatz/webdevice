@@ -1,4 +1,4 @@
-package io.webdevice.cucumber.provided.common;
+package io.webdevice.support;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.webdevice.device.BaseDeviceProvider;
@@ -10,11 +10,11 @@ import javax.annotation.PostConstruct;
 
 import static io.webdevice.device.Devices.directDevice;
 
-public class CustomDeviceProvider
+public class CustomFirefoxProvider
         extends BaseDeviceProvider<FirefoxDriver> {
 
     @Autowired
-    public CustomDeviceProvider(String name) {
+    public CustomFirefoxProvider(String name) {
         super(name);
     }
 

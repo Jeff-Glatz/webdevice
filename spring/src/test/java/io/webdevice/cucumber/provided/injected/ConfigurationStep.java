@@ -1,7 +1,7 @@
 package io.webdevice.cucumber.provided.injected;
 
 import io.cucumber.java8.En;
-import io.webdevice.cucumber.provided.common.CustomDeviceProvider;
+import io.webdevice.support.CustomFirefoxProvider;
 import io.webdevice.device.DeviceProvider;
 import io.webdevice.support.YamlPropertySourceFactory;
 import io.webdevice.support.YamlSupport;
@@ -27,7 +27,7 @@ public class ConfigurationStep
 
         @Bean("Provided")
         public DeviceProvider<FirefoxDriver> provided() {
-            return new CustomDeviceProvider("Provided");
+            return new CustomFirefoxProvider("Provided");
         }
     }
 }
