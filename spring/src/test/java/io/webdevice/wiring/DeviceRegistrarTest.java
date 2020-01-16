@@ -11,8 +11,10 @@ import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
+import org.springframework.core.env.StandardEnvironment;
 import org.springframework.core.type.AnnotationMetadata;
 
+import static io.webdevice.wiring.Settings.settings;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -53,12 +55,11 @@ public class DeviceRegistrarTest
         verifyNoMoreInteractions(mockRegistry);
     }
 
-    // TODO: Verify Provider Definition
     @Test
     public void shouldRegisterPooledDeviceAliasingPoolWithDeviceName()
             throws Exception {
-        DeviceRegistrar registrar = new DeviceRegistrar(
-                environmentWith("io/webdevice/wiring/direct-pooled-device.yaml"));
+        StandardEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.yaml");
+        DeviceRegistrar registrar = new DeviceRegistrar(environment);
 
         given(mockRegistry.isBeanNameInUse("Direct"))
                 .willReturn(false);
@@ -83,6 +84,14 @@ public class DeviceRegistrarTest
                 .registerAlias("Direct-pool", "Direct");
         verifyNoMoreInteractions(mockRegistry);
 
+        // Provider definition
+        GenericBeanDefinition provider = definitionCaptor.getAllValues()
+                .get(0);
+        DeviceSettings settings = settings(environment)
+                .device("Direct");
+        assertThat(provider)
+                .isEqualTo(settings.definitionOf().getBeanDefinition());
+
         // Pool definition
         GenericBeanDefinition pool = definitionCaptor.getAllValues()
                 .get(1);
@@ -104,12 +113,11 @@ public class DeviceRegistrarTest
                 .isInstanceOf(SimpleDeviceCheck.class);
     }
 
-    // TODO: Verify Provider Definition
     @Test
     public void shouldRegisterUnpooledDeviceAliasingProviderWithDeviceName()
             throws Exception {
-        DeviceRegistrar registrar = new DeviceRegistrar(
-                environmentWith("io/webdevice/wiring/direct-unpooled-device.yaml"));
+        StandardEnvironment environment = environmentWith("io/webdevice/wiring/direct-unpooled-device.yaml");
+        DeviceRegistrar registrar = new DeviceRegistrar(environment);
 
         given(mockRegistry.isBeanNameInUse("Direct"))
                 .willReturn(false);
@@ -127,5 +135,12 @@ public class DeviceRegistrarTest
         verify(mockRegistry)
                 .registerAlias("Direct-provider", "Direct");
         verifyNoMoreInteractions(mockRegistry);
+
+        // Provider definition
+        GenericBeanDefinition provider = definitionCaptor.getValue();
+        DeviceSettings settings = settings(environment)
+                .device("Direct");
+        assertThat(provider)
+                .isEqualTo(settings.definitionOf().getBeanDefinition());
     }
 }

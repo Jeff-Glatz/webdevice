@@ -40,6 +40,10 @@ public class Settings
         return this;
     }
 
+    public DeviceSettings device(String name) {
+        return devices.get(name);
+    }
+
     public Stream<DeviceSettings> devices() {
         return devices.values().stream();
     }
