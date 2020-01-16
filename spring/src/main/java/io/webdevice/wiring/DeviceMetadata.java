@@ -26,6 +26,14 @@ import static java.util.Objects.hash;
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
+/**
+ * The {@link DeviceMetadata} class supports 3 types of device providers
+ * <ul>
+ *     <li>Custom {@link DeviceProvider} implementations</li>
+ *     <li>{@link DirectDeviceProvider}</li>
+ *     <li>{@link RemoteDeviceProvider}</li>
+ * </ul>
+ */
 public class DeviceMetadata
         implements Serializable {
     private final Logger log = LoggerFactory.getLogger(getClass());
