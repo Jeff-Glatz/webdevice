@@ -1,0 +1,5 @@
+webdevice:
+  default-device: Foo
+  strict: false
+  eager: true
+  base-url: http://webdevice.io
