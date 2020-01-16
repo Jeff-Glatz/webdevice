@@ -40,7 +40,7 @@ public class DeviceRegistrarTest
     }
 
     @Test
-    public void shouldSkipDevicesAlreadyDefined()
+    public void shouldSkipRegisteringDeviceIfAlreadyDefined()
             throws Exception {
         DeviceRegistrar registrar = new DeviceRegistrar(
                 environmentWith("io/webdevice/wiring/direct-pooled-device.yaml"));
@@ -56,7 +56,7 @@ public class DeviceRegistrarTest
     }
 
     @Test
-    public void shouldSkipRegisteringPoolIfAlreadyDefined()
+    public void shouldSkipRegisteringPoolForPooledDeviceIfAlreadyDefinedAndAliasPoolWithDeviceName()
             throws Exception {
         StandardEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.yaml");
         DeviceRegistrar registrar = new DeviceRegistrar(environment);
@@ -91,7 +91,7 @@ public class DeviceRegistrarTest
     }
 
     @Test
-    public void shouldSkipRegisteringProviderIfAlreadyDefined()
+    public void shouldSkipRegisteringProviderForPooledDeviceIfAlreadyDefinedAndAliasPoolWithDeviceName()
             throws Exception {
         StandardEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.yaml");
         DeviceRegistrar registrar = new DeviceRegistrar(environment);
@@ -138,7 +138,7 @@ public class DeviceRegistrarTest
     }
 
     @Test
-    public void shouldRegisterPooledDeviceAliasingPoolWithDeviceName()
+    public void shouldRegisterPooledDeviceAndAliasPoolWithDeviceName()
             throws Exception {
         StandardEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.yaml");
         DeviceRegistrar registrar = new DeviceRegistrar(environment);
@@ -196,7 +196,7 @@ public class DeviceRegistrarTest
     }
 
     @Test
-    public void shouldRegisterUnpooledDeviceAliasingProviderWithDeviceName()
+    public void shouldRegisterUnpooledDeviceAndAliasProviderWithDeviceName()
             throws Exception {
         StandardEnvironment environment = environmentWith("io/webdevice/wiring/direct-unpooled-device.yaml");
         DeviceRegistrar registrar = new DeviceRegistrar(environment);
