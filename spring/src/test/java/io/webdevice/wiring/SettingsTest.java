@@ -1,31 +1,20 @@
 package io.webdevice.wiring;
 
-import io.webdevice.support.YamlPropertySourceFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.boot.convert.ApplicationConversionService;
-import org.springframework.core.env.StandardEnvironment;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.support.EncodedResource;
-import org.springframework.core.io.support.PropertySourceFactory;
 
-import java.io.IOException;
 import java.net.URL;
 
 import static io.webdevice.wiring.Settings.settings;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SettingsTest {
+public class SettingsTest
+        extends EnvironmentBasedTest {
 
-    private PropertySourceFactory propertySourceFactory;
-    private StandardEnvironment environment;
     private Settings settings;
 
     @Before
     public void setUp() {
-        propertySourceFactory = new YamlPropertySourceFactory();
-        environment = new StandardEnvironment();
-        environment.setConversionService(new ApplicationConversionService());
         settings = new Settings();
     }
 
@@ -38,7 +27,7 @@ public class SettingsTest {
                 .withEager(false)
                 .withBaseUrl(null);
 
-        Settings actual = settings(environmentFrom("io/webdevice/wiring/default-device-only.yaml"));
+        Settings actual = settings(environmentWith("io/webdevice/wiring/default-device-only.yaml"));
         assertThat(actual)
                 .isEqualTo(settings);
     }
@@ -51,7 +40,7 @@ public class SettingsTest {
                 .withEager(true)
                 .withBaseUrl(new URL("http://webdevice.io"));
 
-        Settings actual = settings(environmentFrom("io/webdevice/wiring/non-defaults.yaml"));
+        Settings actual = settings(environmentWith("io/webdevice/wiring/non-defaults.yaml"));
         assertThat(actual)
                 .isEqualTo(settings);
     }
@@ -68,14 +57,5 @@ public class SettingsTest {
 
         assertThat(settings.devices())
                 .contains(iPhone, iPad);
-    }
-
-    private StandardEnvironment environmentFrom(String resource)
-            throws IOException {
-        environment.getPropertySources()
-                .addFirst(propertySourceFactory
-                        .createPropertySource("webdevice",
-                                new EncodedResource(new ClassPathResource(resource))));
-        return environment;
     }
 }
