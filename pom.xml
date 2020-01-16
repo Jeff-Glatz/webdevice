@@ -337,7 +337,7 @@
     </profiles>
 
     <modules>
-        <module>runtime</module>
+        <module>framework</module>
         <module>spring</module>
     </modules>
 

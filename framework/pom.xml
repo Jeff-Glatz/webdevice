@@ -8,9 +8,9 @@
         <version>0.0.6-SNAPSHOT</version>
     </parent>
 
-    <artifactId>webdevice-runtime</artifactId>
-    <name>WebDevice.IO Runtime Module</name>
-    <description>WebDevice.IO Runtime Module</description>
+    <artifactId>webdevice-framework</artifactId>
+    <name>Framework Module</name>
+    <description>WebDevice.IO Framework Module</description>
 
     <properties>
         <!-- Dependency Versions -->

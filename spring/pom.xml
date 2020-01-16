@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>webdevice-spring</artifactId>
-    <name>WebDevice.IO Spring Module</name>
+    <name>Spring Module</name>
     <description>WebDevice.IO Spring Module</description>
 
     <properties>
