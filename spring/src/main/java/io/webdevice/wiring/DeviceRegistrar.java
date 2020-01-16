@@ -72,7 +72,13 @@ public class DeviceRegistrar
     private void registerDevices(Settings settings, BeanDefinitionRegistry registry) {
         log.info("Registering devices ...");
         settings.devices()
-                .filter(device -> !registry.isBeanNameInUse(device.getName()))
+                .filter(device -> {
+                    boolean defined = registry.isBeanNameInUse(device.getName());
+                    if (defined) {
+                        log.warn("Device {} is already defined, skipping registration", device.getName());
+                    }
+                    return !defined;
+                })
                 .forEach(device -> {
                     String provider = maybeRegisterProvider(device, registry);
                     if (device.isPooled()) {
