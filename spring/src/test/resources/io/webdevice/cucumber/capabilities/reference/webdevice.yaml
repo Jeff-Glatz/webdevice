@@ -1,0 +1,11 @@
+webdevice:
+  base-url: http://www.apple.com
+  eager: true
+  default-device: FirefoxLatestMojave
+  devices:
+    FirefoxLatestMojave:
+      remote-address: https://ondemand.saucelabs.com:443/wd/hub
+      pooled: false
+      capabilities-ref: firefoxOptions
+      confidential:
+        - accessKey

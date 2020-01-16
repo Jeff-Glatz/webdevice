@@ -15,6 +15,9 @@ public class YamlPropertySourceFactory
     public PropertySource<?> createPropertySource(String name, EncodedResource encodedResource)
             throws IOException {
         Resource resource = encodedResource.getResource();
+        if (name == null) {
+            name = resource.getFile().getName();
+        }
         CompositePropertySource propertySource = new CompositePropertySource(name);
         new YamlPropertySourceLoader()
                 .load(resource.getFilename(), resource)

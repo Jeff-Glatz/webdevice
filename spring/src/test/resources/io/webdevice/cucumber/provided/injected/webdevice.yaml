@@ -1,0 +1,4 @@
+webdevice:
+  base-url: http://www.apple.com
+  eager: true
+  default-device: Provided

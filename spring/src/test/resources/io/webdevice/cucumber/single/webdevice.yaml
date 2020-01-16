@@ -1,0 +1,7 @@
+webdevice:
+  default-device: Firefox
+  eager: true
+  base-url: http://www.apple.com
+  devices:
+    Firefox:
+      driver: org.openqa.selenium.firefox.FirefoxDriver
