@@ -1,19 +1,25 @@
 package io.webdevice.wiring;
 
+import io.webdevice.device.DevicePool;
+import io.webdevice.support.SimpleDeviceCheck;
 import org.junit.After;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.beans.factory.config.ConstructorArgumentValues;
+import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.core.type.AnnotationMetadata;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR;
 
 public class DeviceRegistrarTest
         extends EnvironmentBasedTest {
@@ -47,7 +53,7 @@ public class DeviceRegistrarTest
         verifyNoMoreInteractions(mockRegistry);
     }
 
-    // TODO: Verify Bean Definitions
+    // TODO: Verify Provider Definition
     @Test
     public void shouldRegisterPooledDeviceAliasingPoolWithDeviceName()
             throws Exception {
@@ -76,9 +82,29 @@ public class DeviceRegistrarTest
         verify(mockRegistry)
                 .registerAlias("Direct-pool", "Direct");
         verifyNoMoreInteractions(mockRegistry);
+
+        // Pool definition
+        GenericBeanDefinition pool = definitionCaptor.getAllValues()
+                .get(1);
+        assertThat(pool.getBeanClass())
+                .isSameAs(DevicePool.class);
+        assertThat(pool.getAutowireMode())
+                .isSameAs(AUTOWIRE_CONSTRUCTOR);
+        assertThat(pool.getDestroyMethodName())
+                .isEqualTo("dispose");
+
+        ConstructorArgumentValues values = pool.getConstructorArgumentValues();
+        assertThat(values.getArgumentCount())
+                .isSameAs(3);
+        assertThat(values.getIndexedArgumentValue(0, String.class).getValue())
+                .isEqualTo("Direct");
+        assertThat(values.getIndexedArgumentValue(1, String.class).getValue())
+                .isEqualTo(new RuntimeBeanReference("Direct-provider"));
+        assertThat(values.getIndexedArgumentValue(2, String.class).getValue())
+                .isInstanceOf(SimpleDeviceCheck.class);
     }
 
-    // TODO: Verify Bean Definitions
+    // TODO: Verify Provider Definition
     @Test
     public void shouldRegisterUnpooledDeviceAliasingProviderWithDeviceName()
             throws Exception {
