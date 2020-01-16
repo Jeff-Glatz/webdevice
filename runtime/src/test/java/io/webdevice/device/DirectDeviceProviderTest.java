@@ -13,6 +13,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.WebDriverException;
 
 import java.util.function.Function;
 
@@ -62,6 +63,12 @@ public class DirectDeviceProviderTest
         verify(mockFactory)
                 .apply(WebDriverForTest.class);
         verifyNoMoreInteractions(mockFactory, mockManager);
+    }
+
+    @Test(expected = WebDriverException.class)
+    public void shouldRaiseWebDriverExceptionWhenConstructionFails() {
+        new DirectDeviceProvider<>("iphone", BadWebDriver.class, null)
+                .get();
     }
 
     @Test

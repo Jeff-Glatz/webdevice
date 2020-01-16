@@ -9,21 +9,20 @@ import org.openqa.selenium.WebElement;
 import java.util.List;
 import java.util.Set;
 
-public class WebDriverForTest
+public class BadWebDriver
         implements WebDriver, HasCapabilities {
-    private final Capabilities capabilities;
 
-    public WebDriverForTest(Capabilities capabilities) {
-        this.capabilities = capabilities;
+    public BadWebDriver(Capabilities capabilities) {
+        throw new RuntimeException("boom");
     }
 
-    public WebDriverForTest() {
+    public BadWebDriver() {
         this(null);
     }
 
     @Override
     public Capabilities getCapabilities() {
-        return capabilities;
+        return null;
     }
 
     @Override
