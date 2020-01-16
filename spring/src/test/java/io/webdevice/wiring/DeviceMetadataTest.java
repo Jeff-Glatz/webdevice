@@ -7,19 +7,19 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DeviceSettingsTest {
-    private DeviceSettings settings;
+public class DeviceMetadataTest {
+    private DeviceMetadata settings;
 
     @Before
     public void setUp() {
-        settings = new DeviceSettings();
+        settings = new DeviceMetadata();
     }
 
     @Test
     public void shouldBuildProvidedDeviceDefinition() {
         AbstractBeanDefinition definition = settings.withName("myDevice")
                 .withProvider(SameDeviceProvider.class)
-                .definitionOf()
+                .buildDefinition()
                 .getBeanDefinition();
 
         ConstructorArgumentValues argumentValues = definition.getConstructorArgumentValues();

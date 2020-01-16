@@ -19,32 +19,32 @@ public class Settings
         implements Serializable {
     public static final String PREFIX = "webdevice";
 
-    private final Map<String, DeviceSettings> devices = new LinkedHashMap<>();
+    private final Map<String, DeviceMetadata> devices = new LinkedHashMap<>();
     private URL baseUrl;
     private String defaultDevice;
     private boolean eager = false;
     private boolean strict = true;
 
-    public Map<String, DeviceSettings> getDevices() {
+    public Map<String, DeviceMetadata> getDevices() {
         return unmodifiableMap(devices);
     }
 
-    public void setDevices(Map<String, DeviceSettings> devices) {
+    public void setDevices(Map<String, DeviceMetadata> devices) {
         this.devices.clear();
         this.devices.putAll(devices);
         this.devices.forEach((name, device) -> device.setName(name));
     }
 
-    public Settings withDevice(DeviceSettings device) {
+    public Settings withDevice(DeviceMetadata device) {
         devices.put(device.getName(), device);
         return this;
     }
 
-    public DeviceSettings device(String name) {
+    public DeviceMetadata device(String name) {
         return devices.get(name);
     }
 
-    public Stream<DeviceSettings> devices() {
+    public Stream<DeviceMetadata> devices() {
         return devices.values().stream();
     }
 

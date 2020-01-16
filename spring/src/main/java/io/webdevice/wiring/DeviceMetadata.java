@@ -26,7 +26,7 @@ import static java.util.Objects.hash;
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
-public class DeviceSettings
+public class DeviceMetadata
         implements Serializable {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final Set<String> aliases = new LinkedHashSet<>();
@@ -51,7 +51,7 @@ public class DeviceSettings
         this.name = name;
     }
 
-    public DeviceSettings withName(String name) {
+    public DeviceMetadata withName(String name) {
         setName(name);
         return this;
     }
@@ -65,7 +65,7 @@ public class DeviceSettings
         this.aliases.addAll(aliases);
     }
 
-    public DeviceSettings withAlias(String alias) {
+    public DeviceMetadata withAlias(String alias) {
         aliases.add(alias);
         return this;
     }
@@ -82,7 +82,7 @@ public class DeviceSettings
         this.pooled = pooled;
     }
 
-    public DeviceSettings withPooled(boolean pooled) {
+    public DeviceMetadata withPooled(boolean pooled) {
         setPooled(pooled);
         return this;
     }
@@ -95,7 +95,7 @@ public class DeviceSettings
         this.provider = provider;
     }
 
-    public DeviceSettings withProvider(Class<? extends DeviceProvider> provider) {
+    public DeviceMetadata withProvider(Class<? extends DeviceProvider> provider) {
         setProvider(provider);
         return this;
     }
@@ -112,7 +112,7 @@ public class DeviceSettings
         this.driver = driver;
     }
 
-    public DeviceSettings withDriver(Class<? extends WebDriver> driver) {
+    public DeviceMetadata withDriver(Class<? extends WebDriver> driver) {
         setDriver(driver);
         return this;
     }
@@ -125,7 +125,7 @@ public class DeviceSettings
         this.remoteAddress = remoteAddress;
     }
 
-    public DeviceSettings withRemoteAddress(URL remoteAddress) {
+    public DeviceMetadata withRemoteAddress(URL remoteAddress) {
         setRemoteAddress(remoteAddress);
         return this;
     }
@@ -142,7 +142,7 @@ public class DeviceSettings
         this.capabilitiesRef = capabilitiesRef;
     }
 
-    public DeviceSettings withCapabilitiesRef(String capabilitiesRef) {
+    public DeviceMetadata withCapabilitiesRef(String capabilitiesRef) {
         setCapabilitiesRef(capabilitiesRef);
         return this;
     }
@@ -155,7 +155,7 @@ public class DeviceSettings
         this.options = options;
     }
 
-    public DeviceSettings withOptions(Class<? extends MutableCapabilities> options) {
+    public DeviceMetadata withOptions(Class<? extends MutableCapabilities> options) {
         setOptions(options);
         return this;
     }
@@ -168,7 +168,7 @@ public class DeviceSettings
         this.desired = desired;
     }
 
-    public DeviceSettings withDesired(String desired) {
+    public DeviceMetadata withDesired(String desired) {
         setDesired(desired);
         return this;
     }
@@ -182,7 +182,7 @@ public class DeviceSettings
         this.capabilities.putAll(capabilities);
     }
 
-    public DeviceSettings withCapability(String capability, Object value) {
+    public DeviceMetadata withCapability(String capability, Object value) {
         capabilities.put(capability, value);
         return this;
     }
@@ -195,7 +195,7 @@ public class DeviceSettings
         this.extraCapability = extraCapability;
     }
 
-    public DeviceSettings withExtraCapability(String extraCapability) {
+    public DeviceMetadata withExtraCapability(String extraCapability) {
         this.extraCapability = extraCapability;
         return this;
     }
@@ -209,7 +209,7 @@ public class DeviceSettings
         this.extraOptions.putAll(extraOptions);
     }
 
-    public DeviceSettings withExtraOption(String option, Object value) {
+    public DeviceMetadata withExtraOption(String option, Object value) {
         extraOptions.put(option, value);
         return this;
     }
@@ -223,12 +223,12 @@ public class DeviceSettings
         this.confidential.addAll(confidential);
     }
 
-    public DeviceSettings withConfidential(String mask) {
+    public DeviceMetadata withConfidential(String mask) {
         confidential.add(mask);
         return this;
     }
 
-    public BeanDefinitionBuilder definitionOf() {
+    public BeanDefinitionBuilder buildDefinition() {
         BeanDefinitionBuilder definition;
         if (isProvided()) {
             definition = genericBeanDefinition(provider)
@@ -255,7 +255,7 @@ public class DeviceSettings
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DeviceSettings device = (DeviceSettings) o;
+        DeviceMetadata device = (DeviceMetadata) o;
         return pooled == device.pooled &&
                 Objects.equals(name, device.name) &&
                 Objects.equals(aliases, device.aliases) &&

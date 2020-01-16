@@ -21,7 +21,7 @@
     },
     {
       "name": "webdevice.devices",
-      "type": "java.util.Map<java.lang.String,io.webdevice.wiring.DeviceSettings>",
+      "type": "java.util.Map<java.lang.String,io.webdevice.wiring.DeviceMetadata>",
       "sourceType": "io.webdevice.wiring.Settings"
     },
     {

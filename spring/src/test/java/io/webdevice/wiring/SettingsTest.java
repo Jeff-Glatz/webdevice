@@ -47,9 +47,9 @@ public class SettingsTest
 
     @Test
     public void shouldStreamDevices() {
-        DeviceSettings iPhone = new DeviceSettings()
+        DeviceMetadata iPhone = new DeviceMetadata()
                 .withName("iPhone");
-        DeviceSettings iPad = new DeviceSettings()
+        DeviceMetadata iPad = new DeviceMetadata()
                 .withName("iPad");
 
         settings.withDevice(iPhone)
