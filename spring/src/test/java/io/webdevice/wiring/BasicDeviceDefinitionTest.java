@@ -12,44 +12,56 @@ import java.util.Map;
 import static io.webdevice.util.Collections.setOf;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DeviceMetadataTest {
-    private DeviceMetadata metadata;
+public class BasicDeviceDefinitionTest {
+    private DeviceDefinition definition;
 
     @Before
     public void setUp() {
-        metadata = new DeviceMetadata();
+        definition = new DeviceDefinition();
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void shouldReturnUnmodifiableAliases() {
-        metadata.withAlias("Device");
+        definition.withAlias("Device");
 
-        metadata.getAliases()
+        definition.getAliases()
                 .add("Local Device");
     }
 
     @Test
     public void shouldSetAliases() {
-        metadata.setAliases(setOf("Local Device", "Device"));
+        definition.setAliases(setOf("Local Device", "Device"));
 
-        assertThat(metadata.getAliases())
+        assertThat(definition.getAliases())
                 .containsExactly("Local Device", "Device");
     }
 
     @Test
     public void shouldReturnStreamOfAliases() {
-        metadata.withAlias("Device")
+        definition.withAlias("Device")
                 .withAlias("Local Device");
 
-        assertThat(metadata.aliases())
+        assertThat(definition.aliases())
                 .containsExactly("Device", "Local Device");
+    }
+
+    @Test
+    public void shouldSetPooled() {
+        // Should not be pooled by default
+        assertThat(definition.isPooled())
+                .isFalse();
+
+        definition.withPooled(true);
+
+        assertThat(definition.isPooled())
+                .isTrue();
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void shouldReturnUnmodifiableCapabilities() {
-        metadata.withCapability("name", "value");
+        definition.withCapability("name", "value");
 
-        metadata.getCapabilities()
+        definition.getCapabilities()
                 .put("name-2", "value-2");
     }
 
@@ -59,17 +71,17 @@ public class DeviceMetadataTest {
         capabilities.put("name-1", "value-1");
         capabilities.put("name-2", "value-2");
 
-        metadata.setCapabilities(capabilities);
+        definition.setCapabilities(capabilities);
 
-        assertThat(metadata.getCapabilities())
+        assertThat(definition.getCapabilities())
                 .isEqualTo(capabilities);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void shouldReturnUnmodifiableExtraOptions() {
-        metadata.withExtraOption("name", "value");
+        definition.withExtraOption("name", "value");
 
-        metadata.getExtraOptions()
+        definition.getExtraOptions()
                 .put("name-2", "value-2");
     }
 
@@ -79,55 +91,55 @@ public class DeviceMetadataTest {
         extraOptions.put("name-1", "value-1");
         extraOptions.put("name-2", "value-2");
 
-        metadata.setExtraOptions(extraOptions);
+        definition.setExtraOptions(extraOptions);
 
-        assertThat(metadata.getExtraOptions())
+        assertThat(definition.getExtraOptions())
                 .isEqualTo(extraOptions);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void shouldReturnUnmodifiableConfidentialKeys() {
-        metadata.withConfidential("accessKey");
+        definition.withConfidential("accessKey");
 
-        metadata.getConfidential()
+        definition.getConfidential()
                 .add("password");
     }
 
     @Test
     public void shouldSetConfidentialKeys() {
-        metadata.setConfidential(setOf("accessKey", "password"));
+        definition.setConfidential(setOf("accessKey", "password"));
 
-        assertThat(metadata.getConfidential())
+        assertThat(definition.getConfidential())
                 .containsExactly("accessKey", "password");
     }
 
     @Test
     public void twoProvidedDevicesShouldBeEqual() {
-        metadata.withName("myDevice")
+        definition.withName("myDevice")
                 .withProvider(CustomFirefoxProvider.class);
 
-        DeviceMetadata metadata2 = new DeviceMetadata()
+        DeviceDefinition metadata2 = new DeviceDefinition()
                 .withName("myDevice")
                 .withProvider(CustomFirefoxProvider.class);
 
         assertThat(metadata2)
-                .isEqualTo(metadata);
+                .isEqualTo(definition);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldRaiseExceptionWhenDesiredCapabilitiesFactoryMethodDoesNotExist() {
-        metadata.withName("myDevice")
+        definition.withName("myDevice")
                 .withDriver(FirefoxDriver.class)
                 .withDesired("doesNotExist")
-                .buildDefinition();
+                .build();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldRaiseExceptionWhenFailureOccursConstructingOptions() {
-        metadata.withName("myDevice")
+        definition.withName("myDevice")
                 .withDriver(FirefoxDriver.class)
                 .withOptions(BadOptions.class)
-                .buildDefinition();
+                .build();
     }
 
     public static class BadOptions

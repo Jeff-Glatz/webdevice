@@ -33,18 +33,18 @@ public class DeviceRegistrar
         registerDevices(settings, registry);
     }
 
-    private String maybeRegisterProvider(DeviceMetadata device, BeanDefinitionRegistry registry) {
+    private String maybeRegisterProvider(DeviceDefinition device, BeanDefinitionRegistry registry) {
         String provider = format("%s-provider", device.getName());
         if (!registry.isBeanNameInUse(provider)) {
             log.info("Registering WebDeviceProvider definition named {}", provider);
             registry.registerBeanDefinition(provider,
-                    device.buildDefinition()
+                    device.build()
                             .getBeanDefinition());
         }
         return provider;
     }
 
-    private String maybeRegisterPool(String provider, DeviceMetadata device, BeanDefinitionRegistry registry) {
+    private String maybeRegisterPool(String provider, DeviceDefinition device, BeanDefinitionRegistry registry) {
         String pool = format("%s-pool", device.getName());
         if (!registry.isBeanNameInUse(pool)) {
             log.info("Registering WebDevicePool definition named {}", pool);
@@ -60,7 +60,7 @@ public class DeviceRegistrar
         return pool;
     }
 
-    private void registerAliases(String canonical, DeviceMetadata device, BeanDefinitionRegistry registry) {
+    private void registerAliases(String canonical, DeviceDefinition device, BeanDefinitionRegistry registry) {
         log.info("Registering alias '{}' for '{}'", device.getName(), canonical);
         registry.registerAlias(canonical, device.getName());
         device.aliases().forEach(alias -> {

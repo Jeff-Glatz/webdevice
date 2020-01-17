@@ -17,13 +17,13 @@ import static org.springframework.beans.factory.support.BeanDefinitionBuilder.ge
 
 public class RemoteDeviceDefinitionTest
         implements DeviceDefinitionTest {
-    private DeviceMetadata metadata;
+    private DeviceDefinition definition;
     private URL remoteAddress;
 
     @Before
     public void setUp()
             throws Exception {
-        metadata = new DeviceMetadata();
+        definition = new DeviceDefinition();
         remoteAddress = new URL("http://webdevice.io");
     }
 
@@ -31,9 +31,9 @@ public class RemoteDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithoutCapabilitiesAndWithoutConfidential() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withRemoteAddress(remoteAddress)
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         assertThat(actual)
@@ -46,10 +46,10 @@ public class RemoteDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithoutCapabilitiesAndWithConfidential() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withRemoteAddress(remoteAddress)
                 .withConfidential("accessKey")
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         assertThat(actual)
@@ -65,10 +65,10 @@ public class RemoteDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithCapabilitiesReference() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withRemoteAddress(remoteAddress)
                 .withCapabilitiesRef("myDeviceCapabilities")
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         assertThat(actual)
@@ -84,10 +84,10 @@ public class RemoteDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithOptionsOnly() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withRemoteAddress(remoteAddress)
                 .withOptions(FirefoxOptions.class)
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         assertThat(actual)
@@ -101,11 +101,11 @@ public class RemoteDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithOptionsMergingCapabilities() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withRemoteAddress(remoteAddress)
                 .withOptions(FirefoxOptions.class)
                 .withCapability("key", "value")
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         FirefoxOptions expectedOptions = new FirefoxOptions();
@@ -122,12 +122,12 @@ public class RemoteDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithOptionsMergingExtraCapabilities() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withRemoteAddress(remoteAddress)
                 .withOptions(FirefoxOptions.class)
                 .withExtraCapability("sauce:options")
                 .withExtraOption("accessKey", "2secret4u")
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         FirefoxOptions expectedOptions = new FirefoxOptions();
@@ -145,13 +145,13 @@ public class RemoteDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithOptionsMergingCapabilitiesAndExtraCapabilities() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withRemoteAddress(remoteAddress)
                 .withOptions(FirefoxOptions.class)
                 .withCapability("key", "value")
                 .withExtraCapability("sauce:options")
                 .withExtraOption("accessKey", "2secret4u")
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         FirefoxOptions expectedOptions = new FirefoxOptions();
@@ -172,10 +172,10 @@ public class RemoteDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithDesiredOnly() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withRemoteAddress(remoteAddress)
                 .withDesired("iphone")
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         assertThat(actual)
@@ -189,11 +189,11 @@ public class RemoteDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithDesiredMergingCapabilities() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withRemoteAddress(remoteAddress)
                 .withDesired("iphone")
                 .withCapability("key", "value")
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         DesiredCapabilities expectedCapabilities = iphone();
@@ -210,12 +210,12 @@ public class RemoteDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithDesiredMergingExtraCapabilities() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withRemoteAddress(remoteAddress)
                 .withDesired("iphone")
                 .withExtraCapability("sauce:options")
                 .withExtraOption("accessKey", "2secret4u")
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         DesiredCapabilities expectedCapabilities = iphone();
@@ -233,13 +233,13 @@ public class RemoteDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithDesiredMergingCapabilitiesAndExtraCapabilities() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withRemoteAddress(remoteAddress)
                 .withDesired("iphone")
                 .withCapability("key", "value")
                 .withExtraCapability("sauce:options")
                 .withExtraOption("accessKey", "2secret4u")
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         DesiredCapabilities expectedCapabilities = iphone();
@@ -261,10 +261,10 @@ public class RemoteDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithMapOnly() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withRemoteAddress(remoteAddress)
                 .withCapability("key", "value")
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         assertThat(actual)
@@ -278,12 +278,12 @@ public class RemoteDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithMapMergingExtraCapabilities() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withRemoteAddress(remoteAddress)
                 .withCapability("key", "value")
                 .withExtraCapability("sauce:options")
                 .withExtraOption("accessKey", "2secret4u")
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         DesiredCapabilities expectedCapabilities = new DesiredCapabilities(mapOf("key", "value"));

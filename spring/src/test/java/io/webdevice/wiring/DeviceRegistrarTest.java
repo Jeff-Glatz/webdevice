@@ -84,10 +84,10 @@ public class DeviceRegistrarTest
 
         // Provider definition
         GenericBeanDefinition provider = definitionCaptor.getValue();
-        DeviceMetadata metadata = settings(environment)
+        DeviceDefinition definition = settings(environment)
                 .device("Direct");
         assertThat(provider)
-                .isEqualTo(metadata.buildDefinition().getBeanDefinition());
+                .isEqualTo(definition.build().getBeanDefinition());
     }
 
     @Test
@@ -169,10 +169,10 @@ public class DeviceRegistrarTest
         // Provider definition
         GenericBeanDefinition provider = definitionCaptor.getAllValues()
                 .get(0);
-        DeviceMetadata metadata = settings(environment)
+        DeviceDefinition definition = settings(environment)
                 .device("Direct");
         assertThat(provider)
-                .isEqualTo(metadata.buildDefinition().getBeanDefinition());
+                .isEqualTo(definition.build().getBeanDefinition());
 
         // Pool definition
         GenericBeanDefinition pool = definitionCaptor.getAllValues()
@@ -220,9 +220,9 @@ public class DeviceRegistrarTest
 
         // Provider definition
         GenericBeanDefinition provider = definitionCaptor.getValue();
-        DeviceMetadata metadata = settings(environment)
+        DeviceDefinition definition = settings(environment)
                 .device("Direct");
         assertThat(provider)
-                .isEqualTo(metadata.buildDefinition().getBeanDefinition());
+                .isEqualTo(definition.build().getBeanDefinition());
     }
 }

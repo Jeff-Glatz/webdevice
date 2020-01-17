@@ -26,14 +26,14 @@ import static java.util.Objects.hash;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
 /**
- * The {@link DeviceMetadata} class supports 3 types of device providers
+ * The {@link DeviceDefinition} class supports 3 types of device providers
  * <ul>
  *     <li>Custom {@link DeviceProvider} implementations</li>
  *     <li>{@link DirectDeviceProvider}</li>
  *     <li>{@link RemoteDeviceProvider}</li>
  * </ul>
  */
-public class DeviceMetadata
+public class DeviceDefinition
         implements Serializable {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final Set<String> aliases = new LinkedHashSet<>();
@@ -41,7 +41,7 @@ public class DeviceMetadata
     private final Map<String, Object> extraOptions = new LinkedHashMap<>();
     private final Set<String> confidential = new LinkedHashSet<>();
     private String name;
-    private boolean pooled = true;
+    private boolean pooled = false;
     private Class<? extends DeviceProvider> provider;
     private Class<? extends WebDriver> driver;
     private URL remoteAddress;
@@ -58,7 +58,7 @@ public class DeviceMetadata
         this.name = name;
     }
 
-    public DeviceMetadata withName(String name) {
+    public DeviceDefinition withName(String name) {
         setName(name);
         return this;
     }
@@ -72,7 +72,7 @@ public class DeviceMetadata
         this.aliases.addAll(aliases);
     }
 
-    public DeviceMetadata withAlias(String alias) {
+    public DeviceDefinition withAlias(String alias) {
         aliases.add(alias);
         return this;
     }
@@ -89,7 +89,7 @@ public class DeviceMetadata
         this.pooled = pooled;
     }
 
-    public DeviceMetadata withPooled(boolean pooled) {
+    public DeviceDefinition withPooled(boolean pooled) {
         setPooled(pooled);
         return this;
     }
@@ -102,7 +102,7 @@ public class DeviceMetadata
         this.provider = provider;
     }
 
-    public DeviceMetadata withProvider(Class<? extends DeviceProvider> provider) {
+    public DeviceDefinition withProvider(Class<? extends DeviceProvider> provider) {
         setProvider(provider);
         return this;
     }
@@ -119,7 +119,7 @@ public class DeviceMetadata
         this.driver = driver;
     }
 
-    public DeviceMetadata withDriver(Class<? extends WebDriver> driver) {
+    public DeviceDefinition withDriver(Class<? extends WebDriver> driver) {
         setDriver(driver);
         return this;
     }
@@ -132,7 +132,7 @@ public class DeviceMetadata
         this.remoteAddress = remoteAddress;
     }
 
-    public DeviceMetadata withRemoteAddress(URL remoteAddress) {
+    public DeviceDefinition withRemoteAddress(URL remoteAddress) {
         setRemoteAddress(remoteAddress);
         return this;
     }
@@ -149,7 +149,7 @@ public class DeviceMetadata
         this.capabilitiesRef = capabilitiesRef;
     }
 
-    public DeviceMetadata withCapabilitiesRef(String capabilitiesRef) {
+    public DeviceDefinition withCapabilitiesRef(String capabilitiesRef) {
         setCapabilitiesRef(capabilitiesRef);
         return this;
     }
@@ -162,7 +162,7 @@ public class DeviceMetadata
         this.options = options;
     }
 
-    public DeviceMetadata withOptions(Class<? extends MutableCapabilities> options) {
+    public DeviceDefinition withOptions(Class<? extends MutableCapabilities> options) {
         setOptions(options);
         return this;
     }
@@ -175,7 +175,7 @@ public class DeviceMetadata
         this.desired = desired;
     }
 
-    public DeviceMetadata withDesired(String desired) {
+    public DeviceDefinition withDesired(String desired) {
         setDesired(desired);
         return this;
     }
@@ -189,7 +189,7 @@ public class DeviceMetadata
         this.capabilities.putAll(capabilities);
     }
 
-    public DeviceMetadata withCapability(String capability, Object value) {
+    public DeviceDefinition withCapability(String capability, Object value) {
         capabilities.put(capability, value);
         return this;
     }
@@ -202,7 +202,7 @@ public class DeviceMetadata
         this.extraCapability = extraCapability;
     }
 
-    public DeviceMetadata withExtraCapability(String extraCapability) {
+    public DeviceDefinition withExtraCapability(String extraCapability) {
         this.extraCapability = extraCapability;
         return this;
     }
@@ -216,7 +216,7 @@ public class DeviceMetadata
         this.extraOptions.putAll(extraOptions);
     }
 
-    public DeviceMetadata withExtraOption(String option, Object value) {
+    public DeviceDefinition withExtraOption(String option, Object value) {
         extraOptions.put(option, value);
         return this;
     }
@@ -230,12 +230,12 @@ public class DeviceMetadata
         this.confidential.addAll(confidential);
     }
 
-    public DeviceMetadata withConfidential(String mask) {
+    public DeviceDefinition withConfidential(String mask) {
         confidential.add(mask);
         return this;
     }
 
-    public BeanDefinitionBuilder buildDefinition() {
+    public BeanDefinitionBuilder build() {
         BeanDefinitionBuilder definition;
         if (isProvided()) {
             definition = genericBeanDefinition(provider)
@@ -258,7 +258,7 @@ public class DeviceMetadata
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DeviceMetadata device = (DeviceMetadata) o;
+        DeviceDefinition device = (DeviceDefinition) o;
         return pooled == device.pooled &&
                 Objects.equals(name, device.name) &&
                 Objects.equals(aliases, device.aliases) &&

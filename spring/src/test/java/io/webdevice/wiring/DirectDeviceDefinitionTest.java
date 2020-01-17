@@ -16,20 +16,20 @@ import static org.springframework.beans.factory.support.BeanDefinitionBuilder.ge
 
 public class DirectDeviceDefinitionTest
         implements DeviceDefinitionTest {
-    private DeviceMetadata metadata;
+    private DeviceDefinition definition;
 
     @Before
     public void setUp() {
-        metadata = new DeviceMetadata();
+        definition = new DeviceDefinition();
     }
 
     // No specified capabilities
 
     @Test
     public void shouldBuildDefinitionWithoutCapabilitiesAndWithoutConfidential() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withDriver(FirefoxDriver.class)
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         assertThat(actual)
@@ -42,10 +42,10 @@ public class DirectDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithoutCapabilitiesAndWithConfidential() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withDriver(FirefoxDriver.class)
                 .withConfidential("accessKey")
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         assertThat(actual)
@@ -61,10 +61,10 @@ public class DirectDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithCapabilitiesReference() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withDriver(FirefoxDriver.class)
                 .withCapabilitiesRef("myDeviceCapabilities")
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         assertThat(actual)
@@ -80,10 +80,10 @@ public class DirectDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithOptionsOnly() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withDriver(FirefoxDriver.class)
                 .withOptions(FirefoxOptions.class)
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         assertThat(actual)
@@ -97,11 +97,11 @@ public class DirectDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithOptionsMergingCapabilities() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withDriver(FirefoxDriver.class)
                 .withOptions(FirefoxOptions.class)
                 .withCapability("key", "value")
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         FirefoxOptions expectedOptions = new FirefoxOptions();
@@ -118,12 +118,12 @@ public class DirectDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithOptionsMergingExtraCapabilities() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withDriver(FirefoxDriver.class)
                 .withOptions(FirefoxOptions.class)
                 .withExtraCapability("sauce:options")
                 .withExtraOption("accessKey", "2secret4u")
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         FirefoxOptions expectedOptions = new FirefoxOptions();
@@ -141,13 +141,13 @@ public class DirectDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithOptionsMergingCapabilitiesAndExtraCapabilities() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withDriver(FirefoxDriver.class)
                 .withOptions(FirefoxOptions.class)
                 .withCapability("key", "value")
                 .withExtraCapability("sauce:options")
                 .withExtraOption("accessKey", "2secret4u")
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         FirefoxOptions expectedOptions = new FirefoxOptions();
@@ -168,10 +168,10 @@ public class DirectDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithDesiredOnly() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withDriver(FirefoxDriver.class)
                 .withDesired("iphone")
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         assertThat(actual)
@@ -185,11 +185,11 @@ public class DirectDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithDesiredMergingCapabilities() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withDriver(FirefoxDriver.class)
                 .withDesired("iphone")
                 .withCapability("key", "value")
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         DesiredCapabilities expectedCapabilities = iphone();
@@ -206,12 +206,12 @@ public class DirectDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithDesiredMergingExtraCapabilities() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withDriver(FirefoxDriver.class)
                 .withDesired("iphone")
                 .withExtraCapability("sauce:options")
                 .withExtraOption("accessKey", "2secret4u")
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         DesiredCapabilities expectedCapabilities = iphone();
@@ -229,13 +229,13 @@ public class DirectDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithDesiredMergingCapabilitiesAndExtraCapabilities() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withDriver(FirefoxDriver.class)
                 .withDesired("iphone")
                 .withCapability("key", "value")
                 .withExtraCapability("sauce:options")
                 .withExtraOption("accessKey", "2secret4u")
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         DesiredCapabilities expectedCapabilities = iphone();
@@ -257,10 +257,10 @@ public class DirectDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithMapOnly() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withDriver(FirefoxDriver.class)
                 .withCapability("key", "value")
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         assertThat(actual)
@@ -274,12 +274,12 @@ public class DirectDeviceDefinitionTest
 
     @Test
     public void shouldBuildDefinitionWithMapMergingExtraCapabilities() {
-        AbstractBeanDefinition actual = metadata.withName("myDevice")
+        AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withDriver(FirefoxDriver.class)
                 .withCapability("key", "value")
                 .withExtraCapability("sauce:options")
                 .withExtraOption("accessKey", "2secret4u")
-                .buildDefinition()
+                .build()
                 .getBeanDefinition();
 
         DesiredCapabilities expectedCapabilities = new DesiredCapabilities(mapOf("key", "value"));
