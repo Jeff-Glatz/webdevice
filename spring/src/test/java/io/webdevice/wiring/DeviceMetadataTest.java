@@ -5,15 +5,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.springframework.beans.factory.config.ConstructorArgumentValues;
-import org.springframework.beans.factory.support.AbstractBeanDefinition;
 
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 
-import static java.util.Arrays.asList;
+import static io.webdevice.util.Collections.setOf;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DeviceMetadataTest {
@@ -105,10 +101,6 @@ public class DeviceMetadataTest {
                 .containsExactly("accessKey", "password");
     }
 
-    private Set<String> setOf(String... values) {
-        return new LinkedHashSet<>(asList(values));
-    }
-
     @Test
     public void twoProvidedDevicesShouldBeEqual() {
         metadata.withName("myDevice")
@@ -136,24 +128,6 @@ public class DeviceMetadataTest {
                 .withDriver(FirefoxDriver.class)
                 .withOptions(BadOptions.class)
                 .buildDefinition();
-    }
-
-    @Test
-    public void shouldBuildProvidedDeviceDefinitionWithoutCapabilities() {
-        AbstractBeanDefinition definition = metadata.withName("myDevice")
-                .withProvider(CustomFirefoxProvider.class)
-                .buildDefinition()
-                .getBeanDefinition();
-
-        assertThat(definition.getBeanClass())
-                .isSameAs(CustomFirefoxProvider.class);
-
-        ConstructorArgumentValues argumentValues = definition.getConstructorArgumentValues();
-        assertThat(argumentValues.getArgumentCount())
-                .isEqualTo(1);
-        assertThat(argumentValues.hasIndexedArgumentValue(0)).isTrue();
-        assertThat(argumentValues.getIndexedArgumentValue(0, String.class).getValue())
-                .isEqualTo("myDevice");
     }
 
     public static class BadOptions

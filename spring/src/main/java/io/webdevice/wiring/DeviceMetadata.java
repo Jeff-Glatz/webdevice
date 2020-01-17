@@ -23,7 +23,6 @@ import static java.lang.String.format;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.hash;
-import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
 /**
@@ -245,13 +244,11 @@ public class DeviceMetadata
             definition = genericBeanDefinition(RemoteDeviceProvider.class)
                     .addConstructorArgValue(name)
                     .addConstructorArgValue(remoteAddress)
-                    .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
                     .setInitMethodName("initialize");
         } else {
             definition = genericBeanDefinition(DirectDeviceProvider.class)
                     .addConstructorArgValue(name)
                     .addConstructorArgValue(driver)
-                    .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
                     .setInitMethodName("initialize");
         }
         return addConfidential(addCapabilities(definition));
@@ -361,7 +358,10 @@ public class DeviceMetadata
     }
 
     private BeanDefinitionBuilder addConfidential(BeanDefinitionBuilder definition) {
-        definition.addPropertyValue("confidential", confidential);
+        if (!confidential.isEmpty()) {
+            log.info("{} adding set of confidential capabilities", name);
+            definition.addPropertyValue("confidential", confidential);
+        }
         return definition;
     }
 }
