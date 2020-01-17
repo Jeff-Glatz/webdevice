@@ -6,6 +6,9 @@ public interface DeviceDefinitionTest {
     void shouldBuildDefinitionWithoutCapabilitiesAndWithoutConfidential();
     void shouldBuildDefinitionWithoutCapabilitiesAndWithConfidential();
 
+    // Capabilities originating from bean in context
+    void shouldBuildDefinitionWithCapabilitiesReference();
+
     // Capabilities originating from options
     void shouldBuildDefinitionWithOptionsOnly();
     void shouldBuildDefinitionWithOptionsMergingCapabilities();

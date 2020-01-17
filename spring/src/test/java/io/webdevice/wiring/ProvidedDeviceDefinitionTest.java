@@ -52,6 +52,23 @@ public class ProvidedDeviceDefinitionTest
                         .getBeanDefinition());
     }
 
+    // Capabilities originating from bean in context
+
+    @Test
+    public void shouldBuildDefinitionWithCapabilitiesReference() {
+        AbstractBeanDefinition actual = metadata.withName("myDevice")
+                .withProvider(CustomFirefoxProvider.class)
+                .withCapabilitiesRef("myDeviceCapabilities")
+                .buildDefinition()
+                .getBeanDefinition();
+
+        assertThat(actual)
+                .isEqualTo(genericBeanDefinition(CustomFirefoxProvider.class)
+                        .addConstructorArgValue("myDevice")
+                        .addPropertyReference("capabilities", "myDeviceCapabilities")
+                        .getBeanDefinition());
+    }
+
     // Capabilities originating from options
 
     @Test

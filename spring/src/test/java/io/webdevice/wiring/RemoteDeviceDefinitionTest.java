@@ -61,6 +61,25 @@ public class RemoteDeviceDefinitionTest
                         .getBeanDefinition());
     }
 
+    // Capabilities originating from bean in context
+
+    @Test
+    public void shouldBuildDefinitionWithCapabilitiesReference() {
+        AbstractBeanDefinition actual = metadata.withName("myDevice")
+                .withRemoteAddress(remoteAddress)
+                .withCapabilitiesRef("myDeviceCapabilities")
+                .buildDefinition()
+                .getBeanDefinition();
+
+        assertThat(actual)
+                .isEqualTo(genericBeanDefinition(RemoteDeviceProvider.class)
+                        .addConstructorArgValue("myDevice")
+                        .addConstructorArgValue(remoteAddress)
+                        .setInitMethodName("initialize")
+                        .addPropertyReference("capabilities", "myDeviceCapabilities")
+                        .getBeanDefinition());
+    }
+
     // Capabilities originating from options
 
     @Test
