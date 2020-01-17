@@ -238,14 +238,17 @@ public class DeviceDefinition
     public BeanDefinitionBuilder build() {
         BeanDefinitionBuilder definition;
         if (isProvided()) {
+            log.info("Detected a custom DeviceProvider definition");
             definition = genericBeanDefinition(provider)
                     .addConstructorArgValue(name);
         } else if (isRemote()) {
+            log.info("Detected a custom RemoteDeviceProvider definition");
             definition = genericBeanDefinition(RemoteDeviceProvider.class)
                     .addConstructorArgValue(name)
                     .addConstructorArgValue(remoteAddress)
                     .setInitMethodName("initialize");
         } else {
+            log.info("Detected a custom DirectDeviceProvider definition");
             definition = genericBeanDefinition(DirectDeviceProvider.class)
                     .addConstructorArgValue(name)
                     .addConstructorArgValue(driver)
@@ -359,7 +362,7 @@ public class DeviceDefinition
 
     private BeanDefinitionBuilder addConfidential(BeanDefinitionBuilder definition) {
         if (!confidential.isEmpty()) {
-            log.info("{} adding set of confidential capabilities", name);
+            log.info("{} adding set of confidential capabilities to BeanDefinition", name);
             definition.addPropertyValue("confidential", confidential);
         }
         return definition;
