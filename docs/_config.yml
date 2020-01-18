@@ -22,7 +22,7 @@ description: >- # this means to ignore newlines until "baseurl:"
   Cucumber & Selenium WebDriver Test Automation Made Simple
 
 # Released version
-version: 0.0.9
+version: 0.0.10
 
 # Build settings
 theme: jekyll-theme-slate
