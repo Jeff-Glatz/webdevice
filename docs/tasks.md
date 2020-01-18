@@ -1,9 +1,7 @@
-# Important
-- [ ] Pooling: How to test device for usability (i.e. sauce session timeout)
-
-# Enhancements
-- [X] Confidential Capabilities (mask protected capabilities)
-- [ ] Extract Spring auto configuration into own module
-
 # Polish
 - [ ] Spring Configuration Metadata
+
+# Miscellaneous 
+- [ ] When `@DirtiesContext` is used, there is a shutdown order issue where 
+singleton-scoped `WebDevicePool` instances are disposed of before the 
+glue-code-scoped `WebDevice`. `WebDevice` needs to de disposed of first.
