@@ -3,6 +3,10 @@ logging:
     org.springframework: INFO
 
 webdevice:
+  base-url: http://www.apple.com
+  default-device: Firefox
+  eager: false
+  strict: true
   devices:
     LocalFirefox:
       driver: org.openqa.selenium.firefox.FirefoxDriver
@@ -16,7 +20,7 @@ webdevice:
         version: "59.0"
     Chrome59Windows10:
       remote-address: https://ondemand.saucelabs.com:443/wd/hub
-      pooled: false
+      pooled: true
       aliases: Chrome v59 Windows 10
       capabilities:
         username: ${saucelabs_username}
@@ -29,7 +33,7 @@ webdevice:
         - accessKey
     FirefoxLatestMojave:
       remote-address: https://ondemand.saucelabs.com:443/wd/hub
-      pooled: false
+      pooled: true
       options: org.openqa.selenium.firefox.FirefoxOptions
       capabilities:
         username: ${saucelabs_username}
@@ -41,7 +45,7 @@ webdevice:
         - accessKey
     SafariLatestMojave:
       remote-address: https://ondemand.saucelabs.com:443/wd/hub
-      pooled: false
+      pooled: true
       desired: safari
       capabilities:
         username: ${saucelabs_username}
@@ -53,7 +57,7 @@ webdevice:
         - accessKey
     ChromeLatestMojave:
       remote-address: https://ondemand.saucelabs.com:443/wd/hub
-      pooled: false
+      pooled: true
       options: org.openqa.selenium.chrome.ChromeOptions
       capabilities:
         w3c: true
@@ -69,7 +73,7 @@ webdevice:
     iPhone8:
       remote-address: https://ondemand.saucelabs.com:443/wd/hub
       aliases: iPhone 8
-      pooled: false
+      pooled: true
       desired: iphone
       capabilities:
         username: ${saucelabs_username}
@@ -83,7 +87,3 @@ webdevice:
         browserName: Safari
       confidential:
         - accessKey
-  base-url: http://www.apple.com
-  default-device: Firefox
-  eager: false
-  strict: true

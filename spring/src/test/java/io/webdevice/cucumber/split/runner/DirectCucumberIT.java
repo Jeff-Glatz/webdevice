@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 @RunWith(Cucumber.class)
 @CucumberOptions(
         tags = {"not @ignore"},
-        glue = {"io.webdevice.cucumber.split.steps.enabled", "io.webdevice.cucumber.common"},
+        glue = {"io.webdevice.cucumber.split.steps.direct", "io.webdevice.cucumber.common"},
         features = {"src/test/resources/features"},
         plugin = {"pretty"})
 public class DirectCucumberIT {
