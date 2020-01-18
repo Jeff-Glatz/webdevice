@@ -20,11 +20,10 @@ echo "Executing deploy goal for ${TRAVIS_TAG}"
 mvn -e -B -ntp -s deploy/settings.xml -P ossrh clean deploy
 
 echo "Updating version references in documentation"
-# TODO: Fix this on build server
-sed -i "" -E "s/(<version>).*(<\/version>)/\1${TRAVIS_TAG}\2/g" docs/index.md
+python deploy/release-docs.py
 
 echo "Pushing release/${TRAVIS_TAG}"
-git add docs/index.md
+git add docs/
 find . -name pom.xml -exec git add {} \;
 git commit -m "Release ${TRAVIS_TAG} (build: ${TRAVIS_BUILD_NUMBER})"
 git push -u origin release/${TRAVIS_TAG}
