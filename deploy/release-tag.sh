@@ -20,6 +20,7 @@ echo "Executing deploy goal for ${TRAVIS_TAG}"
 mvn -e -B -ntp -s deploy/settings.xml -P ossrh clean deploy
 
 echo "Updating version references in documentation"
+sed --in-place --regexp-extended --expression="s/^(version:).*$/\1 ${TRAVIS_TAG}/g" docs/_config.yml
 sed --in-place --regexp-extended --expression="s/(<version>).*(<\/version>)/\1${TRAVIS_TAG}\2/g" docs/index.md
 
 echo "Pushing release/${TRAVIS_TAG}"
