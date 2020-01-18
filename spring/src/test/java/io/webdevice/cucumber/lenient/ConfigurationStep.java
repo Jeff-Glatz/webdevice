@@ -1,11 +1,10 @@
 package io.webdevice.cucumber.lenient;
 
 import io.cucumber.java8.En;
-import io.webdevice.support.YamlPropertySourceFactory;
-import io.webdevice.support.YamlSupport;
 import io.webdevice.wiring.EnableWebDevice;
+import io.webdevice.wiring.EnableYamlBinding;
+import io.webdevice.wiring.YamlPropertySourceFactory;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -15,7 +14,7 @@ public class ConfigurationStep
 
     @Configuration
     @EnableWebDevice
-    @Import(YamlSupport.class)
+    @EnableYamlBinding
     @PropertySource(
             value = "classpath:io/webdevice/cucumber/lenient/webdevice.yaml",
             factory = YamlPropertySourceFactory.class)

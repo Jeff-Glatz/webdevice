@@ -1,6 +1,5 @@
 package io.webdevice.wiring;
 
-import io.webdevice.support.YamlPropertySourceFactory;
 import io.webdevice.test.UnitTest;
 import org.junit.Before;
 import org.springframework.boot.convert.ApplicationConversionService;

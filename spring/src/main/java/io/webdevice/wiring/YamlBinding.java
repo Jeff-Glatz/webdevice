@@ -1,11 +1,11 @@
-package io.webdevice.support;
+package io.webdevice.wiring;
 
 import org.springframework.boot.convert.ApplicationConversionService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class YamlSupport {
+public class YamlBinding {
 
     @Bean
     public ApplicationConversionService conversionService() {
