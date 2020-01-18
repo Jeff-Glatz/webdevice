@@ -1,5 +1,5 @@
 webdevice:
-  base-url: http://www.apple.com
+  base-url: https://webdevice.io
   eager: true
   default-device: Provided
   devices:

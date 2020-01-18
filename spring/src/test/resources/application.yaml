@@ -3,7 +3,7 @@ logging:
     org.springframework: INFO
 
 webdevice:
-  base-url: http://www.apple.com
+  base-url: https://webdevice.io
   default-device: Firefox
   eager: false
   strict: true
