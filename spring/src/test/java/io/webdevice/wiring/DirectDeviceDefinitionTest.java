@@ -12,6 +12,8 @@ import static io.webdevice.util.Collections.mapOf;
 import static io.webdevice.util.Collections.setOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.DesiredCapabilities.iphone;
+import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRASTRUCTURE;
+import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_SINGLETON;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
 public class DirectDeviceDefinitionTest
@@ -37,6 +39,8 @@ public class DirectDeviceDefinitionTest
                         .addConstructorArgValue("myDevice")
                         .addConstructorArgValue(FirefoxDriver.class)
                         .setInitMethodName("initialize")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .getBeanDefinition());
     }
 
@@ -53,6 +57,8 @@ public class DirectDeviceDefinitionTest
                         .addConstructorArgValue("myDevice")
                         .addConstructorArgValue(FirefoxDriver.class)
                         .setInitMethodName("initialize")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyValue("confidential", setOf("accessKey"))
                         .getBeanDefinition());
     }
@@ -72,6 +78,8 @@ public class DirectDeviceDefinitionTest
                         .addConstructorArgValue("myDevice")
                         .addConstructorArgValue(FirefoxDriver.class)
                         .setInitMethodName("initialize")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyReference("capabilities", "myDeviceCapabilities")
                         .getBeanDefinition());
     }
@@ -91,6 +99,8 @@ public class DirectDeviceDefinitionTest
                         .addConstructorArgValue("myDevice")
                         .addConstructorArgValue(FirefoxDriver.class)
                         .setInitMethodName("initialize")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyValue("capabilities", new FirefoxOptions())
                         .getBeanDefinition());
     }
@@ -112,6 +122,8 @@ public class DirectDeviceDefinitionTest
                         .addConstructorArgValue("myDevice")
                         .addConstructorArgValue(FirefoxDriver.class)
                         .setInitMethodName("initialize")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyValue("capabilities", expectedOptions)
                         .getBeanDefinition());
     }
@@ -135,6 +147,8 @@ public class DirectDeviceDefinitionTest
                         .addConstructorArgValue("myDevice")
                         .addConstructorArgValue(FirefoxDriver.class)
                         .setInitMethodName("initialize")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyValue("capabilities", expectedOptions)
                         .getBeanDefinition());
     }
@@ -160,6 +174,8 @@ public class DirectDeviceDefinitionTest
                         .addConstructorArgValue("myDevice")
                         .addConstructorArgValue(FirefoxDriver.class)
                         .setInitMethodName("initialize")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyValue("capabilities", expectedOptions)
                         .getBeanDefinition());
     }
@@ -179,6 +195,8 @@ public class DirectDeviceDefinitionTest
                         .addConstructorArgValue("myDevice")
                         .addConstructorArgValue(FirefoxDriver.class)
                         .setInitMethodName("initialize")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyValue("capabilities", iphone())
                         .getBeanDefinition());
     }
@@ -200,6 +218,8 @@ public class DirectDeviceDefinitionTest
                         .addConstructorArgValue("myDevice")
                         .addConstructorArgValue(FirefoxDriver.class)
                         .setInitMethodName("initialize")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyValue("capabilities", expectedCapabilities)
                         .getBeanDefinition());
     }
@@ -223,6 +243,8 @@ public class DirectDeviceDefinitionTest
                         .addConstructorArgValue("myDevice")
                         .addConstructorArgValue(FirefoxDriver.class)
                         .setInitMethodName("initialize")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyValue("capabilities", expectedCapabilities)
                         .getBeanDefinition());
     }
@@ -248,6 +270,8 @@ public class DirectDeviceDefinitionTest
                         .addConstructorArgValue("myDevice")
                         .addConstructorArgValue(FirefoxDriver.class)
                         .setInitMethodName("initialize")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyValue("capabilities", expectedCapabilities)
                         .getBeanDefinition());
     }
@@ -268,6 +292,8 @@ public class DirectDeviceDefinitionTest
                         .addConstructorArgValue("myDevice")
                         .addConstructorArgValue(FirefoxDriver.class)
                         .setInitMethodName("initialize")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyValue("capabilities", new DesiredCapabilities(mapOf("key", "value")))
                         .getBeanDefinition());
     }
@@ -291,6 +317,8 @@ public class DirectDeviceDefinitionTest
                         .addConstructorArgValue("myDevice")
                         .addConstructorArgValue(FirefoxDriver.class)
                         .setInitMethodName("initialize")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyValue("capabilities", expectedCapabilities)
                         .getBeanDefinition());
     }

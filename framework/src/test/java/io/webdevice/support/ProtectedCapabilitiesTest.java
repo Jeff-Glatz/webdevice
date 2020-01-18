@@ -19,7 +19,7 @@ public class ProtectedCapabilitiesTest {
     @Before
     public void setUp() {
         confidential = new LinkedHashSet<>();
-        capabilities = new ProtectedCapabilities(new MutableCapabilities(), confidential);
+        capabilities = new ProtectedCapabilities(new MutableCapabilities(), () -> confidential);
     }
 
     @Test

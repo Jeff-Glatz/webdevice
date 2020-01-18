@@ -11,6 +11,8 @@ import static io.webdevice.util.Collections.mapOf;
 import static io.webdevice.util.Collections.setOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.DesiredCapabilities.iphone;
+import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRASTRUCTURE;
+import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_SINGLETON;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
 public class ProvidedDeviceDefinitionTest
@@ -34,6 +36,8 @@ public class ProvidedDeviceDefinitionTest
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(CustomFirefoxProvider.class)
                         .addConstructorArgValue("myDevice")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .getBeanDefinition());
     }
 
@@ -48,6 +52,8 @@ public class ProvidedDeviceDefinitionTest
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(CustomFirefoxProvider.class)
                         .addConstructorArgValue("myDevice")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyValue("confidential", setOf("accessKey"))
                         .getBeanDefinition());
     }
@@ -65,6 +71,8 @@ public class ProvidedDeviceDefinitionTest
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(CustomFirefoxProvider.class)
                         .addConstructorArgValue("myDevice")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyReference("capabilities", "myDeviceCapabilities")
                         .getBeanDefinition());
     }
@@ -82,6 +90,8 @@ public class ProvidedDeviceDefinitionTest
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(CustomFirefoxProvider.class)
                         .addConstructorArgValue("myDevice")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyValue("capabilities", new FirefoxOptions())
                         .getBeanDefinition());
     }
@@ -101,6 +111,8 @@ public class ProvidedDeviceDefinitionTest
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(CustomFirefoxProvider.class)
                         .addConstructorArgValue("myDevice")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyValue("capabilities", expectedOptions)
                         .getBeanDefinition());
     }
@@ -122,6 +134,8 @@ public class ProvidedDeviceDefinitionTest
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(CustomFirefoxProvider.class)
                         .addConstructorArgValue("myDevice")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyValue("capabilities", expectedOptions)
                         .getBeanDefinition());
     }
@@ -145,6 +159,8 @@ public class ProvidedDeviceDefinitionTest
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(CustomFirefoxProvider.class)
                         .addConstructorArgValue("myDevice")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyValue("capabilities", expectedOptions)
                         .getBeanDefinition());
     }
@@ -162,6 +178,8 @@ public class ProvidedDeviceDefinitionTest
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(CustomFirefoxProvider.class)
                         .addConstructorArgValue("myDevice")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyValue("capabilities", iphone())
                         .getBeanDefinition());
     }
@@ -181,6 +199,8 @@ public class ProvidedDeviceDefinitionTest
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(CustomFirefoxProvider.class)
                         .addConstructorArgValue("myDevice")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyValue("capabilities", expectedCapabilities)
                         .getBeanDefinition());
     }
@@ -202,6 +222,8 @@ public class ProvidedDeviceDefinitionTest
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(CustomFirefoxProvider.class)
                         .addConstructorArgValue("myDevice")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyValue("capabilities", expectedCapabilities)
                         .getBeanDefinition());
     }
@@ -225,6 +247,8 @@ public class ProvidedDeviceDefinitionTest
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(CustomFirefoxProvider.class)
                         .addConstructorArgValue("myDevice")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyValue("capabilities", expectedCapabilities)
                         .getBeanDefinition());
     }
@@ -243,6 +267,8 @@ public class ProvidedDeviceDefinitionTest
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(CustomFirefoxProvider.class)
                         .addConstructorArgValue("myDevice")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyValue("capabilities", new DesiredCapabilities(mapOf("key", "value")))
                         .getBeanDefinition());
     }
@@ -264,6 +290,8 @@ public class ProvidedDeviceDefinitionTest
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(CustomFirefoxProvider.class)
                         .addConstructorArgValue("myDevice")
+                        .setScope(SCOPE_SINGLETON)
+                        .setRole(ROLE_INFRASTRUCTURE)
                         .addPropertyValue("capabilities", expectedCapabilities)
                         .getBeanDefinition());
     }

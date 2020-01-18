@@ -12,6 +12,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Sequence;
+import org.openqa.selenium.remote.SessionId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -293,9 +294,13 @@ public class WebDevice
 
     public void release() {
         try {
+            log.info("Releasing WebDevice ...");
             if (device != null) {
-                log.info("Releasing {} device {}...", device.getName(), device.getSessionId());
+                String name = device.getName();
+                SessionId sessionId = device.getSessionId();
+                log.info("Releasing {} device {}...", name, sessionId);
                 registry.release(device);
+                log.info("{} device {} released.", name, sessionId);
             }
             log.info("WebDevice released.");
         } finally {

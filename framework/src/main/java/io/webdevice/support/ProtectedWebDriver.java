@@ -7,9 +7,15 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.Set;
+import java.util.function.Supplier;
 
+/**
+ * This class exists only to prevent sensitive capabilities from being leaked when {@link #toString()}
+ * is called on
+ */
 public class ProtectedWebDriver
-        extends RemoteWebDriver {
+        extends RemoteWebDriver
+        implements Supplier<Set<String>> {
     private final Set<String> confidential;
 
     public ProtectedWebDriver(URL remoteAddress, Capabilities capabilities, Set<String> confidential) {
@@ -23,12 +29,17 @@ public class ProtectedWebDriver
     }
 
     @Override
+    public Set<String> get() {
+        return confidential;
+    }
+
+    @Override
     protected void startSession(Capabilities capabilities) {
         super.startSession(capabilities);
         try {
             Field field = RemoteWebDriver.class.getDeclaredField("capabilities");
             field.setAccessible(true);
-            field.set(this, new ProtectedCapabilities(getCapabilities(), confidential));
+            field.set(this, new ProtectedCapabilities(getCapabilities(), this));
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new IllegalArgumentException(e);
         }

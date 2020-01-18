@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static java.lang.String.valueOf;
@@ -17,9 +18,9 @@ public class ProtectedCapabilities
         extends MutableCapabilities {
     private static final String MASK = "********";
 
-    private final Set<String> confidential;
+    private Supplier<Set<String>> confidential;
 
-    public ProtectedCapabilities(Capabilities other, Set<String> confidential) {
+    public ProtectedCapabilities(Capabilities other, Supplier<Set<String>> confidential) {
         super(other);
         this.confidential = confidential;
     }
@@ -32,6 +33,11 @@ public class ProtectedCapabilities
      */
     public String toString() {
         return mask(new IdentityHashMap<>(), asMap());
+    }
+
+    private boolean masked(Object capability) {
+        Set<String> masked = confidential.get();
+        return masked.contains(capability);
     }
 
     private String mask(Map<Object, String> seen, Object stringify) {
@@ -61,7 +67,7 @@ public class ProtectedCapabilities
                     ((Map<?, ?>) stringify).entrySet().stream()
                             .sorted(comparing(entry -> valueOf(entry.getKey())))
                             .map(entry -> entry.getKey() + ": " +
-                                    (!confidential.contains(entry.getKey()) ?
+                                    (!masked(entry.getKey()) ?
                                             mask(seen, entry.getValue()) :
                                             MASK))
                             .collect(joining(", ")));
@@ -72,7 +78,7 @@ public class ProtectedCapabilities
                     ((Capabilities) stringify).asMap().entrySet().stream()
                             .sorted(comparing(entry -> valueOf(entry.getKey())))
                             .map(entry -> entry.getKey() + ": " +
-                                    (!confidential.contains(entry.getKey()) ?
+                                    (!masked(entry.getKey()) ?
                                             mask(seen, entry.getValue()) :
                                             MASK))
                             .collect(joining(", ")));
@@ -91,7 +97,7 @@ public class ProtectedCapabilities
     }
 
     public static String mask(Capabilities capabilities, Set<String> confidential) {
-        return new ProtectedCapabilities(capabilities, confidential)
+        return new ProtectedCapabilities(capabilities, () -> confidential)
                 .toString();
     }
 }

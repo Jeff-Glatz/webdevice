@@ -23,6 +23,8 @@ import static java.lang.String.format;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.hash;
+import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRASTRUCTURE;
+import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_SINGLETON;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
 /**
@@ -238,21 +240,27 @@ public class DeviceDefinition
     public BeanDefinitionBuilder build() {
         BeanDefinitionBuilder definition;
         if (isProvided()) {
-            log.info("Detected a custom DeviceProvider definition");
+            log.info("Detected a provided device definition");
             definition = genericBeanDefinition(provider)
-                    .addConstructorArgValue(name);
+                    .addConstructorArgValue(name)
+                    .setScope(SCOPE_SINGLETON)
+                    .setRole(ROLE_INFRASTRUCTURE);
         } else if (isRemote()) {
-            log.info("Detected a custom RemoteDeviceProvider definition");
+            log.info("Detected a remote device definition");
             definition = genericBeanDefinition(RemoteDeviceProvider.class)
                     .addConstructorArgValue(name)
                     .addConstructorArgValue(remoteAddress)
-                    .setInitMethodName("initialize");
+                    .setInitMethodName("initialize")
+                    .setScope(SCOPE_SINGLETON)
+                    .setRole(ROLE_INFRASTRUCTURE);
         } else {
-            log.info("Detected a custom DirectDeviceProvider definition");
+            log.info("Detected a direct device definition");
             definition = genericBeanDefinition(DirectDeviceProvider.class)
                     .addConstructorArgValue(name)
                     .addConstructorArgValue(driver)
-                    .setInitMethodName("initialize");
+                    .setInitMethodName("initialize")
+                    .setScope(SCOPE_SINGLETON)
+                    .setRole(ROLE_INFRASTRUCTURE);
         }
         return addConfidential(addCapabilities(definition));
     }
