@@ -12,7 +12,7 @@ activated at `Scenario` runtime.
 <dependency>
   <groupId>io.webdevice</groupId>
   <artifactId>webdevice-spring</artifactId>
-  <version>0.0.6</version>
+  <version>0.0.8</version>
 </dependency>
 ```
 
