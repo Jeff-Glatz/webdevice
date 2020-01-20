@@ -50,7 +50,3 @@ deploy:
     on:
       tags: true
       branch: master
-
-# Upload code coverage
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
