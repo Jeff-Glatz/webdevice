@@ -17,8 +17,10 @@ echo "Setting POM versions to ${TRAVIS_TAG}"
 mvn -e -B -ntp -s deploy/settings.xml -P ossrh -DgenerateBackupPoms=false -DnewVersion=${TRAVIS_TAG} versions:set
 
 echo "Executing deploy goal for ${TRAVIS_TAG}"
-# TODO: abort on failure to deploy due to staging rule violations
-mvn -e -B -ntp -s deploy/settings.xml -P ossrh clean deploy
+if ! mvn -e -B -ntp -s deploy/settings.xml -P ossrh clean deploy; then
+  echo "Failure deploying release artifacts, aborting"
+  exit 1
+fi
 
 echo "Updating version references in documentation"
 sed --in-place --regexp-extended --expression="s/^(version:).*$/\1 ${TRAVIS_TAG}/g" docs/_config.yml
