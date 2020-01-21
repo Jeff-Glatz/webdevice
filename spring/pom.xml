@@ -14,6 +14,7 @@
 
     <properties>
         <!-- Dependency Versions -->
+        <bestquality.version>0.0.2</bestquality.version>
         <cucumber.version>4.8.0</cucumber.version>
         <spring.boot.version>2.2.2.RELEASE</spring.boot.version>
         <wdm.version>3.7.1</wdm.version>
@@ -33,6 +34,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>io.bestquality</groupId>
+            <artifactId>bestquality-core</artifactId>
+            <version>${bestquality.version}</version>
+        </dependency>
+        <dependency>
             <groupId>io.webdevice</groupId>
             <artifactId>webdevice-framework</artifactId>
             <version>${project.version}</version>
@@ -45,11 +51,6 @@
             <groupId>io.github.bonigarcia</groupId>
             <artifactId>webdrivermanager</artifactId>
             <version>${wdm.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-spring</artifactId>
-            <version>${cucumber.version}</version>
         </dependency>
 
         <!-- Provided Dependencies -->
@@ -98,6 +99,12 @@
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java8</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-spring</artifactId>
             <version>${cucumber.version}</version>
             <scope>test</scope>
         </dependency>

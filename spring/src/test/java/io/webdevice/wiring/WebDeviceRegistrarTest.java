@@ -1,7 +1,9 @@
 package io.webdevice.wiring;
 
 import io.webdevice.device.DevicePool;
+import io.webdevice.device.WebDevice;
 import io.webdevice.support.SimpleDeviceCheck;
+import io.webdevice.support.SpringDeviceRegistry;
 import org.junit.After;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -14,16 +16,20 @@ import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.core.type.AnnotationMetadata;
 
+import java.net.URL;
+
 import static io.webdevice.wiring.Settings.settings;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR;
+import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
-public class DeviceRegistrarTest
+public class WebDeviceRegistrarTest
         extends EnvironmentBasedTest {
 
     @Mock
@@ -42,7 +48,7 @@ public class DeviceRegistrarTest
     @Test
     public void shouldSkipRegisteringDeviceIfAlreadyDefined()
             throws Exception {
-        DeviceRegistrar registrar = new DeviceRegistrar(
+        WebDeviceRegistrar registrar = new WebDeviceRegistrar(
                 environmentWith("io/webdevice/wiring/direct-pooled-device.yaml"));
 
         given(mockRegistry.isBeanNameInUse("Direct"))
@@ -52,6 +58,10 @@ public class DeviceRegistrarTest
 
         verify(mockRegistry)
                 .isBeanNameInUse("Direct");
+        verify(mockRegistry)
+                .registerBeanDefinition(eq("deviceRegistry"), any());
+        verify(mockRegistry)
+                .registerBeanDefinition(eq("webDevice"), any());
         verifyNoMoreInteractions(mockRegistry);
     }
 
@@ -59,7 +69,7 @@ public class DeviceRegistrarTest
     public void shouldSkipRegisteringPoolForPooledDeviceIfAlreadyDefinedAndAliasPoolWithDeviceName()
             throws Exception {
         StandardEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.yaml");
-        DeviceRegistrar registrar = new DeviceRegistrar(environment);
+        WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
 
         given(mockRegistry.isBeanNameInUse("Direct"))
                 .willReturn(false);
@@ -80,6 +90,10 @@ public class DeviceRegistrarTest
                 .isBeanNameInUse("Direct-pool");
         verify(mockRegistry)
                 .registerAlias("Direct-pool", "Direct");
+        verify(mockRegistry)
+                .registerBeanDefinition(eq("deviceRegistry"), any());
+        verify(mockRegistry)
+                .registerBeanDefinition(eq("webDevice"), any());
         verifyNoMoreInteractions(mockRegistry);
 
         // Provider definition
@@ -94,7 +108,7 @@ public class DeviceRegistrarTest
     public void shouldSkipRegisteringProviderForPooledDeviceIfAlreadyDefinedAndAliasPoolWithDeviceName()
             throws Exception {
         StandardEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.yaml");
-        DeviceRegistrar registrar = new DeviceRegistrar(environment);
+        WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
 
         given(mockRegistry.isBeanNameInUse("Direct"))
                 .willReturn(false);
@@ -115,6 +129,10 @@ public class DeviceRegistrarTest
                 .registerBeanDefinition(eq("Direct-pool"), definitionCaptor.capture());
         verify(mockRegistry)
                 .registerAlias("Direct-pool", "Direct");
+        verify(mockRegistry)
+                .registerBeanDefinition(eq("deviceRegistry"), any());
+        verify(mockRegistry)
+                .registerBeanDefinition(eq("webDevice"), any());
         verifyNoMoreInteractions(mockRegistry);
 
         // Pool definition
@@ -141,7 +159,7 @@ public class DeviceRegistrarTest
     public void shouldRegisterPooledDeviceAndAliasPoolWithDeviceName()
             throws Exception {
         StandardEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.yaml");
-        DeviceRegistrar registrar = new DeviceRegistrar(environment);
+        WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
 
         given(mockRegistry.isBeanNameInUse("Direct"))
                 .willReturn(false);
@@ -164,6 +182,10 @@ public class DeviceRegistrarTest
                 .registerBeanDefinition(eq("Direct-pool"), definitionCaptor.capture());
         verify(mockRegistry)
                 .registerAlias("Direct-pool", "Direct");
+        verify(mockRegistry)
+                .registerBeanDefinition(eq("deviceRegistry"), any());
+        verify(mockRegistry)
+                .registerBeanDefinition(eq("webDevice"), any());
         verifyNoMoreInteractions(mockRegistry);
 
         // Provider definition
@@ -199,7 +221,7 @@ public class DeviceRegistrarTest
     public void shouldRegisterUnpooledDeviceAndAliasProviderWithDeviceName()
             throws Exception {
         StandardEnvironment environment = environmentWith("io/webdevice/wiring/direct-unpooled-device.yaml");
-        DeviceRegistrar registrar = new DeviceRegistrar(environment);
+        WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
 
         given(mockRegistry.isBeanNameInUse("Direct"))
                 .willReturn(false);
@@ -216,6 +238,10 @@ public class DeviceRegistrarTest
                 .registerBeanDefinition(eq("Direct-provider"), definitionCaptor.capture());
         verify(mockRegistry)
                 .registerAlias("Direct-provider", "Direct");
+        verify(mockRegistry)
+                .registerBeanDefinition(eq("deviceRegistry"), any());
+        verify(mockRegistry)
+                .registerBeanDefinition(eq("webDevice"), any());
         verifyNoMoreInteractions(mockRegistry);
 
         // Provider definition
@@ -224,5 +250,56 @@ public class DeviceRegistrarTest
                 .device("Direct");
         assertThat(provider)
                 .isEqualTo(definition.build().getBeanDefinition());
+    }
+
+    @Test
+    public void shouldRegisterSpringDeviceRegistryInConfiguredScope()
+            throws Exception {
+        StandardEnvironment environment = environmentWith("io/webdevice/wiring/scope-only.yaml");
+        WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
+
+        registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
+
+        verify(mockRegistry)
+                .registerBeanDefinition(eq("deviceRegistry"), definitionCaptor.capture());
+        verify(mockRegistry)
+                .registerBeanDefinition(eq("webDevice"), any());
+        verifyNoMoreInteractions(mockRegistry);
+
+        GenericBeanDefinition deviceRegistry = definitionCaptor.getValue();
+        assertThat(deviceRegistry)
+                .isEqualTo(genericBeanDefinition(SpringDeviceRegistry.class)
+                        .setScope("application")
+                        .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
+                        .getBeanDefinition());
+    }
+
+    @Test
+    public void shouldRegisterWebDeviceInConfiguredScope()
+            throws Exception {
+        StandardEnvironment environment = environmentWith("io/webdevice/wiring/non-defaults.yaml");
+        WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
+
+        registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
+
+        verify(mockRegistry)
+                .registerBeanDefinition(eq("deviceRegistry"), any());
+        verify(mockRegistry)
+                .registerBeanDefinition(eq("webDevice"), definitionCaptor.capture());
+        verifyNoMoreInteractions(mockRegistry);
+
+        GenericBeanDefinition webDevice = definitionCaptor.getValue();
+        assertThat(webDevice)
+                .isEqualTo(genericBeanDefinition(WebDevice.class)
+                        .setScope("prototype")
+                        .addConstructorArgReference("deviceRegistry")
+                        .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
+                        .addPropertyValue("baseUrl", new URL("http://webdevice.io"))
+                        .addPropertyValue("defaultDevice", "Foo")
+                        .addPropertyValue("eager", Boolean.TRUE)
+                        .addPropertyValue("strict", Boolean.FALSE)
+                        .setInitMethodName("initialize")
+                        .setDestroyMethodName("release")
+                        .getBeanDefinition());
     }
 }

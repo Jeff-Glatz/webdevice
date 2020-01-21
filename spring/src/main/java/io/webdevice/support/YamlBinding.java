@@ -1,4 +1,4 @@
-package io.webdevice.wiring;
+package io.webdevice.support;
 
 import org.springframework.boot.convert.ApplicationConversionService;
 import org.springframework.context.annotation.Bean;

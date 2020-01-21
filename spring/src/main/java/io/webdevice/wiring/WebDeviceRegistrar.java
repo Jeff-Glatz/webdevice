@@ -1,7 +1,9 @@
 package io.webdevice.wiring;
 
 import io.webdevice.device.DevicePool;
+import io.webdevice.device.WebDevice;
 import io.webdevice.support.SimpleDeviceCheck;
+import io.webdevice.support.SpringDeviceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +19,13 @@ import static org.springframework.beans.factory.support.AbstractBeanDefinition.A
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
 @Order
-public class DeviceRegistrar
+public class WebDeviceRegistrar
         implements ImportBeanDefinitionRegistrar {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final Environment environment;
 
     @Autowired
-    public DeviceRegistrar(Environment environment) {
+    public WebDeviceRegistrar(Environment environment) {
         this.environment = environment;
     }
 
@@ -31,6 +33,8 @@ public class DeviceRegistrar
     public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
         Settings settings = settings(environment);
         registerDevices(settings, registry);
+        registerDeviceRegistry(settings, registry);
+        registerWebDevice(settings, registry);
     }
 
     private String maybeRegisterProvider(DeviceDefinition device, BeanDefinitionRegistry registry) {
@@ -70,7 +74,7 @@ public class DeviceRegistrar
     }
 
     private void registerDevices(Settings settings, BeanDefinitionRegistry registry) {
-        log.info("Registering devices ...");
+        log.info("Registering Devices ...");
         settings.devices()
                 .filter(device -> {
                     boolean defined = registry.isBeanNameInUse(device.getName());
@@ -87,5 +91,32 @@ public class DeviceRegistrar
                     registerAliases(provider, device, registry);
                 });
         log.info("Devices registered.");
+    }
+
+    private void registerDeviceRegistry(Settings settings, BeanDefinitionRegistry registry) {
+        log.info("Registering DeviceRegistry ...");
+        registry.registerBeanDefinition("deviceRegistry",
+                genericBeanDefinition(SpringDeviceRegistry.class)
+                        .setScope(settings.getScope())
+                        .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
+                        .getBeanDefinition());
+        log.info("DeviceRegistry registered");
+    }
+
+    private void registerWebDevice(Settings settings, BeanDefinitionRegistry registry) {
+        log.info("Registering DeviceRegistry ...");
+        registry.registerBeanDefinition("webDevice",
+                genericBeanDefinition(WebDevice.class)
+                        .setScope(settings.getScope())
+                        .addConstructorArgReference("deviceRegistry")
+                        .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
+                        .addPropertyValue("baseUrl", settings.getBaseUrl())
+                        .addPropertyValue("defaultDevice", settings.getDefaultDevice())
+                        .addPropertyValue("eager", settings.isEager())
+                        .addPropertyValue("strict", settings.isStrict())
+                        .setInitMethodName("initialize")
+                        .setDestroyMethodName("release")
+                        .getBeanDefinition());
+        log.info("DeviceRegistry registered");
     }
 }

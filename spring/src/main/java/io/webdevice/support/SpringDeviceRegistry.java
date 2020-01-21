@@ -8,13 +8,9 @@ import org.openqa.selenium.WebDriver;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import static io.cucumber.spring.CucumberTestContext.SCOPE_CUCUMBER_GLUE;
-
 @Component
-@Scope(SCOPE_CUCUMBER_GLUE)
 public class SpringDeviceRegistry
         implements DeviceRegistry {
     private final BeanFactory factory;

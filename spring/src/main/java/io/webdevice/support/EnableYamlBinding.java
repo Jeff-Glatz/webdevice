@@ -1,4 +1,4 @@
-package io.webdevice.wiring;
+package io.webdevice.support;
 
 import org.springframework.context.annotation.Import;
 

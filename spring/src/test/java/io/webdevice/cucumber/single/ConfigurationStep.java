@@ -2,8 +2,8 @@ package io.webdevice.cucumber.single;
 
 import io.cucumber.java8.En;
 import io.webdevice.wiring.EnableWebDevice;
-import io.webdevice.wiring.EnableYamlBinding;
-import io.webdevice.wiring.YamlPropertySourceFactory;
+import io.webdevice.support.EnableYamlBinding;
+import io.webdevice.support.YamlPropertySourceFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;

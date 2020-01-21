@@ -1,6 +1,5 @@
 package io.webdevice.wiring;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.env.Environment;
 
@@ -11,10 +10,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static io.webdevice.wiring.Settings.PREFIX;
 import static java.util.Collections.unmodifiableMap;
+import static org.springframework.beans.factory.support.AbstractBeanDefinition.SCOPE_DEFAULT;
+import static org.springframework.util.ClassUtils.isPresent;
 
-@ConfigurationProperties(PREFIX)
 public class Settings
         implements Serializable {
     public static final String PREFIX = "webdevice";
@@ -24,6 +23,7 @@ public class Settings
     private String defaultDevice;
     private boolean eager = false;
     private boolean strict = true;
+    private String scope;
 
     public Map<String, DeviceDefinition> getDevices() {
         return unmodifiableMap(devices);
@@ -100,6 +100,24 @@ public class Settings
         return this;
     }
 
+    public String getScope() {
+        if (scope != null) {
+            return scope;
+        }
+        return isPresent("io.cucumber.spring.CucumberTestContext", null)
+                ? "cucumber-glue"
+                : SCOPE_DEFAULT;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
+    public Settings withScope(String scope) {
+        setScope(scope);
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -107,6 +125,7 @@ public class Settings
         Settings settings = (Settings) o;
         return eager == settings.eager &&
                 strict == settings.strict &&
+                Objects.equals(scope, settings.scope) &&
                 Objects.equals(devices, settings.devices) &&
                 Objects.equals(baseUrl, settings.baseUrl) &&
                 Objects.equals(defaultDevice, settings.defaultDevice);
@@ -114,7 +133,7 @@ public class Settings
 
     @Override
     public int hashCode() {
-        return Objects.hash(devices, baseUrl, defaultDevice, eager, strict);
+        return Objects.hash(devices, baseUrl, defaultDevice, eager, strict, scope);
     }
 
     public static Settings settings(Environment environment) {

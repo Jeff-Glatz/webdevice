@@ -1,4 +1,4 @@
-package io.webdevice.wiring;
+package io.webdevice.support;
 
 import org.springframework.boot.env.YamlPropertySourceLoader;
 import org.springframework.core.env.CompositePropertySource;

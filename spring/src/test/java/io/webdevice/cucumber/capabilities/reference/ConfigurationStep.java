@@ -2,8 +2,8 @@ package io.webdevice.cucumber.capabilities.reference;
 
 import io.cucumber.java8.En;
 import io.webdevice.wiring.EnableWebDevice;
-import io.webdevice.wiring.EnableYamlBinding;
-import io.webdevice.wiring.YamlPropertySourceFactory;
+import io.webdevice.support.EnableYamlBinding;
+import io.webdevice.support.YamlPropertySourceFactory;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
