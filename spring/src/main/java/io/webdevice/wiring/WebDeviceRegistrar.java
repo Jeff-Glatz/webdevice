@@ -100,11 +100,11 @@ public class WebDeviceRegistrar
                         .setScope(settings.getScope())
                         .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
                         .getBeanDefinition());
-        log.info("DeviceRegistry registered");
+        log.info("DeviceRegistry registered.");
     }
 
     private void registerWebDevice(Settings settings, BeanDefinitionRegistry registry) {
-        log.info("Registering DeviceRegistry ...");
+        log.info("Registering WebDevice ...");
         registry.registerBeanDefinition("webDevice",
                 genericBeanDefinition(WebDevice.class)
                         .setScope(settings.getScope())
@@ -117,6 +117,6 @@ public class WebDeviceRegistrar
                         .setInitMethodName("initialize")
                         .setDestroyMethodName("release")
                         .getBeanDefinition());
-        log.info("DeviceRegistry registered");
+        log.info("WebDevice registered.");
     }
 }
