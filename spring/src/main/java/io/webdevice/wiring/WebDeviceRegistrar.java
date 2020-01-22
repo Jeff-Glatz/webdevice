@@ -105,20 +105,22 @@ public class WebDeviceRegistrar
     }
 
     private void registerDeviceRegistry(Settings settings, BeanDefinitionRegistry registry) {
-        log.info("Registering DeviceRegistry ...");
+        String scope = settings.getScope();
+        log.info("Registering DeviceRegistry in {} scope ...", scope);
         registry.registerBeanDefinition(namespace("DeviceRegistry"),
                 genericBeanDefinition(SpringDeviceRegistry.class)
-                        .setScope(settings.getScope())
+                        .setScope(scope)
                         .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
                         .getBeanDefinition());
         log.info("DeviceRegistry registered.");
     }
 
     private void registerWebDevice(Settings settings, BeanDefinitionRegistry registry) {
-        log.info("Registering WebDevice ...");
+        String scope = settings.getScope();
+        log.info("Registering WebDevice in {} scope ...", scope);
         registry.registerBeanDefinition(namespace("WebDevice"),
                 genericBeanDefinition(WebDevice.class)
-                        .setScope(settings.getScope())
+                        .setScope(scope)
                         .addConstructorArgReference(namespace("DeviceRegistry"))
                         .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
                         .addPropertyValue("baseUrl", settings.getBaseUrl())
