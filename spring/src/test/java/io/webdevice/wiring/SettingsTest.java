@@ -5,10 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.boot.test.context.FilteredClassLoader;
 
-import java.net.URL;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static io.webdevice.wiring.Settings.settings;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.SCOPE_DEFAULT;
 
@@ -20,35 +18,6 @@ public class SettingsTest
     @Before
     public void setUp() {
         settings = new Settings();
-    }
-
-    @Test
-    public void shouldBindWebDeviceSpecificSettingsFromEnvironmentUsingDefaults()
-            throws Exception {
-        // Need to specify one value or binding will raise an exception
-        settings.withDefaultDevice("Foo")
-                .withScope(null)
-                .withStrict(true)
-                .withEager(false)
-                .withBaseUrl(null);
-
-        Settings actual = settings(environmentWith("io/webdevice/wiring/default-device-only.yaml"));
-        assertThat(actual)
-                .isEqualTo(settings);
-    }
-
-    @Test
-    public void shouldBindWebDeviceSpecificSettingsFromEnvironmentUsingNonDefaults()
-            throws Exception {
-        settings.withDefaultDevice("Foo")
-                .withScope("prototype")
-                .withStrict(false)
-                .withEager(true)
-                .withBaseUrl(new URL("http://webdevice.io"));
-
-        Settings actual = settings(environmentWith("io/webdevice/wiring/non-defaults.yaml"));
-        assertThat(actual)
-                .isEqualTo(settings);
     }
 
     @Test

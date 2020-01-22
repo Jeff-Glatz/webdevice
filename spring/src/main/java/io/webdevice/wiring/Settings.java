@@ -1,8 +1,5 @@
 package io.webdevice.wiring;
 
-import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.core.env.Environment;
-
 import java.io.Serializable;
 import java.net.URL;
 import java.util.LinkedHashMap;
@@ -16,7 +13,6 @@ import static org.springframework.util.ClassUtils.isPresent;
 
 public class Settings
         implements Serializable {
-    public static final String PREFIX = "webdevice";
 
     private final Map<String, DeviceDefinition> devices = new LinkedHashMap<>();
     private URL baseUrl;
@@ -136,9 +132,4 @@ public class Settings
         return Objects.hash(devices, baseUrl, defaultDevice, eager, strict, scope);
     }
 
-    public static Settings settings(Environment environment) {
-        return Binder.get(environment)
-                .bind(PREFIX, Settings.class)
-                .get();
-    }
 }
