@@ -5,6 +5,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 
+import javax.annotation.PostConstruct;
 import java.util.function.Function;
 
 import static io.webdevice.device.Devices.directDevice;
@@ -25,6 +26,7 @@ public class DirectDeviceProvider<Driver extends WebDriver>
         this(name, type, WebDriverManager::getInstance);
     }
 
+    @PostConstruct
     public void initialize() {
         WebDriverManager manager = factory.apply(type);
         log.info("Setting up {}", type);

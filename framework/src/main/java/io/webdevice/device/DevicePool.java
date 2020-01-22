@@ -5,6 +5,7 @@ import org.openqa.selenium.remote.SessionId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PreDestroy;
 import java.util.Deque;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -80,6 +81,7 @@ public class DevicePool<Driver extends WebDriver>
         logStats();
     }
 
+    @PreDestroy
     public synchronized void dispose() {
         log.info("Shutting down {} pool...", name);
         drain(free);

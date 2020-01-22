@@ -4,6 +4,7 @@ import io.webdevice.support.ProtectedWebDriver;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import javax.annotation.PostConstruct;
 import java.net.URL;
 
 import static io.webdevice.device.Devices.remoteDevice;
@@ -21,6 +22,7 @@ public class RemoteDeviceProvider
         return remoteAddress;
     }
 
+    @PostConstruct
     public void initialize() {
         if (capabilities == null) {
             capabilities = new ImmutableCapabilities();

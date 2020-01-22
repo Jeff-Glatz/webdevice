@@ -14,6 +14,7 @@
 
     <properties>
         <!-- Dependency Versions -->
+        <annotation.version>1.3.2</annotation.version>
         <mockwebserver.version>3.14.4</mockwebserver.version>
         <bytebuddy.version>1.10.5</bytebuddy.version>
         <selenium.version>3.141.59</selenium.version>
@@ -22,6 +23,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>${annotation.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-remote-driver</artifactId>

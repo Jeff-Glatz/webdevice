@@ -16,6 +16,7 @@ import org.openqa.selenium.remote.SessionId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PreDestroy;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
@@ -292,6 +293,7 @@ public class WebDevice
                 .resetInputState();
     }
 
+    @PreDestroy
     public void release() {
         try {
             log.info("Releasing WebDevice ...");
