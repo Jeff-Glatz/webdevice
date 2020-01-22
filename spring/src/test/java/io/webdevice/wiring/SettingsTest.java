@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.FilteredClassLoader;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.beans.factory.support.AbstractBeanDefinition.SCOPE_DEFAULT;
 
 public class SettingsTest
         extends EnvironmentBasedTest {
@@ -35,20 +34,20 @@ public class SettingsTest
     }
 
     @Test
-    public void shouldReturnDefaultScopeWhenNotSpecifiedAndCucumberNotPresent()
+    public void shouldReturnPrototypeScopeWhenNotSpecifiedAndCucumberNotPresent()
             throws Exception {
         AtomicReference<String> scope = new AtomicReference<>(null);
-        Thread thread = new Thread(() -> {
-            scope.set(new Settings()
-                    .withScope(null)
-                    .getScope());
-        });
+        Thread thread = new Thread(() -> scope.set(
+                new Settings()
+                        .withScope(null)
+                        .getScope()));
+        // Setup a custom classloader that prevents CucumberTestContext from being seen
         thread.setContextClassLoader(new FilteredClassLoader(CucumberTestContext.class));
         thread.start();
         thread.join();
 
         assertThat(scope.get())
-                .isEqualTo(SCOPE_DEFAULT);
+                .isEqualTo("prototype");
     }
 
     @Test
@@ -61,9 +60,9 @@ public class SettingsTest
 
     @Test
     public void shouldReturnScopeWhenSpecified() {
-        settings.withScope("application");
+        settings.withScope("singleton");
 
         assertThat(settings.getScope())
-                .isEqualTo("application");
+                .isEqualTo("singleton");
     }
 }

@@ -41,9 +41,9 @@
     {
       "name": "webdevice.scope",
       "type": "java.lang.String",
-      "description": "The spring scope in which the WebDevice will be defined.",
+      "description": "The spring scope in which the WebDevice bean will be defined.",
       "sourceType": "io.webdevice.wiring.Settings",
-      "defaultValue": "cucumber-glue when Cucumber is detected; singleton otherwise"
+      "defaultValue": "cucumber-glue when CucumberTestContext is present; prototype otherwise"
     }
   ]
 }

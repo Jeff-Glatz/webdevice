@@ -17,8 +17,9 @@ import org.springframework.core.type.AnnotationMetadata;
 import static java.lang.String.format;
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
+import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 
-@Order
+@Order(LOWEST_PRECEDENCE)
 public class WebDeviceRegistrar
         implements ImportBeanDefinitionRegistrar {
     public static final String SETTINGS_PREFIX = "webdevice";
@@ -40,7 +41,7 @@ public class WebDeviceRegistrar
     }
 
     private String maybeRegisterProvider(DeviceDefinition device, BeanDefinitionRegistry registry) {
-        String provider = name(format("%s-Provider", device.getName()));
+        String provider = namespace("%s-Provider", device.getName());
         if (!registry.isBeanNameInUse(provider)) {
             log.info("Registering WebDeviceProvider definition named {}", provider);
             registry.registerBeanDefinition(provider,
@@ -51,7 +52,7 @@ public class WebDeviceRegistrar
     }
 
     private String maybeRegisterPool(String provider, DeviceDefinition device, BeanDefinitionRegistry registry) {
-        String pool = name(format("%s-Pool", device.getName()));
+        String pool = namespace("%s-Pool", device.getName());
         if (!registry.isBeanNameInUse(pool)) {
             log.info("Registering WebDevicePool definition named {}", pool);
             registry.registerBeanDefinition(pool,
@@ -77,7 +78,7 @@ public class WebDeviceRegistrar
 
     private void registerSettings(Settings settings, BeanDefinitionRegistry registry) {
         log.info("Registering Settings ...");
-        registry.registerBeanDefinition(name("Settings"),
+        registry.registerBeanDefinition(namespace("Settings"),
                 genericBeanDefinition(Settings.class, () -> settings)
                         .getBeanDefinition());
         log.info("Settings registered.");
@@ -87,7 +88,7 @@ public class WebDeviceRegistrar
         log.info("Registering Devices ...");
         settings.devices()
                 .filter(device -> {
-                    boolean defined = registry.isBeanNameInUse(name(device.getName()));
+                    boolean defined = registry.isBeanNameInUse(namespace(device.getName()));
                     if (defined) {
                         log.warn("Device {} is already defined, skipping registration", device.getName());
                     }
@@ -105,7 +106,7 @@ public class WebDeviceRegistrar
 
     private void registerDeviceRegistry(Settings settings, BeanDefinitionRegistry registry) {
         log.info("Registering DeviceRegistry ...");
-        registry.registerBeanDefinition(name("DeviceRegistry"),
+        registry.registerBeanDefinition(namespace("DeviceRegistry"),
                 genericBeanDefinition(SpringDeviceRegistry.class)
                         .setScope(settings.getScope())
                         .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
@@ -115,10 +116,10 @@ public class WebDeviceRegistrar
 
     private void registerWebDevice(Settings settings, BeanDefinitionRegistry registry) {
         log.info("Registering WebDevice ...");
-        registry.registerBeanDefinition(name("WebDevice"),
+        registry.registerBeanDefinition(namespace("WebDevice"),
                 genericBeanDefinition(WebDevice.class)
                         .setScope(settings.getScope())
-                        .addConstructorArgReference(name("DeviceRegistry"))
+                        .addConstructorArgReference(namespace("DeviceRegistry"))
                         .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
                         .addPropertyValue("baseUrl", settings.getBaseUrl())
                         .addPropertyValue("defaultDevice", settings.getDefaultDevice())
@@ -130,13 +131,13 @@ public class WebDeviceRegistrar
         log.info("WebDevice registered.");
     }
 
-    private static String name(String name) {
-        return format("%s.%s", SETTINGS_PREFIX, name);
+    public static String namespace(String name, Object... args) {
+        return format("%s.%s", SETTINGS_PREFIX, format(name, args));
     }
 
     public static Settings settings(Environment environment) {
         return Binder.get(environment)
                 .bind(SETTINGS_PREFIX, Settings.class)
-                .get();
+                .orElse(new Settings());
     }
 }

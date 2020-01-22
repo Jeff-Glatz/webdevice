@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.util.Collections.unmodifiableMap;
-import static org.springframework.beans.factory.support.AbstractBeanDefinition.SCOPE_DEFAULT;
 import static org.springframework.util.ClassUtils.isPresent;
 
 public class Settings
@@ -102,7 +101,7 @@ public class Settings
         }
         return isPresent("io.cucumber.spring.CucumberTestContext", null)
                 ? "cucumber-glue"
-                : SCOPE_DEFAULT;
+                : "prototype";
     }
 
     public void setScope(String scope) {

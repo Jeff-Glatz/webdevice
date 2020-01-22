@@ -46,23 +46,22 @@ public class WebDeviceRegistrarTest
     }
 
     @Test
-    public void shouldBindWebDeviceSpecificSettingsFromEnvironmentUsingDefaults()
+    public void shouldBindSettingsFromEnvironmentUsingDefaults()
             throws Exception {
-        // Need to specify one value or binding will raise an exception
         Settings expected = new Settings()
-                .withDefaultDevice("Foo")
+                .withDefaultDevice(null)
                 .withScope(null)
                 .withStrict(true)
                 .withEager(false)
                 .withBaseUrl(null);
 
-        Settings actual = settings(environmentWith("io/webdevice/wiring/default-device-only.yaml"));
+        Settings actual = settings(environment);
         assertThat(actual)
                 .isEqualTo(expected);
     }
 
     @Test
-    public void shouldBindWebDeviceSpecificSettingsFromEnvironmentUsingNonDefaults()
+    public void shouldBindSettingsFromEnvironmentUsingNonDefaults()
             throws Exception {
         Settings expected = new Settings()
                 .withDefaultDevice("Foo")
