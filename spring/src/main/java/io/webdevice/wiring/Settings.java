@@ -101,7 +101,7 @@ public class Settings
         }
         return isPresent("io.cucumber.spring.CucumberTestContext", null)
                 ? "cucumber-glue"
-                : "prototype";
+                : "web-device";
     }
 
     public void setScope(String scope) {

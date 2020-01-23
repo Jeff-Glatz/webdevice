@@ -1,5 +1,5 @@
 webdevice:
-  scope: prototype
+  scope: web-device
   default-device: Foo
   strict: false
   eager: true

@@ -73,7 +73,7 @@ public class DevicePool<Driver extends WebDriver>
     public synchronized void accept(Device<Driver> device) {
         log.info("Removing device {} from used deque in {} pool", device.getSessionId(), name);
         if (used.remove(device)) {
-            log.info("Adding device {} to free deque in {} pool", device.getSessionId(), name);
+            log.info("Placing device {} to free deque in {} pool", device.getSessionId(), name);
             free.push(device);
         } else {
             log.warn("Device {} was not in used deque in {} pool!", device.getSessionId(), name);

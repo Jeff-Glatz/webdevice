@@ -34,7 +34,7 @@ public class SettingsTest
     }
 
     @Test
-    public void shouldReturnPrototypeScopeWhenNotSpecifiedAndCucumberNotPresent()
+    public void shouldReturnWebDeviceScopeWhenNotSpecifiedAndCucumberNotPresent()
             throws Exception {
         AtomicReference<String> scope = new AtomicReference<>(null);
         Thread thread = new Thread(() -> scope.set(
@@ -47,7 +47,7 @@ public class SettingsTest
         thread.join();
 
         assertThat(scope.get())
-                .isEqualTo("prototype");
+                .isEqualTo("web-device");
     }
 
     @Test

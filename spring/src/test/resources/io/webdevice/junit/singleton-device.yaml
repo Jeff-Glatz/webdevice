@@ -1,0 +1,17 @@
+webdevice:
+  scope: singleton
+  default-device: LocalFirefox
+  base-url: http://webdevice.io
+  devices:
+    LocalFirefox:
+      driver: org.openqa.selenium.firefox.FirefoxDriver
+      pooled: true
+      aliases: Firefox, Local Firefox
+      capabilites:
+        version: "71.0"
+    LocalChrome:
+      driver: org.openqa.selenium.chrome.ChromeDriver
+      pooled: true
+      aliases: Chrome, Local Chrome
+      capabilites:
+        version: "59.0"

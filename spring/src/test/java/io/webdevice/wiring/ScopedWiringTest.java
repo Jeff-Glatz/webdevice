@@ -31,16 +31,16 @@ public class ScopedWiringTest {
     }
 
     @Test
-    public void shouldCreateInPrototypeScopeWhenCucumberTestContextNotOnClasspath() {
+    public void shouldCreateInWebDeviceScopeWhenCucumberTestContextNotOnClasspath() {
         // CucumberTestContext is not on the test classpath
         runner.withUserConfiguration(WebDeviceRuntime.class)
                 .withClassLoader(new FilteredClassLoader(CucumberTestContext.class))
                 .run(context -> {
                     ConfigurableListableBeanFactory factory = context.getBeanFactory();
                     assertThat(factory.getBeanDefinition("webdevice.WebDevice").getScope())
-                            .isEqualTo("prototype");
+                            .isEqualTo("web-device");
                     assertThat(factory.getBeanDefinition("webdevice.DeviceRegistry").getScope())
-                            .isEqualTo("prototype");
+                            .isEqualTo("web-device");
                 });
     }
 

@@ -7,6 +7,7 @@ import io.webdevice.support.SpringDeviceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
@@ -14,6 +15,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 
+import static io.webdevice.wiring.WebDeviceScope.registerScope;
 import static java.lang.String.format;
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
@@ -34,6 +36,7 @@ public class WebDeviceRegistrar
     @Override
     public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
         Settings settings = settings(environment);
+        registerScope((ConfigurableListableBeanFactory) registry);
         registerSettings(settings, registry);
         registerDevices(settings, registry);
         registerDeviceRegistry(settings, registry);

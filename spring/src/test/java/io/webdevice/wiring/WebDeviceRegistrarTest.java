@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -34,7 +35,7 @@ public class WebDeviceRegistrarTest
 
     @Mock
     private AnnotationMetadata mockMetadata;
-    @Mock
+    @Mock(extraInterfaces = ConfigurableListableBeanFactory.class)
     private BeanDefinitionRegistry mockRegistry;
     @Captor
     private ArgumentCaptor<GenericBeanDefinition> definitionCaptor;
@@ -65,7 +66,7 @@ public class WebDeviceRegistrarTest
             throws Exception {
         Settings expected = new Settings()
                 .withDefaultDevice("Foo")
-                .withScope("prototype")
+                .withScope("web-device")
                 .withStrict(false)
                 .withEager(true)
                 .withBaseUrl(new URL("http://webdevice.io"));
@@ -83,6 +84,8 @@ public class WebDeviceRegistrarTest
 
         registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
 
+        verify((ConfigurableListableBeanFactory)mockRegistry)
+                .registerScope("web-device", new WebDeviceScope());
         verify(mockRegistry)
                 .registerBeanDefinition(eq("webdevice.Settings"), definitionCaptor.capture());
         verify(mockRegistry)
@@ -110,6 +113,8 @@ public class WebDeviceRegistrarTest
 
         registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
 
+        verify((ConfigurableListableBeanFactory)mockRegistry)
+                .registerScope("web-device", new WebDeviceScope());
         verify(mockRegistry)
                 .registerBeanDefinition(eq("webdevice.Settings"), any());
         verify(mockRegistry)
@@ -136,6 +141,8 @@ public class WebDeviceRegistrarTest
 
         registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
 
+        verify((ConfigurableListableBeanFactory)mockRegistry)
+                .registerScope("web-device", new WebDeviceScope());
         verify(mockRegistry)
                 .registerBeanDefinition(eq("webdevice.Settings"), any());
         verify(mockRegistry)
@@ -177,6 +184,8 @@ public class WebDeviceRegistrarTest
 
         registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
 
+        verify((ConfigurableListableBeanFactory)mockRegistry)
+                .registerScope("web-device", new WebDeviceScope());
         verify(mockRegistry)
                 .registerBeanDefinition(eq("webdevice.Settings"), any());
         verify(mockRegistry)
@@ -230,6 +239,8 @@ public class WebDeviceRegistrarTest
 
         registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
 
+        verify((ConfigurableListableBeanFactory)mockRegistry)
+                .registerScope("web-device", new WebDeviceScope());
         verify(mockRegistry)
                 .registerBeanDefinition(eq("webdevice.Settings"), any());
         verify(mockRegistry)
@@ -292,6 +303,8 @@ public class WebDeviceRegistrarTest
 
         registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
 
+        verify((ConfigurableListableBeanFactory)mockRegistry)
+                .registerScope("web-device", new WebDeviceScope());
         verify(mockRegistry)
                 .registerBeanDefinition(eq("webdevice.Settings"), any());
         verify(mockRegistry)
@@ -324,6 +337,8 @@ public class WebDeviceRegistrarTest
 
         registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
 
+        verify((ConfigurableListableBeanFactory)mockRegistry)
+                .registerScope("web-device", new WebDeviceScope());
         verify(mockRegistry)
                 .registerBeanDefinition(eq("webdevice.Settings"), any());
         verify(mockRegistry)
@@ -348,6 +363,8 @@ public class WebDeviceRegistrarTest
 
         registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
 
+        verify((ConfigurableListableBeanFactory)mockRegistry)
+                .registerScope("web-device", new WebDeviceScope());
         verify(mockRegistry)
                 .registerBeanDefinition(eq("webdevice.Settings"), any());
         verify(mockRegistry)
@@ -359,7 +376,7 @@ public class WebDeviceRegistrarTest
         GenericBeanDefinition webDevice = definitionCaptor.getValue();
         assertThat(webDevice)
                 .isEqualTo(genericBeanDefinition(WebDevice.class)
-                        .setScope("prototype")
+                        .setScope("web-device")
                         .addConstructorArgReference("webdevice.DeviceRegistry")
                         .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
                         .addPropertyValue("baseUrl", new URL("http://webdevice.io"))
