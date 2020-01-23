@@ -9,6 +9,8 @@ import org.springframework.core.io.support.PropertySourceFactory;
 
 import java.io.IOException;
 
+import static org.springframework.util.StringUtils.isEmpty;
+
 public class YamlPropertySourceFactory
         implements PropertySourceFactory {
 
@@ -16,7 +18,7 @@ public class YamlPropertySourceFactory
     public PropertySource<?> createPropertySource(String name, EncodedResource encodedResource)
             throws IOException {
         Resource resource = encodedResource.getResource();
-        if (name == null) {
+        if (isEmpty(name)) {
             name = resource.getFile().getName();
         }
         CompositePropertySource propertySource = new CompositePropertySource(name);

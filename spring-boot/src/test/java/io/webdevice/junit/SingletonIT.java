@@ -1,7 +1,6 @@
 package io.webdevice.junit;
 
 import io.webdevice.device.WebDevice;
-import io.webdevice.support.EnableYamlBinding;
 import io.webdevice.support.YamlPropertySourceFactory;
 import io.webdevice.wiring.EnableWebDevice;
 import org.junit.After;
@@ -48,7 +47,6 @@ public class SingletonIT {
 
     @Configuration
     @EnableWebDevice
-    @EnableYamlBinding
     @PropertySource(
             value = "classpath:io/webdevice/junit/singleton-device.yaml",
             factory = YamlPropertySourceFactory.class)

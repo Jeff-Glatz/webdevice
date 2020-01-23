@@ -1,9 +1,8 @@
 package io.webdevice.cucumber.capabilities.reference;
 
 import io.cucumber.java8.En;
-import io.webdevice.wiring.EnableWebDevice;
-import io.webdevice.support.EnableYamlBinding;
 import io.webdevice.support.YamlPropertySourceFactory;
+import io.webdevice.wiring.EnableWebDevice;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +16,6 @@ public class ConfigurationStep
 
     @Configuration
     @EnableWebDevice
-    @EnableYamlBinding
     @PropertySource(
             value = "classpath:io/webdevice/cucumber/capabilities/reference/webdevice.yaml",
             factory = YamlPropertySourceFactory.class)

@@ -1,9 +1,8 @@
 package io.webdevice.cucumber.single;
 
 import io.cucumber.java8.En;
-import io.webdevice.wiring.EnableWebDevice;
-import io.webdevice.support.EnableYamlBinding;
 import io.webdevice.support.YamlPropertySourceFactory;
+import io.webdevice.wiring.EnableWebDevice;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
@@ -14,7 +13,6 @@ public class ConfigurationStep
 
     @Configuration
     @EnableWebDevice
-    @EnableYamlBinding
     @PropertySource(
             value = "classpath:io/webdevice/cucumber/single/webdevice.yaml",
             factory = YamlPropertySourceFactory.class)
