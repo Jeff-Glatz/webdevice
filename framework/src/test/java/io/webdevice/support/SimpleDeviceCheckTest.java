@@ -31,7 +31,7 @@ public class SimpleDeviceCheckTest
         given(mockWebDriver.getCurrentUrl())
                 .willReturn("foo");
 
-        assertThat(check.apply(device))
+        assertThat(check.test(device))
                 .isTrue();
     }
 
@@ -40,7 +40,7 @@ public class SimpleDeviceCheckTest
         given(mockWebDriver.getCurrentUrl())
                 .willThrow(new WebDriverException());
 
-        assertThat(check.apply(device))
+        assertThat(check.test(device))
                 .isFalse();
     }
 }

@@ -6,16 +6,16 @@ import org.openqa.selenium.WebDriverException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static java.lang.String.format;
 
 public class SimpleDeviceCheck<Driver extends WebDriver>
-        implements Function<Device<Driver>, Boolean> {
+        implements Predicate<Device<Driver>> {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
-    public Boolean apply(Device<Driver> device) {
+    public boolean test(Device<Driver> device) {
         Driver driver = device.getDriver();
         try {
             driver.getCurrentUrl();
