@@ -29,7 +29,7 @@ public class DynamicDependsOnTest
     public void shouldEstablishDeviceRegistryDependenciesOnDeviceProviders() {
         String[] providers = {"provider-1", "provider-2"};
 
-        given(mockBeanFactory.getBeanDefinition("webdevice.DeviceRegistry"))
+        given(mockBeanFactory.getBeanDefinition("webdevice.WebDevice"))
                 .willReturn(mockBeanDefinition);
         given(mockBeanFactory.getBeanNamesForType(DeviceProvider.class))
                 .willReturn(providers);

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 
 import static io.webdevice.wiring.WebDeviceRegistrar.namespace;
 import static java.util.Arrays.asList;
@@ -26,7 +25,6 @@ import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
  * the originating {@link DeviceProvider}. Then the providers can be destroyed.
  */
 @Order(LOWEST_PRECEDENCE)
-@Component("webdevice.DynamicDependsOn")
 public class DynamicDependsOn
         implements BeanFactoryPostProcessor {
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -34,7 +32,7 @@ public class DynamicDependsOn
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory factory)
             throws BeansException {
-        String registryName = namespace("DeviceRegistry");
+        String registryName = namespace("WebDevice");
         BeanDefinition registry = factory.getBeanDefinition(registryName);
         String[] providers = factory.getBeanNamesForType(DeviceProvider.class);
         log.info("Establishing {} dependency on {}", registryName, asList(providers));
