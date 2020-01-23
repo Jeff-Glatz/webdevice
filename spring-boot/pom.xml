@@ -8,8 +8,8 @@
         <version>0.0.12-SNAPSHOT</version>
     </parent>
 
-    <artifactId>webdevice-spring</artifactId>
-    <name>Spring Module</name>
+    <artifactId>webdevice-spring-boot</artifactId>
+    <name>Spring Boot Module</name>
     <description>WebDevice.IO Spring Module</description>
 
     <properties>

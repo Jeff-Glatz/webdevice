@@ -11,7 +11,7 @@ activated at `Scenario` runtime.
 ```xml
 <dependency>
   <groupId>io.webdevice</groupId>
-  <artifactId>webdevice-spring</artifactId>
+  <artifactId>webdevice-spring-boot</artifactId>
   <version>0.0.11</version>
 </dependency>
 ```
