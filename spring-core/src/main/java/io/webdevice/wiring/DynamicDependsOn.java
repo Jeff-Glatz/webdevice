@@ -32,10 +32,10 @@ public class DynamicDependsOn
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory factory)
             throws BeansException {
-        String registryName = namespace("WebDevice");
-        BeanDefinition registry = factory.getBeanDefinition(registryName);
+        String webDeviceName = namespace("WebDevice");
+        BeanDefinition webDeviceDefinition = factory.getBeanDefinition(webDeviceName);
         String[] providers = factory.getBeanNamesForType(DeviceProvider.class);
-        log.info("Establishing {} dependency on {}", registryName, asList(providers));
-        registry.setDependsOn(providers);
+        log.info("Establishing {} dependency on {}", webDeviceName, asList(providers));
+        webDeviceDefinition.setDependsOn(providers);
     }
 }

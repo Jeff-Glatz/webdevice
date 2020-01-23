@@ -16,6 +16,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 
 import static io.webdevice.wiring.WebDeviceScope.registerScope;
+import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRASTRUCTURE;
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
@@ -63,6 +64,7 @@ public class WebDeviceRegistrar
                             .addConstructorArgValue(new SimpleDeviceCheck<>())
                             .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
                             .setDestroyMethodName("dispose")
+                            .setRole(ROLE_INFRASTRUCTURE)
                             .getBeanDefinition());
         }
         return pool;
