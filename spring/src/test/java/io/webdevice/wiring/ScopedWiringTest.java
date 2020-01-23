@@ -38,9 +38,9 @@ public class ScopedWiringTest {
                 .run(context -> {
                     ConfigurableListableBeanFactory factory = context.getBeanFactory();
                     assertThat(factory.getBeanDefinition("webdevice.WebDevice").getScope())
-                            .isEqualTo("web-device");
+                            .isEqualTo("webdevice");
                     assertThat(factory.getBeanDefinition("webdevice.DeviceRegistry").getScope())
-                            .isEqualTo("web-device");
+                            .isEqualTo("webdevice");
                 });
     }
 

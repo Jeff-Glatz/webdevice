@@ -1,5 +1,5 @@
 webdevice:
-  scope: web-device
+  scope: webdevice
   default-device: LocalFirefox
   base-url: http://webdevice.io
   devices:

@@ -47,7 +47,7 @@ public class SettingsTest
         thread.join();
 
         assertThat(scope.get())
-                .isEqualTo("web-device");
+                .isEqualTo("webdevice");
     }
 
     @Test

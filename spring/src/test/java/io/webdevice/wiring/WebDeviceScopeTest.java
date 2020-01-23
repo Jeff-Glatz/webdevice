@@ -47,7 +47,7 @@ public class WebDeviceScopeTest
         assertThat(scope)
                 .isNotNull();
         verify(mockBeanFactory)
-                .registerScope("web-device", scope);
+                .registerScope("webdevice", scope);
     }
 
     @Test
@@ -139,7 +139,7 @@ public class WebDeviceScopeTest
     public void shouldExtractScopeFromApplicationContextWhenConfigurable() {
         given(mockConfigurableContext.getBeanFactory())
                 .willReturn(mockBeanFactory);
-        given(mockBeanFactory.getRegisteredScope("web-device"))
+        given(mockBeanFactory.getRegisteredScope("webdevice"))
                 .willReturn(new WebDeviceScope());
 
         scope = scope(mockConfigurableContext);

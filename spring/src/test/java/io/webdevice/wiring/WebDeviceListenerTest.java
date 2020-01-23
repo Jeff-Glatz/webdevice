@@ -63,7 +63,7 @@ public class WebDeviceListenerTest
                 .willReturn(mockConfigurableContext);
         given(mockConfigurableContext.getBeanFactory())
                 .willReturn(mockBeanFactory);
-        given(mockBeanFactory.getRegisteredScope("web-device"))
+        given(mockBeanFactory.getRegisteredScope("webdevice"))
                 .willReturn(scope);
 
         listener.afterTestMethod(mockTestContext);
@@ -86,7 +86,7 @@ public class WebDeviceListenerTest
                 .willReturn(mockConfigurableContext);
         given(mockConfigurableContext.getBeanFactory())
                 .willReturn(mockBeanFactory);
-        given(mockBeanFactory.getRegisteredScope("web-device"))
+        given(mockBeanFactory.getRegisteredScope("webdevice"))
                 .willReturn(scope);
 
         listener.afterTestMethod(mockTestContext);

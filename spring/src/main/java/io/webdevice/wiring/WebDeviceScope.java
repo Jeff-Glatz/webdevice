@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class WebDeviceScope
         implements Scope {
-    private static final String NAME = "web-device";
+    private static final String NAME = "webdevice";
     private final Map<String, List<Object>> instances = new LinkedHashMap<>();
 
     public boolean isEmpty() {
