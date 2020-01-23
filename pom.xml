@@ -10,7 +10,7 @@
 
     <groupId>io.webdevice</groupId>
     <artifactId>webdevice-parent</artifactId>
-    <version>0.0.11-SNAPSHOT</version>
+    <version>0.0.11</version>
     <name>WebDevice.IO</name>
     <description>WebDevice.IO Parent</description>
     <packaging>pom</packaging>
