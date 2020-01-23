@@ -11,7 +11,7 @@ import org.springframework.core.io.support.PropertySourceFactory;
 
 import java.io.IOException;
 
-import static io.webdevice.wiring.WebDeviceRegistrar.SETTINGS_PREFIX;
+import static io.webdevice.wiring.WebDeviceScope.NAME;
 
 public abstract class EnvironmentBasedTest
         extends UnitTest {
@@ -29,7 +29,7 @@ public abstract class EnvironmentBasedTest
             throws IOException {
         environment.getPropertySources()
                 .addFirst(propertySourceFactory
-                        .createPropertySource(SETTINGS_PREFIX,
+                        .createPropertySource(NAME,
                                 new EncodedResource(new ClassPathResource(resource))));
         return environment;
     }

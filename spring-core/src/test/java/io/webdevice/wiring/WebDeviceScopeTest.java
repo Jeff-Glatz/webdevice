@@ -12,6 +12,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.List;
 
+import static io.webdevice.wiring.WebDeviceScope.namespace;
 import static io.webdevice.wiring.WebDeviceScope.registerScope;
 import static io.webdevice.wiring.WebDeviceScope.scope;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -150,5 +151,11 @@ public class WebDeviceScopeTest
                 .getBeanFactory();
         verifyNoMoreInteractions(mockConfigurableContext,
                 mockApplicationContext);
+    }
+
+    @Test
+    public void shouldFormatNameInNamespace() {
+        assertThat(namespace("%s-Pool", "Device"))
+                .isEqualTo("webdevice.Device-Pool");
     }
 }

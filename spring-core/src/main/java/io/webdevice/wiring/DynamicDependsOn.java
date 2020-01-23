@@ -9,7 +9,7 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.core.annotation.Order;
 
-import static io.webdevice.wiring.WebDeviceRegistrar.namespace;
+import static io.webdevice.wiring.WebDeviceScope.namespace;
 import static java.util.Arrays.asList;
 import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 

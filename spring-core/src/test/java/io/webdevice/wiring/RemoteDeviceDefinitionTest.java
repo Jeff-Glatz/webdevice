@@ -3,7 +3,7 @@ package io.webdevice.wiring;
 import io.webdevice.device.RemoteDeviceProvider;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 
@@ -94,7 +94,7 @@ public class RemoteDeviceDefinitionTest
     public void shouldBuildDefinitionWithOptionsOnly() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withRemoteAddress(remoteAddress)
-                .withOptions(FirefoxOptions.class)
+                .withOptions(MutableCapabilities.class)
                 .build()
                 .getBeanDefinition();
 
@@ -105,7 +105,7 @@ public class RemoteDeviceDefinitionTest
                         .setInitMethodName("initialize")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
-                        .addPropertyValue("capabilities", new FirefoxOptions())
+                        .addPropertyValue("capabilities", new MutableCapabilities())
                         .getBeanDefinition());
     }
 
@@ -113,12 +113,12 @@ public class RemoteDeviceDefinitionTest
     public void shouldBuildDefinitionWithOptionsMergingCapabilities() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withRemoteAddress(remoteAddress)
-                .withOptions(FirefoxOptions.class)
+                .withOptions(MutableCapabilities.class)
                 .withCapability("key", "value")
                 .build()
                 .getBeanDefinition();
 
-        FirefoxOptions expectedOptions = new FirefoxOptions();
+        MutableCapabilities expectedOptions = new MutableCapabilities();
         expectedOptions.setCapability("key", "value");
 
         assertThat(actual)
@@ -136,13 +136,13 @@ public class RemoteDeviceDefinitionTest
     public void shouldBuildDefinitionWithOptionsMergingExtraCapabilities() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withRemoteAddress(remoteAddress)
-                .withOptions(FirefoxOptions.class)
+                .withOptions(MutableCapabilities.class)
                 .withExtraCapability("sauce:options")
                 .withExtraOption("accessKey", "2secret4u")
                 .build()
                 .getBeanDefinition();
 
-        FirefoxOptions expectedOptions = new FirefoxOptions();
+        MutableCapabilities expectedOptions = new MutableCapabilities();
         expectedOptions.setCapability("sauce:options",
                 new DesiredCapabilities(mapOf("accessKey", "2secret4u")));
 
@@ -161,14 +161,14 @@ public class RemoteDeviceDefinitionTest
     public void shouldBuildDefinitionWithOptionsMergingCapabilitiesAndExtraCapabilities() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
                 .withRemoteAddress(remoteAddress)
-                .withOptions(FirefoxOptions.class)
+                .withOptions(MutableCapabilities.class)
                 .withCapability("key", "value")
                 .withExtraCapability("sauce:options")
                 .withExtraOption("accessKey", "2secret4u")
                 .build()
                 .getBeanDefinition();
 
-        FirefoxOptions expectedOptions = new FirefoxOptions();
+        MutableCapabilities expectedOptions = new MutableCapabilities();
         expectedOptions.setCapability("key", "value");
         expectedOptions.setCapability("sauce:options",
                 new DesiredCapabilities(mapOf("accessKey", "2secret4u")));

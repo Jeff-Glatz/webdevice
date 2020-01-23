@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -10,47 +11,12 @@
 
     <artifactId>webdevice-spring-boot</artifactId>
     <name>Spring Boot Module</name>
-    <description>WebDevice.IO Spring Module</description>
-
-    <properties>
-        <!-- Dependency Versions -->
-        <bestquality.version>0.0.2</bestquality.version>
-        <cucumber.version>4.8.0</cucumber.version>
-        <spring.boot.version>2.2.2.RELEASE</spring.boot.version>
-        <wdm.version>3.7.1</wdm.version>
-    </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-parent</artifactId>
-                <version>${spring.boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <description>WebDevice.IO Spring Boot Module</description>
 
     <dependencies>
         <dependency>
-            <groupId>io.bestquality</groupId>
-            <artifactId>bestquality-core</artifactId>
-            <version>${bestquality.version}</version>
-        </dependency>
-        <dependency>
             <groupId>io.webdevice</groupId>
-            <artifactId>webdevice-framework</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-remote-driver</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.bonigarcia</groupId>
-            <artifactId>webdrivermanager</artifactId>
-            <version>${wdm.version}</version>
+            <artifactId>webdevice-spring-core</artifactId>
         </dependency>
 
         <!-- Provided Dependencies -->
@@ -91,7 +57,13 @@
         <dependency>
             <groupId>io.webdevice</groupId>
             <artifactId>webdevice-framework</artifactId>
-            <version>${project.version}</version>
+            <classifier>tests</classifier>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.webdevice</groupId>
+            <artifactId>webdevice-spring-core</artifactId>
             <classifier>tests</classifier>
             <type>test-jar</type>
             <scope>test</scope>
@@ -99,19 +71,16 @@
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java8</artifactId>
-            <version>${cucumber.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-spring</artifactId>
-            <version>${cucumber.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-junit</artifactId>
-            <version>${cucumber.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

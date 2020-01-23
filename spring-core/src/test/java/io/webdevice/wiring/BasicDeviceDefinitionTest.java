@@ -1,10 +1,10 @@
 package io.webdevice.wiring;
 
-import io.webdevice.support.CustomFirefoxProvider;
+import io.webdevice.support.GenericDeviceProvider;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -116,11 +116,11 @@ public class BasicDeviceDefinitionTest {
     @Test
     public void twoProvidedDevicesShouldBeEqual() {
         definition.withName("myDevice")
-                .withProvider(CustomFirefoxProvider.class);
+                .withProvider(GenericDeviceProvider.class);
 
         DeviceDefinition metadata2 = new DeviceDefinition()
                 .withName("myDevice")
-                .withProvider(CustomFirefoxProvider.class);
+                .withProvider(GenericDeviceProvider.class);
 
         assertThat(metadata2)
                 .isEqualTo(definition);
@@ -129,7 +129,7 @@ public class BasicDeviceDefinitionTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldRaiseExceptionWhenDesiredCapabilitiesFactoryMethodDoesNotExist() {
         definition.withName("myDevice")
-                .withDriver(FirefoxDriver.class)
+                .withDriver(RemoteWebDriver.class)
                 .withDesired("doesNotExist")
                 .build();
     }
@@ -137,13 +137,13 @@ public class BasicDeviceDefinitionTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldRaiseExceptionWhenFailureOccursConstructingOptions() {
         definition.withName("myDevice")
-                .withDriver(FirefoxDriver.class)
+                .withDriver(RemoteWebDriver.class)
                 .withOptions(BadOptions.class)
                 .build();
     }
 
     public static class BadOptions
-            extends FirefoxOptions {
+            extends MutableCapabilities {
         private BadOptions() {
         }
     }

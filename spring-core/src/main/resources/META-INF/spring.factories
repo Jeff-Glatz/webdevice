@@ -1,0 +1,2 @@
+org.springframework.test.context.TestExecutionListener=\
+io.webdevice.wiring.WebDeviceListener

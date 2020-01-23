@@ -3,9 +3,9 @@ package io.webdevice.wiring;
 import io.webdevice.device.DirectDeviceProvider;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 
 import static io.webdevice.util.Collections.mapOf;
@@ -30,14 +30,14 @@ public class DirectDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithoutCapabilitiesAndWithoutConfidential() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withDriver(FirefoxDriver.class)
+                .withDriver(RemoteWebDriver.class)
                 .build()
                 .getBeanDefinition();
 
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(DirectDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
-                        .addConstructorArgValue(FirefoxDriver.class)
+                        .addConstructorArgValue(RemoteWebDriver.class)
                         .setInitMethodName("initialize")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -47,7 +47,7 @@ public class DirectDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithoutCapabilitiesAndWithConfidential() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withDriver(FirefoxDriver.class)
+                .withDriver(RemoteWebDriver.class)
                 .withConfidential("accessKey")
                 .build()
                 .getBeanDefinition();
@@ -55,7 +55,7 @@ public class DirectDeviceDefinitionTest
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(DirectDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
-                        .addConstructorArgValue(FirefoxDriver.class)
+                        .addConstructorArgValue(RemoteWebDriver.class)
                         .setInitMethodName("initialize")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -68,7 +68,7 @@ public class DirectDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithCapabilitiesReference() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withDriver(FirefoxDriver.class)
+                .withDriver(RemoteWebDriver.class)
                 .withCapabilitiesRef("myDeviceCapabilities")
                 .build()
                 .getBeanDefinition();
@@ -76,7 +76,7 @@ public class DirectDeviceDefinitionTest
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(DirectDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
-                        .addConstructorArgValue(FirefoxDriver.class)
+                        .addConstructorArgValue(RemoteWebDriver.class)
                         .setInitMethodName("initialize")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -89,38 +89,38 @@ public class DirectDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithOptionsOnly() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withDriver(FirefoxDriver.class)
-                .withOptions(FirefoxOptions.class)
+                .withDriver(RemoteWebDriver.class)
+                .withOptions(MutableCapabilities.class)
                 .build()
                 .getBeanDefinition();
 
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(DirectDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
-                        .addConstructorArgValue(FirefoxDriver.class)
+                        .addConstructorArgValue(RemoteWebDriver.class)
                         .setInitMethodName("initialize")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
-                        .addPropertyValue("capabilities", new FirefoxOptions())
+                        .addPropertyValue("capabilities", new MutableCapabilities())
                         .getBeanDefinition());
     }
 
     @Test
     public void shouldBuildDefinitionWithOptionsMergingCapabilities() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withDriver(FirefoxDriver.class)
-                .withOptions(FirefoxOptions.class)
+                .withDriver(RemoteWebDriver.class)
+                .withOptions(MutableCapabilities.class)
                 .withCapability("key", "value")
                 .build()
                 .getBeanDefinition();
 
-        FirefoxOptions expectedOptions = new FirefoxOptions();
+        MutableCapabilities expectedOptions = new MutableCapabilities();
         expectedOptions.setCapability("key", "value");
 
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(DirectDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
-                        .addConstructorArgValue(FirefoxDriver.class)
+                        .addConstructorArgValue(RemoteWebDriver.class)
                         .setInitMethodName("initialize")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -131,21 +131,21 @@ public class DirectDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithOptionsMergingExtraCapabilities() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withDriver(FirefoxDriver.class)
-                .withOptions(FirefoxOptions.class)
+                .withDriver(RemoteWebDriver.class)
+                .withOptions(MutableCapabilities.class)
                 .withExtraCapability("sauce:options")
                 .withExtraOption("accessKey", "2secret4u")
                 .build()
                 .getBeanDefinition();
 
-        FirefoxOptions expectedOptions = new FirefoxOptions();
+        MutableCapabilities expectedOptions = new MutableCapabilities();
         expectedOptions.setCapability("sauce:options",
                 new DesiredCapabilities(mapOf("accessKey", "2secret4u")));
 
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(DirectDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
-                        .addConstructorArgValue(FirefoxDriver.class)
+                        .addConstructorArgValue(RemoteWebDriver.class)
                         .setInitMethodName("initialize")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -156,15 +156,15 @@ public class DirectDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithOptionsMergingCapabilitiesAndExtraCapabilities() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withDriver(FirefoxDriver.class)
-                .withOptions(FirefoxOptions.class)
+                .withDriver(RemoteWebDriver.class)
+                .withOptions(MutableCapabilities.class)
                 .withCapability("key", "value")
                 .withExtraCapability("sauce:options")
                 .withExtraOption("accessKey", "2secret4u")
                 .build()
                 .getBeanDefinition();
 
-        FirefoxOptions expectedOptions = new FirefoxOptions();
+        MutableCapabilities expectedOptions = new MutableCapabilities();
         expectedOptions.setCapability("key", "value");
         expectedOptions.setCapability("sauce:options",
                 new DesiredCapabilities(mapOf("accessKey", "2secret4u")));
@@ -172,7 +172,7 @@ public class DirectDeviceDefinitionTest
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(DirectDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
-                        .addConstructorArgValue(FirefoxDriver.class)
+                        .addConstructorArgValue(RemoteWebDriver.class)
                         .setInitMethodName("initialize")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -185,7 +185,7 @@ public class DirectDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithDesiredOnly() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withDriver(FirefoxDriver.class)
+                .withDriver(RemoteWebDriver.class)
                 .withDesired("iphone")
                 .build()
                 .getBeanDefinition();
@@ -193,7 +193,7 @@ public class DirectDeviceDefinitionTest
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(DirectDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
-                        .addConstructorArgValue(FirefoxDriver.class)
+                        .addConstructorArgValue(RemoteWebDriver.class)
                         .setInitMethodName("initialize")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -204,7 +204,7 @@ public class DirectDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithDesiredMergingCapabilities() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withDriver(FirefoxDriver.class)
+                .withDriver(RemoteWebDriver.class)
                 .withDesired("iphone")
                 .withCapability("key", "value")
                 .build()
@@ -216,7 +216,7 @@ public class DirectDeviceDefinitionTest
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(DirectDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
-                        .addConstructorArgValue(FirefoxDriver.class)
+                        .addConstructorArgValue(RemoteWebDriver.class)
                         .setInitMethodName("initialize")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -227,7 +227,7 @@ public class DirectDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithDesiredMergingExtraCapabilities() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withDriver(FirefoxDriver.class)
+                .withDriver(RemoteWebDriver.class)
                 .withDesired("iphone")
                 .withExtraCapability("sauce:options")
                 .withExtraOption("accessKey", "2secret4u")
@@ -241,7 +241,7 @@ public class DirectDeviceDefinitionTest
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(DirectDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
-                        .addConstructorArgValue(FirefoxDriver.class)
+                        .addConstructorArgValue(RemoteWebDriver.class)
                         .setInitMethodName("initialize")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -252,7 +252,7 @@ public class DirectDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithDesiredMergingCapabilitiesAndExtraCapabilities() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withDriver(FirefoxDriver.class)
+                .withDriver(RemoteWebDriver.class)
                 .withDesired("iphone")
                 .withCapability("key", "value")
                 .withExtraCapability("sauce:options")
@@ -268,7 +268,7 @@ public class DirectDeviceDefinitionTest
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(DirectDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
-                        .addConstructorArgValue(FirefoxDriver.class)
+                        .addConstructorArgValue(RemoteWebDriver.class)
                         .setInitMethodName("initialize")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -282,7 +282,7 @@ public class DirectDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithMapOnly() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withDriver(FirefoxDriver.class)
+                .withDriver(RemoteWebDriver.class)
                 .withCapability("key", "value")
                 .build()
                 .getBeanDefinition();
@@ -290,7 +290,7 @@ public class DirectDeviceDefinitionTest
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(DirectDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
-                        .addConstructorArgValue(FirefoxDriver.class)
+                        .addConstructorArgValue(RemoteWebDriver.class)
                         .setInitMethodName("initialize")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -301,7 +301,7 @@ public class DirectDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithMapMergingExtraCapabilities() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withDriver(FirefoxDriver.class)
+                .withDriver(RemoteWebDriver.class)
                 .withCapability("key", "value")
                 .withExtraCapability("sauce:options")
                 .withExtraOption("accessKey", "2secret4u")
@@ -315,7 +315,7 @@ public class DirectDeviceDefinitionTest
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(DirectDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
-                        .addConstructorArgValue(FirefoxDriver.class)
+                        .addConstructorArgValue(RemoteWebDriver.class)
                         .setInitMethodName("initialize")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)

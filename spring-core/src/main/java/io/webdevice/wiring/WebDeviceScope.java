@@ -15,9 +15,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static java.lang.String.format;
+
 public class WebDeviceScope
         implements Scope {
-    private static final String NAME = "webdevice";
+    public static final String NAME = "webdevice";
     private final Map<String, List<Object>> instances = new LinkedHashMap<>();
 
     public boolean isEmpty() {
@@ -91,6 +93,10 @@ public class WebDeviceScope
     @Override
     public int hashCode() {
         return Objects.hash(instances);
+    }
+
+    public static String namespace(String name, Object... args) {
+        return format("%s.%s", NAME, format(name, args));
     }
 
     public static WebDeviceScope registerScope(ConfigurableListableBeanFactory registry) {

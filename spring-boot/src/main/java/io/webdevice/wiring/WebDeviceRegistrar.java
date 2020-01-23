@@ -16,7 +16,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 
 import static io.webdevice.wiring.WebDeviceScope.registerScope;
-import static java.lang.String.format;
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
@@ -24,7 +23,6 @@ import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 @Order(LOWEST_PRECEDENCE)
 public class WebDeviceRegistrar
         implements ImportBeanDefinitionRegistrar {
-    public static final String SETTINGS_PREFIX = "webdevice";
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final Environment environment;
 
@@ -44,7 +42,7 @@ public class WebDeviceRegistrar
     }
 
     private String maybeRegisterProvider(DeviceDefinition device, BeanDefinitionRegistry registry) {
-        String provider = namespace("%s-Provider", device.getName());
+        String provider = WebDeviceScope.namespace("%s-Provider", device.getName());
         if (!registry.isBeanNameInUse(provider)) {
             log.info("Registering WebDeviceProvider definition named {}", provider);
             registry.registerBeanDefinition(provider,
@@ -55,7 +53,7 @@ public class WebDeviceRegistrar
     }
 
     private String maybeRegisterPool(String provider, DeviceDefinition device, BeanDefinitionRegistry registry) {
-        String pool = namespace("%s-Pool", device.getName());
+        String pool = WebDeviceScope.namespace("%s-Pool", device.getName());
         if (!registry.isBeanNameInUse(pool)) {
             log.info("Registering WebDevicePool definition named {}", pool);
             registry.registerBeanDefinition(pool,
@@ -81,7 +79,7 @@ public class WebDeviceRegistrar
 
     private void registerSettings(Settings settings, BeanDefinitionRegistry registry) {
         log.info("Registering Settings ...");
-        registry.registerBeanDefinition(namespace("Settings"),
+        registry.registerBeanDefinition(WebDeviceScope.namespace("Settings"),
                 genericBeanDefinition(Settings.class, () -> settings)
                         .getBeanDefinition());
         log.info("Settings registered.");
@@ -91,7 +89,7 @@ public class WebDeviceRegistrar
         log.info("Registering Devices ...");
         settings.devices()
                 .filter(device -> {
-                    boolean defined = registry.isBeanNameInUse(namespace(device.getName()));
+                    boolean defined = registry.isBeanNameInUse(WebDeviceScope.namespace(device.getName()));
                     if (defined) {
                         log.warn("Device {} is already defined, skipping registration", device.getName());
                     }
@@ -110,7 +108,7 @@ public class WebDeviceRegistrar
     private void registerDeviceRegistry(Settings settings, BeanDefinitionRegistry registry) {
         String scope = settings.getScope();
         log.info("Registering DeviceRegistry in {} scope ...", scope);
-        registry.registerBeanDefinition(namespace("DeviceRegistry"),
+        registry.registerBeanDefinition(WebDeviceScope.namespace("DeviceRegistry"),
                 genericBeanDefinition(SpringDeviceRegistry.class)
                         .setScope(scope)
                         .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
@@ -121,10 +119,10 @@ public class WebDeviceRegistrar
     private void registerWebDevice(Settings settings, BeanDefinitionRegistry registry) {
         String scope = settings.getScope();
         log.info("Registering WebDevice in {} scope ...", scope);
-        registry.registerBeanDefinition(namespace("WebDevice"),
+        registry.registerBeanDefinition(WebDeviceScope.namespace("WebDevice"),
                 genericBeanDefinition(WebDevice.class)
                         .setScope(scope)
-                        .addConstructorArgReference(namespace("DeviceRegistry"))
+                        .addConstructorArgReference(WebDeviceScope.namespace("DeviceRegistry"))
                         .setAutowireMode(AUTOWIRE_CONSTRUCTOR)
                         .addPropertyValue("baseUrl", settings.getBaseUrl())
                         .addPropertyValue("defaultDevice", settings.getDefaultDevice())
@@ -136,13 +134,9 @@ public class WebDeviceRegistrar
         log.info("WebDevice registered.");
     }
 
-    public static String namespace(String name, Object... args) {
-        return format("%s.%s", SETTINGS_PREFIX, format(name, args));
-    }
-
     public static Settings settings(Environment environment) {
         return Binder.get(environment)
-                .bind(SETTINGS_PREFIX, Settings.class)
+                .bind(WebDeviceScope.NAME, Settings.class)
                 .orElse(new Settings());
     }
 }
