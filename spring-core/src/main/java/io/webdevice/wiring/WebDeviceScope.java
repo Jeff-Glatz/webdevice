@@ -57,11 +57,6 @@ public class WebDeviceScope
         return null;
     }
 
-    /**
-     * Reset all instances in the scope.
-     *
-     * @return {@code true} if items were reset
-     */
     public boolean dispose() {
         final AtomicBoolean disposed = new AtomicBoolean(false);
         synchronized (instances) {
