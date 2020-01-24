@@ -16,8 +16,8 @@ public class WebDeviceRuntime {
         return new ApplicationConversionService();
     }
 
-    @Bean("webdevice.DynamicDependsOn")
-    public DynamicDependsOn dependsOn() {
-        return new DynamicDependsOn();
+    @Bean("webdevice.WebDeviceDependsOn")
+    public WebDeviceDependsOn dependsOn() {
+        return new WebDeviceDependsOn();
     }
 }

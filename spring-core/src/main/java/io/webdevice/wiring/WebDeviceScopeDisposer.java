@@ -7,7 +7,7 @@ import static io.webdevice.wiring.WebDeviceScope.scope;
 import static java.lang.Boolean.TRUE;
 import static org.springframework.test.context.support.DependencyInjectionTestExecutionListener.REINJECT_DEPENDENCIES_ATTRIBUTE;
 
-public class WebDeviceListener
+public class WebDeviceScopeDisposer
         extends AbstractTestExecutionListener {
 
     @Override

@@ -58,8 +58,8 @@ public class WebDeviceScope
     }
 
     public boolean dispose() {
-        final AtomicBoolean disposed = new AtomicBoolean(false);
         synchronized (instances) {
+            final AtomicBoolean disposed = new AtomicBoolean(false);
             instances.values().stream()
                     .flatMap(Collection::stream)
                     .filter(instance -> {
@@ -71,10 +71,9 @@ public class WebDeviceScope
                     })
                     .map(instance -> (WebDevice) instance)
                     .forEach(WebDevice::release);
-
             instances.clear();
+            return disposed.get();
         }
-        return disposed.get();
     }
 
     @Override

@@ -18,9 +18,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.test.context.support.DependencyInjectionTestExecutionListener.REINJECT_DEPENDENCIES_ATTRIBUTE;
 
-public class WebDeviceListenerTest
+public class WebDeviceScopeDisposerTest
         extends UnitTest {
-    private WebDeviceListener listener;
+    private WebDeviceScopeDisposer listener;
 
     @Mock
     private TestContext mockTestContext;
@@ -36,7 +36,7 @@ public class WebDeviceListenerTest
 
     @Before
     public void setUp() {
-        listener = new WebDeviceListener();
+        listener = new WebDeviceScopeDisposer();
     }
 
     @Test

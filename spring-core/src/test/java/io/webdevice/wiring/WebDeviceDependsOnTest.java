@@ -11,9 +11,9 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-public class DynamicDependsOnTest
+public class WebDeviceDependsOnTest
         extends UnitTest {
-    private DynamicDependsOn dependsOn;
+    private WebDeviceDependsOn dependsOn;
 
     @Mock
     private ConfigurableListableBeanFactory mockBeanFactory;
@@ -22,7 +22,7 @@ public class DynamicDependsOnTest
 
     @Before
     public void setUp() {
-        dependsOn = new DynamicDependsOn();
+        dependsOn = new WebDeviceDependsOn();
     }
 
     @Test

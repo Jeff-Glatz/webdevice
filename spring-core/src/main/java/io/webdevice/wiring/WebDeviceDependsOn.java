@@ -16,8 +16,8 @@ import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 /**
  * This class exists to establish dependencies that ensure proper lifecycle ordering between
  * a {@link io.webdevice.device.WebDevice} instance and all of the {@link DeviceProvider}
- * instances present in the context. {@link DeviceProvider} instances are defined dynamically
- * and not known at compile time, so {@link org.springframework.context.annotation.DependsOn}
+ * instances present in the context. Because {@link DeviceProvider} definitions are created
+ * dynamically and not known at compile time, {@link org.springframework.context.annotation.DependsOn}
  * cannot be used.
  * <p>
  * In all cases, the {@link io.webdevice.device.WebDevice} must be destroyed before all other
@@ -25,7 +25,7 @@ import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
  * the originating {@link DeviceProvider}. Then the providers can be destroyed.
  */
 @Order(LOWEST_PRECEDENCE)
-public class DynamicDependsOn
+public class WebDeviceDependsOn
         implements BeanFactoryPostProcessor {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
