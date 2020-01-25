@@ -1,4 +1,5 @@
 .idea/
+stubs/
 target/
 *.iml
 *.log

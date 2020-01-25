@@ -294,6 +294,7 @@ public class DeviceDefinition
 
     @Override
     public String toString() {
+        // TODO: Mask confidential capabilities
         return "DeviceDefinition{" +
                 "aliases=" + aliases +
                 ", capabilities=" + capabilities +

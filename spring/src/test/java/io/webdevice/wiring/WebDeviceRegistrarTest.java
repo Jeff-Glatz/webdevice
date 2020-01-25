@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -111,7 +112,22 @@ public class WebDeviceRegistrarTest
         Settings expected = new Settings()
                 .withScope("webdevice")
                 .withDefaultDevice("Direct")
-                .withBaseUrl(new URL("https://webdevice.io"));
+                .withBaseUrl(new URL("https://webdevice.io"))
+                .withDevice(new DeviceDefinition()
+                        .withName("Direct")
+                        .withAlias("Local Direct")
+                        .withDriver(FirefoxDriver.class)
+                        .withCapability("version", "59")
+                        .withPooled(true))
+                .withDevice(new DeviceDefinition()
+                        .withName("Remote")
+                        .withAlias("iPhone")
+                        .withRemoteAddress(new URL("http://selenium.grid:4444/wd/hub"))
+                        .withCapability("version", "60")
+                        .withCapability("username", "user")
+                        .withCapability("accessKey", "2secret4u")
+                        .withConfidential("accessKey")
+                        .withPooled(false));
 
         given(mockMetadata.getAnnotationAttributes(EnableWebDevice.class.getName()))
                 .willReturn(newMap(String.class, Object.class)

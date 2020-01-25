@@ -1,6 +1,5 @@
 package io.webdevice.wiring;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.webdevice.device.DevicePool;
 import io.webdevice.device.WebDevice;
 import io.webdevice.support.AnnotationAttributes;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.type.AnnotationMetadata;
 
 import java.net.URL;
@@ -24,8 +22,6 @@ import static io.webdevice.wiring.WebDeviceScope.registerScope;
 import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRASTRUCTURE;
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
-import static org.springframework.util.ClassUtils.forName;
-import static org.springframework.util.ClassUtils.isPresent;
 
 public class WebDeviceRegistrar
         implements ImportBeanDefinitionRegistrar {
@@ -62,47 +58,11 @@ public class WebDeviceRegistrar
     @SuppressWarnings("unchecked")
     private Settings settings(AnnotationMetadata metadata) {
         AnnotationAttributes attributes = attributesOf(EnableWebDevice.class, metadata);
-        Settings settings = attributes.valueOf("settings", String.class,
-                // First attempt to load settings from a classpath JSON resource
-                value -> {
-                    ObjectMapper mapper = new ObjectMapper();
-                    return mapper.convertValue(
-                            mapper.readTree(new ClassPathResource(value)
-                                    .getInputStream())
-                                    .findValue("webdevice"),
-                            Settings.class);
-                },
-                // Next attempt to load settings using the execution environment
-                () -> {
-                    SettingsBinder binder = attributes.valueOf("binder", Class.class,
-                            (impl) -> {
-                                // Explicitly specified binders take precedence
-                                return (impl != SettingsBinder.class)
-                                        ? (SettingsBinder) impl.getDeclaredConstructor().newInstance()
-                                        : null;
-                            },
-                            () -> {
-                                // Attempt to load the preferred binder using Spring Boot.
-                                if (isPresent("org.springframework.boot.context.properties.bind.Binder", null)) {
-                                    // Spring Boot is available, now check if the webdevice-spring-boot module is present
-                                    if (isPresent("io.webdevice.wiring.ConfigurationPropertiesBinder", null)) {
-                                        return (SettingsBinder) forName("io.webdevice.wiring.ConfigurationPropertiesBinder", null)
-                                                .getDeclaredConstructor()
-                                                .newInstance();
-                                    } else {
-                                        log.warn("Did you know that there is a Spring Boot module available? See https://webdevice.io for details!");
-                                    }
-                                }
-                                // Spring Boot is not available, load from Environment or use default
-                                Class<?> binderClass = environment.getProperty("webdevice.binder", Class.class,
-                                        DefaultSettingsBinder.class);
-                                return (SettingsBinder) binderClass
-                                        .getDeclaredConstructor()
-                                        .newInstance();
-                            });
-                    return binder.from(environment);
-                });
-        return applySettingsFromAnnotation(settings, attributes);
+        return applySettingsFromAnnotation(
+                attributes.valueOf("settings", String.class,
+                        new SettingsFromJsonResource(environment),
+                        new SettingsFromEnvironment(environment, attributes)),
+                attributes);
     }
 
     private String maybeRegisterProvider(DeviceDefinition device, BeanDefinitionRegistry registry) {
