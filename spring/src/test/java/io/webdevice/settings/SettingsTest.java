@@ -1,4 +1,4 @@
-package io.webdevice.wiring;
+package io.webdevice.settings;
 
 import org.junit.Before;
 import org.junit.Test;

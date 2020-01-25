@@ -46,4 +46,14 @@ public class YamlPropertySourceFactoryTest {
         assertThat(source.getProperty("webdevice.base-url"))
                 .isEqualTo("https://webdevice.io");
     }
+
+    @Test
+    public void shouldDelegateWhenNotYamlFile()
+            throws IOException {
+        PropertySource<?> source = factory.createPropertySource(null,
+                new EncodedResource(new ClassPathResource("io/webdevice/wiring/default-device-only.properties")));
+
+        assertThat(source.getProperty("webdevice.default-device"))
+                .isEqualTo("Foo");
+    }
 }

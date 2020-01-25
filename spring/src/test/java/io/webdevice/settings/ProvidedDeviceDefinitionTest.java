@@ -1,4 +1,4 @@
-package io.webdevice.wiring;
+package io.webdevice.settings;
 
 import io.webdevice.support.GenericDeviceProvider;
 import org.junit.Before;

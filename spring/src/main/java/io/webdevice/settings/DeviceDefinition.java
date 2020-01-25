@@ -1,4 +1,4 @@
-package io.webdevice.wiring;
+package io.webdevice.settings;
 
 import io.webdevice.device.DeviceProvider;
 import io.webdevice.device.DirectDeviceProvider;

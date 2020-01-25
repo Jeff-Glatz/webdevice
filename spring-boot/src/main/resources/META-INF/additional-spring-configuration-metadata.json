@@ -2,8 +2,8 @@
   "groups": [
     {
       "name": "webdevice",
-      "type": "io.webdevice.wiring.Settings",
-      "sourceType": "io.webdevice.wiring.Settings"
+      "type": "io.webdevice.settings.Settings",
+      "sourceType": "io.webdevice.settings.Settings"
     }
   ],
   "properties": [
@@ -11,38 +11,38 @@
       "name": "webdevice.base-url",
       "type": "java.net.URL",
       "description": "Default browser base url.",
-      "sourceType": "io.webdevice.wiring.Settings"
+      "sourceType": "io.webdevice.settings.Settings"
     },
     {
       "name": "webdevice.default-device",
       "type": "java.lang.String",
       "description": "Default browser device.",
-      "sourceType": "io.webdevice.wiring.Settings"
+      "sourceType": "io.webdevice.settings.Settings"
     },
     {
       "name": "webdevice.devices",
-      "type": "java.util.Map<java.lang.String,io.webdevice.wiring.DeviceDefinition>",
-      "sourceType": "io.webdevice.wiring.Settings"
+      "type": "java.util.Map<java.lang.String,io.webdevice.settings.DeviceDefinition>",
+      "sourceType": "io.webdevice.settings.Settings"
     },
     {
       "name": "webdevice.eager",
       "type": "java.lang.Boolean",
       "description": "Instructs the browser to acquire the default device when initialized.",
-      "sourceType": "io.webdevice.wiring.Settings",
+      "sourceType": "io.webdevice.settings.Settings",
       "defaultValue": false
     },
     {
       "name": "webdevice.strict",
       "type": "java.lang.Boolean",
       "description": "Instructs the browser to raise an exception upon use if a device has previously been acquired during the current scenario.",
-      "sourceType": "io.webdevice.wiring.Settings",
+      "sourceType": "io.webdevice.settings.Settings",
       "defaultValue": true
     },
     {
       "name": "webdevice.scope",
       "type": "java.lang.String",
       "description": "The spring scope in which the WebDevice bean will be defined.",
-      "sourceType": "io.webdevice.wiring.Settings",
+      "sourceType": "io.webdevice.settings.Settings",
       "defaultValue": "cucumber-glue when CucumberTestContext is present; webdevice otherwise"
     }
   ]

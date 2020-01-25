@@ -1,12 +1,12 @@
-package io.webdevice.wiring;
+package io.webdevice.settings;
 
 import io.webdevice.support.YamlPropertySourceFactory;
 import org.junit.Before;
 import org.springframework.boot.convert.ApplicationConversionService;
 import org.springframework.core.env.StandardEnvironment;
 
-public abstract class ConfigurationPropertiesBinderBasedTest
-        extends EnvironmentBasedTest {
+public abstract class ConfigurationPropertiesTest
+        extends EnvironmentTest {
 
     @Before
     public void setUpEnvironment() {

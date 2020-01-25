@@ -1,4 +1,4 @@
-package io.webdevice.wiring;
+package io.webdevice.settings;
 
 import io.webdevice.test.UnitTest;
 import org.junit.Before;
@@ -14,7 +14,7 @@ import java.io.IOException;
 
 import static io.webdevice.wiring.WebDeviceScope.NAME;
 
-public abstract class EnvironmentBasedTest
+public abstract class EnvironmentTest
         extends UnitTest {
     protected ConfigurableEnvironment environment;
     protected SettingsBinder settingsBinder;
@@ -28,16 +28,18 @@ public abstract class EnvironmentBasedTest
         propertySourceFactory = new DefaultPropertySourceFactory();
     }
 
-    protected ConfigurableEnvironment environmentWith(String resource)
+    protected ConfigurableEnvironment environmentWith(String... resources)
             throws IOException {
-        environment.getPropertySources()
-                .addFirst(propertySourceFactory
-                        .createPropertySource(NAME,
-                                new EncodedResource(new ClassPathResource(resource))));
+        for (String resource : resources) {
+            environment.getPropertySources()
+                    .addLast(propertySourceFactory
+                            .createPropertySource(NAME,
+                                    new EncodedResource(new ClassPathResource(resource))));
+        }
         return environment;
     }
 
-    protected Settings settings(ConfigurableEnvironment environment)
+    protected Settings settingsFrom(ConfigurableEnvironment environment)
             throws Exception {
         return settingsBinder.from(environment);
     }

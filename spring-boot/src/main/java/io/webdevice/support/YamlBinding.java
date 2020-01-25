@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * There are use cases where the annotations used to configure the test context
  * will not contain the required infrastructure to support loading webdevice
- * {@link io.webdevice.wiring.Settings} from a YAML file.
+ * {@link io.webdevice.settings.Settings} from a YAML file.
  */
 @Configuration("webdevice.YamlBinding")
 public class YamlBinding {

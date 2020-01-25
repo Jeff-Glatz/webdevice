@@ -1,5 +1,6 @@
 package io.webdevice.wiring;
 
+import io.webdevice.settings.SettingsBinder;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.Documented;
@@ -18,14 +19,15 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface EnableWebDevice {
 
     /**
-     * The location of the {@link Settings} JSON resource to load.
+     * The location of the {@link io.webdevice.settings.Settings} JSON resource to load. These settings
+     * will take precedence over settings bound from the execution environment.
      *
-     * @return The location of the {@link Settings} JSON resource to load.
+     * @return The location of the {@link io.webdevice.settings.Settings} JSON resource to load.
      */
     String settings() default "";
 
     /**
-     * The implementation used to bind the {@link Settings} from the execution
+     * The implementation used to bind the {@link io.webdevice.settings.Settings} from the execution
      * {@link org.springframework.core.env.ConfigurableEnvironment}
      */
     Class<? extends SettingsBinder> binder() default SettingsBinder.class;

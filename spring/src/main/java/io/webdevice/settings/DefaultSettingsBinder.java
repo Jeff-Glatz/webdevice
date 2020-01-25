@@ -1,4 +1,4 @@
-package io.webdevice.wiring;
+package io.webdevice.settings;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +21,7 @@ public class DefaultSettingsBinder
         String prefix = namespace("");
         Settings settings = new Settings();
         BeanWrapper wrapper = new BeanWrapperImpl(settings);
+        wrapper.setAutoGrowNestedPaths(true);
         environment.getPropertySources().stream()
                 .filter(EnumerablePropertySource.class::isInstance)
                 .map(EnumerablePropertySource.class::cast)

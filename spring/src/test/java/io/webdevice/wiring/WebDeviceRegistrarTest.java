@@ -2,10 +2,13 @@ package io.webdevice.wiring;
 
 import io.webdevice.device.DevicePool;
 import io.webdevice.device.WebDevice;
+import io.webdevice.settings.DeviceDefinition;
+import io.webdevice.settings.EnvironmentTest;
+import io.webdevice.settings.MockSettingsBinder;
+import io.webdevice.settings.Settings;
 import io.webdevice.support.SimpleDeviceCheck;
 import io.webdevice.support.SpringDeviceRegistry;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -36,7 +39,7 @@ import static org.springframework.beans.factory.support.AbstractBeanDefinition.A
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
 public class WebDeviceRegistrarTest
-        extends EnvironmentBasedTest {
+        extends EnvironmentTest {
 
     @Mock
     private AnnotationMetadata mockMetadata;
@@ -60,7 +63,7 @@ public class WebDeviceRegistrarTest
                 .withEager(false)
                 .withBaseUrl(null);
 
-        Settings actual = settings(environment);
+        Settings actual = settingsFrom(environment);
         assertThat(actual)
                 .isEqualTo(expected);
     }
@@ -75,7 +78,7 @@ public class WebDeviceRegistrarTest
                 .withEager(true)
                 .withBaseUrl(new URL("http://webdevice.io"));
 
-        Settings actual = settings(environmentWith("io/webdevice/wiring/non-defaults.properties"));
+        Settings actual = settingsFrom(environmentWith("io/webdevice/wiring/non-defaults.properties"));
         assertThat(actual)
                 .isEqualTo(expected);
     }
@@ -103,7 +106,7 @@ public class WebDeviceRegistrarTest
                 .isEqualTo(genericBeanDefinition(Settings.class)
                         .getBeanDefinition());
         assertThat(definition.getInstanceSupplier().get())
-                .isEqualTo(settings(environment));
+                .isEqualTo(settingsFrom(environment));
     }
 
     @Test
@@ -367,7 +370,6 @@ public class WebDeviceRegistrarTest
                 .isEqualTo(new URL("https://webdevice.io"));
     }
 
-    @Ignore
     @Test
     public void shouldSkipRegisteringDeviceIfAlreadyDefined()
             throws Exception {
@@ -392,7 +394,6 @@ public class WebDeviceRegistrarTest
         verifyNoMoreInteractions(mockRegistry);
     }
 
-    @Ignore
     @Test
     public void shouldSkipRegisteringPoolForPooledDeviceIfAlreadyDefinedAndAliasPoolWithDeviceName()
             throws Exception {
@@ -430,13 +431,13 @@ public class WebDeviceRegistrarTest
 
         // Provider definition
         GenericBeanDefinition provider = definitionCaptor.getValue();
-        DeviceDefinition definition = settings(environment)
+        DeviceDefinition definition = settingsFrom(environment)
                 .device("Direct");
         assertThat(provider)
-                .isEqualTo(definition.build().getBeanDefinition());
+                .isEqualTo(definition.build()
+                        .getBeanDefinition());
     }
 
-    @Ignore
     @Test
     public void shouldSkipRegisteringProviderForPooledDeviceIfAlreadyDefinedAndAliasPoolWithDeviceName()
             throws Exception {
@@ -492,7 +493,6 @@ public class WebDeviceRegistrarTest
                 .isInstanceOf(SimpleDeviceCheck.class);
     }
 
-    @Ignore
     @Test
     public void shouldRegisterPooledDeviceAndAliasPoolWithDeviceName()
             throws Exception {
@@ -533,10 +533,11 @@ public class WebDeviceRegistrarTest
         // Provider definition
         GenericBeanDefinition provider = definitionCaptor.getAllValues()
                 .get(0);
-        DeviceDefinition definition = settings(environment)
+        DeviceDefinition definition = settingsFrom(environment)
                 .device("Direct");
         assertThat(provider)
-                .isEqualTo(definition.build().getBeanDefinition());
+                .isEqualTo(definition.build()
+                        .getBeanDefinition());
 
         // Pool definition
         GenericBeanDefinition pool = definitionCaptor.getAllValues()
@@ -561,7 +562,6 @@ public class WebDeviceRegistrarTest
                 .isInstanceOf(SimpleDeviceCheck.class);
     }
 
-    @Ignore
     @Test
     public void shouldRegisterUnpooledDeviceAndAliasProviderWithDeviceName()
             throws Exception {
@@ -595,10 +595,11 @@ public class WebDeviceRegistrarTest
 
         // Provider definition
         GenericBeanDefinition provider = definitionCaptor.getValue();
-        DeviceDefinition definition = settings(environment)
+        DeviceDefinition definition = settingsFrom(environment)
                 .device("Direct");
         assertThat(provider)
-                .isEqualTo(definition.build().getBeanDefinition());
+                .isEqualTo(definition.build()
+                        .getBeanDefinition());
     }
 
     @Test

@@ -1,4 +1,4 @@
-package io.webdevice.wiring;
+package io.webdevice.settings;
 
 import io.bestquality.lang.CheckedSupplier;
 import io.webdevice.support.AnnotationAttributes;
@@ -22,7 +22,9 @@ public class SettingsFromEnvironment
     }
 
     @Override
-    public Settings get() throws Exception {
+    @SuppressWarnings("unchecked")
+    public Settings get()
+            throws Exception {
         SettingsBinder binder = attributes.valueOf("binder", Class.class,
                 (impl) -> {
                     // Explicitly specified binders take precedence
@@ -34,8 +36,8 @@ public class SettingsFromEnvironment
                     // Attempt to load the preferred binder using Spring Boot.
                     if (isPresent("org.springframework.boot.context.properties.bind.Binder", null)) {
                         // Spring Boot is available, now check if the webdevice-spring-boot module is present
-                        if (isPresent("io.webdevice.wiring.ConfigurationPropertiesBinder", null)) {
-                            return (SettingsBinder) forName("io.webdevice.wiring.ConfigurationPropertiesBinder", null)
+                        if (isPresent("io.webdevice.settings.ConfigurationPropertiesBinder", null)) {
+                            return (SettingsBinder) forName("io.webdevice.settings.ConfigurationPropertiesBinder", null)
                                     .getDeclaredConstructor()
                                     .newInstance();
                         } else {

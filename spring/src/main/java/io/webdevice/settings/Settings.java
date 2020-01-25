@@ -1,4 +1,4 @@
-package io.webdevice.wiring;
+package io.webdevice.settings;
 
 import java.io.Serializable;
 import java.net.URL;
@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static java.util.Collections.unmodifiableMap;
 import static org.springframework.util.ClassUtils.isPresent;
 
 public class Settings
@@ -21,7 +20,7 @@ public class Settings
     private String scope;
 
     public Map<String, DeviceDefinition> getDevices() {
-        return unmodifiableMap(devices);
+        return devices;
     }
 
     public void setDevices(Map<String, DeviceDefinition> devices) {

@@ -2,6 +2,10 @@ package io.webdevice.wiring;
 
 import io.webdevice.device.DevicePool;
 import io.webdevice.device.WebDevice;
+import io.webdevice.settings.DeviceDefinition;
+import io.webdevice.settings.Settings;
+import io.webdevice.settings.SettingsFromEnvironment;
+import io.webdevice.settings.SettingsFromJsonResource;
 import io.webdevice.support.AnnotationAttributes;
 import io.webdevice.support.SimpleDeviceCheck;
 import io.webdevice.support.SpringDeviceRegistry;

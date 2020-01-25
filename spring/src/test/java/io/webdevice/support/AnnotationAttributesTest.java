@@ -1,9 +1,9 @@
 package io.webdevice.support;
 
+import io.webdevice.settings.SettingsBinder;
 import io.webdevice.support.AnnotationAttributes.ConversionFailedException;
 import io.webdevice.test.UnitTest;
 import io.webdevice.wiring.EnableWebDevice;
-import io.webdevice.wiring.SettingsBinder;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

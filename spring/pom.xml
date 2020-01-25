@@ -22,6 +22,10 @@
             <groupId>io.webdevice</groupId>
             <artifactId>webdevice-framework</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
 
         <!-- Provided Dependencies -->
         <dependency>
@@ -32,11 +36,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
             <scope>provided</scope>
         </dependency>
 

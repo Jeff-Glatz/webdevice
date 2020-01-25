@@ -1,13 +1,11 @@
-package io.webdevice.wiring;
+package io.webdevice.settings;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import io.bestquality.lang.CheckedFunction;
-import io.webdevice.wiring.Settings;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.io.ClassPathResource;
@@ -46,7 +44,7 @@ public class SettingsFromJsonResource
 
         @Override
         public Class<?> deserialize(JsonParser parser, DeserializationContext context)
-                throws IOException, JsonProcessingException {
+                throws IOException {
             try {
                 return ClassUtils.forName(parser.readValueAs(String.class), null);
             } catch (ClassNotFoundException e) {

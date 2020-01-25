@@ -1,5 +1,6 @@
-package io.webdevice.wiring;
+package io.webdevice.settings;
 
+import io.webdevice.wiring.WebDeviceScope;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.env.ConfigurableEnvironment;
 
