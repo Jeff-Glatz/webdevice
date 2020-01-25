@@ -69,7 +69,7 @@ public class WebDeviceScope
                         }
                         return false;
                     })
-                    .map(instance -> (WebDevice) instance)
+                    .map(WebDevice.class::cast)
                     .forEach(WebDevice::release);
             instances.clear();
             return disposed.get();

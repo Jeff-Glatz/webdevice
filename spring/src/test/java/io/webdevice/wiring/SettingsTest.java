@@ -7,7 +7,7 @@ import org.junit.Test;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static io.webdevice.net.MaskingClassLoader.classLoaderMasking;
-import static io.webdevice.wiring.Settings.scope;
+import static io.webdevice.wiring.Settings.defaultScope;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SettingsTest {
@@ -37,14 +37,14 @@ public class SettingsTest {
     public void shouldReturnWebDeviceScopeWhenNotSpecifiedAndCucumberNotPresent()
             throws Exception {
         AtomicReference<String> scope = new AtomicReference<>(null);
-        Thread thread = new Thread(() -> scope.set(
+        Thread executor = new Thread(() -> scope.set(
                 new Settings()
                         .withScope(null)
                         .getScope()));
         // Setup a custom classloader that prevents CucumberTestContext from being seen
-        thread.setContextClassLoader(classLoaderMasking(CucumberTestContext.class));
-        thread.start();
-        thread.join();
+        executor.setContextClassLoader(classLoaderMasking(CucumberTestContext.class));
+        executor.start();
+        executor.join();
 
         assertThat(scope.get())
                 .isEqualTo("webdevice");
@@ -70,7 +70,7 @@ public class SettingsTest {
     public void settingsShouldReturnWebDeviceScopeWhenCucumberNotPresent()
             throws Exception {
         AtomicReference<String> scope = new AtomicReference<>(null);
-        Thread thread = new Thread(() -> scope.set(scope()));
+        Thread thread = new Thread(() -> scope.set(defaultScope()));
         // Setup a custom classloader that prevents CucumberTestContext from being seen
         thread.setContextClassLoader(classLoaderMasking(CucumberTestContext.class));
         thread.start();
@@ -82,7 +82,7 @@ public class SettingsTest {
 
     @Test
     public void settingsShouldReturnCucumberScopeWhenPresent() {
-        assertThat(scope())
+        assertThat(defaultScope())
                 .isEqualTo("cucumber-glue");
     }
 }

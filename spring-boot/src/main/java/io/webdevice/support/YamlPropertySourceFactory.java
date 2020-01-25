@@ -11,6 +11,10 @@ import java.io.IOException;
 
 import static org.springframework.util.StringUtils.isEmpty;
 
+/**
+ * Use this in conjunction with {@link org.springframework.context.annotation.PropertySource#factory()}
+ * to load a specific webdevice {@link io.webdevice.wiring.Settings} instance from a YAML file.
+ */
 public class YamlPropertySourceFactory
         implements PropertySourceFactory {
 

@@ -14,18 +14,20 @@ import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
-import org.springframework.core.env.StandardEnvironment;
+import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.type.AnnotationMetadata;
 
 import java.net.URL;
 
-import static io.webdevice.wiring.WebDeviceRegistrar.settings;
+import static io.bestquality.util.MapBuilder.newMap;
+import static io.webdevice.net.MaskingClassLoader.classLoaderMasking;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRASTRUCTURE;
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR;
@@ -42,14 +44,14 @@ public class WebDeviceRegistrarTest
     private ArgumentCaptor<GenericBeanDefinition> definitionCaptor;
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         // AnnotationMetadata is never used
-        verifyNoInteractions(mockMetadata);
+//        verifyNoInteractions(mockMetadata);
+        MockSettingsBinder.uninstall();
     }
 
     @Test
-    public void shouldBindSettingsFromEnvironmentUsingDefaults()
-            throws Exception {
+    public void shouldBindSettingsFromEnvironmentUsingDefaults() {
         Settings expected = new Settings()
                 .withDefaultDevice(null)
                 .withScope(null)
@@ -80,7 +82,7 @@ public class WebDeviceRegistrarTest
     @Test
     public void shouldRegisterSettings()
             throws Exception {
-        StandardEnvironment environment = environmentWith("io/webdevice/wiring/scope-only.yaml");
+        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/scope-only.yaml");
         WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
 
         registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
@@ -95,12 +97,184 @@ public class WebDeviceRegistrarTest
                 .registerBeanDefinition(eq("webdevice.WebDevice"), any());
         verifyNoMoreInteractions(mockRegistry);
 
-        GenericBeanDefinition deviceRegistry = definitionCaptor.getValue();
-        assertThat(deviceRegistry)
+        GenericBeanDefinition definition = definitionCaptor.getValue();
+        assertThat(definition)
                 .isEqualTo(genericBeanDefinition(Settings.class)
                         .getBeanDefinition());
-        assertThat(deviceRegistry.getInstanceSupplier().get())
+        assertThat(definition.getInstanceSupplier().get())
                 .isEqualTo(settings(environment));
+    }
+
+    @Test
+    public void shouldUseMockBinderFromAnnotation() {
+        Settings expected = new Settings();
+        MockSettingsBinder.install(expected);
+
+        given(mockMetadata.getAnnotationAttributes(EnableWebDevice.class.getName()))
+                .willReturn(newMap(String.class, Object.class)
+                        .with("binder", MockSettingsBinder.class)
+                        .build());
+
+        WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
+
+        registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
+
+        assertThat(registeredSettings())
+                .isSameAs(expected);
+    }
+
+    @Test
+    public void shouldUseMockBinderFromEnvironment()
+            throws Exception {
+        Settings expected = new Settings();
+        MockSettingsBinder.install(expected);
+
+        environment.getPropertySources().addLast(new MapPropertySource("test",
+                newMap(String.class, Object.class)
+                        .with("webdevice.binder", MockSettingsBinder.class)
+                        .build()));
+
+        Thread executor = new Thread(() -> {
+            MockSettingsBinder.install(expected);
+            try {
+                WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
+                registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
+            } finally {
+                MockSettingsBinder.uninstall();
+            }
+        });
+        executor.setContextClassLoader(classLoaderMasking(Binder.class));
+        executor.start();
+        executor.join();
+
+        assertThat(registeredSettings())
+                .isSameAs(expected);
+    }
+
+    @Test
+    public void shouldUseDefaultBinder()
+            throws Exception {
+        Thread executor = new Thread(() -> {
+            try {
+                WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
+                registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
+            } finally {
+                MockSettingsBinder.uninstall();
+            }
+        });
+        executor.setContextClassLoader(classLoaderMasking(Binder.class));
+        executor.start();
+        executor.join();
+
+        Settings actual = registeredSettings();
+        assertThat(actual)
+                .isNotNull();
+    }
+
+    @Test
+    public void shouldOverrideScopeFromAnnotation() {
+        Settings expected = new Settings()
+                .withScope("test");
+        MockSettingsBinder.install(expected);
+
+        given(mockMetadata.getAnnotationAttributes(EnableWebDevice.class.getName()))
+                .willReturn(newMap(String.class, Object.class)
+                        .with("binder", MockSettingsBinder.class)
+                        .with("scope", "foo")
+                        .build());
+
+        WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
+
+        registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
+
+        Settings actual = registeredSettings();
+        assertThat(actual.getScope())
+                .isEqualTo("foo");
+    }
+
+    @Test
+    public void shouldOverrideDefaultDeviceFromAnnotation() {
+        Settings expected = new Settings()
+                .withDefaultDevice("test");
+        MockSettingsBinder.install(expected);
+
+        given(mockMetadata.getAnnotationAttributes(EnableWebDevice.class.getName()))
+                .willReturn(newMap(String.class, Object.class)
+                        .with("binder", MockSettingsBinder.class)
+                        .with("defaultDevice", "iPhone")
+                        .build());
+
+        WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
+
+        registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
+
+        Settings actual = registeredSettings();
+        assertThat(actual.getDefaultDevice())
+                .isEqualTo("iPhone");
+    }
+
+    @Test
+    public void shouldOverrideEagerFromAnnotation() {
+        Settings expected = new Settings()
+                .withEager(false);
+        MockSettingsBinder.install(expected);
+
+        given(mockMetadata.getAnnotationAttributes(EnableWebDevice.class.getName()))
+                .willReturn(newMap(String.class, Object.class)
+                        .with("binder", MockSettingsBinder.class)
+                        .with("eager", true)
+                        .build());
+
+        WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
+
+        registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
+
+        Settings actual = registeredSettings();
+        assertThat(actual.isEager())
+                .isTrue();
+    }
+
+    @Test
+    public void shouldOverrideStrictFromAnnotation() {
+        Settings expected = new Settings()
+                .withStrict(true);
+        MockSettingsBinder.install(expected);
+
+        given(mockMetadata.getAnnotationAttributes(EnableWebDevice.class.getName()))
+                .willReturn(newMap(String.class, Object.class)
+                        .with("binder", MockSettingsBinder.class)
+                        .with("strict", false)
+                        .build());
+
+        WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
+
+        registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
+
+        Settings actual = registeredSettings();
+        assertThat(actual.isStrict())
+                .isFalse();
+    }
+
+    @Test
+    public void shouldOverrideBaseUrlFromAnnotation()
+            throws Exception {
+        Settings expected = new Settings()
+                .withBaseUrl(new URL("http://test.com"));
+        MockSettingsBinder.install(expected);
+
+        given(mockMetadata.getAnnotationAttributes(EnableWebDevice.class.getName()))
+                .willReturn(newMap(String.class, Object.class)
+                        .with("binder", MockSettingsBinder.class)
+                        .with("baseUrl", "https://webdevice.io")
+                        .build());
+
+        WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
+
+        registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
+
+        Settings actual = registeredSettings();
+        assertThat(actual.getBaseUrl())
+                .isEqualTo(new URL("https://webdevice.io"));
     }
 
     @Test
@@ -130,7 +304,7 @@ public class WebDeviceRegistrarTest
     @Test
     public void shouldSkipRegisteringPoolForPooledDeviceIfAlreadyDefinedAndAliasPoolWithDeviceName()
             throws Exception {
-        StandardEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.yaml");
+        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.yaml");
         WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
 
         given(mockRegistry.isBeanNameInUse("webdevice.Direct"))
@@ -173,7 +347,7 @@ public class WebDeviceRegistrarTest
     @Test
     public void shouldSkipRegisteringProviderForPooledDeviceIfAlreadyDefinedAndAliasPoolWithDeviceName()
             throws Exception {
-        StandardEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.yaml");
+        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.yaml");
         WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
 
         given(mockRegistry.isBeanNameInUse("webdevice.Direct"))
@@ -228,7 +402,7 @@ public class WebDeviceRegistrarTest
     @Test
     public void shouldRegisterPooledDeviceAndAliasPoolWithDeviceName()
             throws Exception {
-        StandardEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.yaml");
+        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.yaml");
         WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
 
         given(mockRegistry.isBeanNameInUse("webdevice.Direct"))
@@ -296,7 +470,7 @@ public class WebDeviceRegistrarTest
     @Test
     public void shouldRegisterUnpooledDeviceAndAliasProviderWithDeviceName()
             throws Exception {
-        StandardEnvironment environment = environmentWith("io/webdevice/wiring/direct-unpooled-device.yaml");
+        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/direct-unpooled-device.yaml");
         WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
 
         given(mockRegistry.isBeanNameInUse("webdevice.Direct"))
@@ -335,7 +509,7 @@ public class WebDeviceRegistrarTest
     @Test
     public void shouldRegisterSpringDeviceRegistryInConfiguredScope()
             throws Exception {
-        StandardEnvironment environment = environmentWith("io/webdevice/wiring/scope-only.yaml");
+        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/scope-only.yaml");
         WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
 
         registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
@@ -361,7 +535,7 @@ public class WebDeviceRegistrarTest
     @Test
     public void shouldRegisterWebDeviceInConfiguredScope()
             throws Exception {
-        StandardEnvironment environment = environmentWith("io/webdevice/wiring/non-defaults.yaml");
+        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/non-defaults.yaml");
         WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
 
         registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
@@ -389,5 +563,14 @@ public class WebDeviceRegistrarTest
                         .setInitMethodName("initialize")
                         .setDestroyMethodName("release")
                         .getBeanDefinition());
+    }
+
+    private Settings registeredSettings() {
+        verify(mockRegistry)
+                .registerBeanDefinition(eq("webdevice.Settings"), definitionCaptor.capture());
+        GenericBeanDefinition settingsDefinition = definitionCaptor.getValue();
+        return (Settings) settingsDefinition
+                .getInstanceSupplier()
+                .get();
     }
 }

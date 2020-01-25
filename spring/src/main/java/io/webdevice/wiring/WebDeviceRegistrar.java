@@ -2,6 +2,7 @@ package io.webdevice.wiring;
 
 import io.webdevice.device.DevicePool;
 import io.webdevice.device.WebDevice;
+import io.webdevice.support.AnnotationAttributes;
 import io.webdevice.support.SimpleDeviceCheck;
 import io.webdevice.support.SpringDeviceRegistry;
 import org.slf4j.Logger;
@@ -9,37 +10,82 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
-import org.springframework.core.annotation.Order;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 
+import java.net.URL;
+
+import static io.webdevice.support.AnnotationAttributes.attributesOf;
 import static io.webdevice.wiring.WebDeviceScope.registerScope;
 import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRASTRUCTURE;
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
-import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
+import static org.springframework.util.ClassUtils.forName;
+import static org.springframework.util.ClassUtils.isPresent;
 
-@Order(LOWEST_PRECEDENCE)
 public class WebDeviceRegistrar
         implements ImportBeanDefinitionRegistrar {
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private final Environment environment;
+    private final ConfigurableEnvironment environment;
 
     @Autowired
     public WebDeviceRegistrar(Environment environment) {
-        this.environment = environment;
+        // Spring implodes when used directly in constructor
+        this.environment = (ConfigurableEnvironment) environment;
     }
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
-        Settings settings = settings(environment);
+        Settings settings = settings(metadata);
         registerScope((ConfigurableListableBeanFactory) registry);
         registerSettings(settings, registry);
         registerDevices(settings, registry);
         registerDeviceRegistry(settings, registry);
         registerWebDevice(settings, registry);
+    }
+
+    private Settings applySettingsFromAnnotation(Settings settings, AnnotationAttributes attributes) {
+        if (attributes != null) {
+            return settings.withScope(attributes.valueOf("scope", settings::getScope))
+                    .withDefaultDevice(attributes.valueOf("defaultDevice", settings::getDefaultDevice))
+                    .withEager(attributes.valueOf("eager", Boolean.class, settings::isEager))
+                    .withStrict(attributes.valueOf("strict", Boolean.class, settings::isStrict))
+                    .withBaseUrl(attributes.valueOf("baseUrl", String.class, URL::new, settings::getBaseUrl));
+        }
+        return settings;
+    }
+
+    private Settings settings(AnnotationMetadata metadata) {
+        AnnotationAttributes attributes = attributesOf(EnableWebDevice.class, metadata);
+        SettingsBinder binder = attributes.valueOf("binder", Class.class,
+                (impl) -> {
+                    // Explicitly specified binders take precedence
+                    return (impl != SettingsBinder.class)
+                            ? (SettingsBinder) impl.getDeclaredConstructor().newInstance()
+                            : null;
+                },
+                () -> {
+                    // Attempt to load the preferred binder using Spring Boot.
+                    if (isPresent("org.springframework.boot.context.properties.bind.Binder", null)) {
+                        // Spring Boot is available, now check if the webdevice-spring-boot module is present
+                        if (isPresent("io.webdevice.wiring.ConfigurationPropertiesBinder", null)) {
+                            return (SettingsBinder) forName("io.webdevice.wiring.ConfigurationPropertiesBinder", null)
+                                    .getDeclaredConstructor()
+                                    .newInstance();
+                        } else {
+                            log.warn("Did you know that there is a Spring Boot module available? See https://webdevice.io for details!");
+                        }
+                    }
+                    // Spring Boot is not available, load from Environment or use default
+                    Class<?> binderClass = environment.getProperty("webdevice.binder", Class.class,
+                            DefaultSettingsBinder.class);
+                    return (SettingsBinder) binderClass
+                            .getDeclaredConstructor()
+                            .newInstance();
+                });
+        return applySettingsFromAnnotation(binder.from(environment), attributes);
     }
 
     private String maybeRegisterProvider(DeviceDefinition device, BeanDefinitionRegistry registry) {
@@ -134,11 +180,5 @@ public class WebDeviceRegistrar
                         .setDestroyMethodName("release")
                         .getBeanDefinition());
         log.info("WebDevice registered.");
-    }
-
-    public static Settings settings(Environment environment) {
-        return Binder.get(environment)
-                .bind(WebDeviceScope.NAME, Settings.class)
-                .orElse(new Settings());
     }
 }

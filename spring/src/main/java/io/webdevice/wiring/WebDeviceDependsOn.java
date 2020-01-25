@@ -8,6 +8,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 import static io.webdevice.wiring.WebDeviceScope.namespace;
 import static java.util.Arrays.asList;
@@ -25,6 +26,7 @@ import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
  * the originating {@link DeviceProvider}. Then the providers can be destroyed.
  */
 @Order(LOWEST_PRECEDENCE)
+@Component("webdevice.WebDeviceDependsOn")
 public class WebDeviceDependsOn
         implements BeanFactoryPostProcessor {
     private final Logger log = LoggerFactory.getLogger(getClass());

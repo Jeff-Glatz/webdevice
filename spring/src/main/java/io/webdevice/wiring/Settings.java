@@ -99,7 +99,7 @@ public class Settings
         if (scope != null) {
             return scope;
         }
-        return scope();
+        return defaultScope();
     }
 
     public void setScope(String scope) {
@@ -129,7 +129,7 @@ public class Settings
         return Objects.hash(devices, baseUrl, defaultDevice, eager, strict, scope);
     }
 
-    public static String scope() {
+    public static String defaultScope() {
         return isPresent("io.cucumber.spring.CucumberTestContext", null)
                 ? "cucumber-glue"
                 : "webdevice";
