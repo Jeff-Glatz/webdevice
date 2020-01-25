@@ -33,7 +33,7 @@ public class DefaultSettingsBinder
                 .forEach(environmentProperty -> {
                     String property = toCamelCase(environmentProperty.substring(prefix.length()));
                     String value = environment.getProperty(environmentProperty);
-                    log.info("Mapped environment property {} to {} with value {}", environmentProperty, property, value);
+                    log.info("Mapped environment property {} to {}", environmentProperty, property);
                     wrapper.setPropertyValue(property, value);
                 });
         return settings;

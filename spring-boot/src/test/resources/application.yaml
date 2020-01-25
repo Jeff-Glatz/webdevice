@@ -1,7 +1,3 @@
-logging:
-  level:
-    org.springframework: INFO
-
 webdevice:
   base-url: https://webdevice.io
   default-device: Firefox
