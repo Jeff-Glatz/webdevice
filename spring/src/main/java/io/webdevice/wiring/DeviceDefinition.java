@@ -292,6 +292,25 @@ public class DeviceDefinition
                 capabilities, extraCapability, extraOptions, confidential);
     }
 
+    @Override
+    public String toString() {
+        return "DeviceDefinition{" +
+                "aliases=" + aliases +
+                ", capabilities=" + capabilities +
+                ", extraOptions=" + extraOptions +
+                ", confidential=" + confidential +
+                ", name='" + name + '\'' +
+                ", pooled=" + pooled +
+                ", provider=" + provider +
+                ", driver=" + driver +
+                ", remoteAddress=" + remoteAddress +
+                ", capabilitiesRef='" + capabilitiesRef + '\'' +
+                ", options=" + options +
+                ", desired='" + desired + '\'' +
+                ", extraCapability='" + extraCapability + '\'' +
+                '}';
+    }
+
     private MutableCapabilities withCapabilities(MutableCapabilities capabilities) {
         if (!this.capabilities.isEmpty()) {
             log.info("Merging {} custom capabilities", name);

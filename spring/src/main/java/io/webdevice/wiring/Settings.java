@@ -99,7 +99,9 @@ public class Settings
         if (scope != null) {
             return scope;
         }
-        return defaultScope();
+        return isPresent("io.cucumber.spring.CucumberTestContext", null)
+                ? "cucumber-glue"
+                : "webdevice";
     }
 
     public void setScope(String scope) {
@@ -129,9 +131,15 @@ public class Settings
         return Objects.hash(devices, baseUrl, defaultDevice, eager, strict, scope);
     }
 
-    public static String defaultScope() {
-        return isPresent("io.cucumber.spring.CucumberTestContext", null)
-                ? "cucumber-glue"
-                : "webdevice";
+    @Override
+    public String toString() {
+        return "Settings{" +
+                "devices=" + devices +
+                ", baseUrl=" + baseUrl +
+                ", defaultDevice='" + defaultDevice + '\'' +
+                ", eager=" + eager +
+                ", strict=" + strict +
+                ", scope='" + scope + '\'' +
+                '}';
     }
 }

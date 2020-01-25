@@ -9,6 +9,7 @@ import java.util.Enumeration;
 import java.util.function.Predicate;
 
 import static java.lang.Boolean.FALSE;
+import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 
 public class MaskingClassLoader
@@ -60,6 +61,12 @@ public class MaskingClassLoader
                 candidate -> stream(classes)
                         .map(Class::getName)
                         .anyMatch(filtered -> filtered.equals(candidate)),
+                candidate -> FALSE);
+    }
+
+    public static MaskingClassLoader classLoaderMasking(String... classes) {
+        return new MaskingClassLoader(
+                candidate -> asList(classes).contains(candidate),
                 candidate -> FALSE);
     }
 }

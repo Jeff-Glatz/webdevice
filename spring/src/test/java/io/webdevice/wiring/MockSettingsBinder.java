@@ -10,6 +10,10 @@ public class MockSettingsBinder
 
     @Override
     public Settings from(ConfigurableEnvironment environment) {
+        return installed();
+    }
+
+    public static Settings installed() {
         return mockSettings.get();
     }
 

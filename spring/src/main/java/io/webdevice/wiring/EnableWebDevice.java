@@ -18,6 +18,19 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface EnableWebDevice {
 
     /**
+     * The location of the {@link Settings} JSON resource to load.
+     *
+     * @return The location of the {@link Settings} JSON resource to load.
+     */
+    String settings() default "";
+
+    /**
+     * The implementation used to bind the {@link Settings} from the execution
+     * {@link org.springframework.core.env.ConfigurableEnvironment}
+     */
+    Class<? extends SettingsBinder> binder() default SettingsBinder.class;
+
+    /**
      * Specifies the scope in which {@link io.webdevice.device.WebDevice} instances will be created.
      * <p>
      * When not explicitly configured:
@@ -62,9 +75,4 @@ public @interface EnableWebDevice {
      * @return The base URL against which relative URLs will be resolved.
      */
     String baseUrl() default "";
-
-    /**
-     * The implementation used to bind the {@link Settings}
-     */
-    Class<? extends SettingsBinder> binder() default SettingsBinder.class;
 }

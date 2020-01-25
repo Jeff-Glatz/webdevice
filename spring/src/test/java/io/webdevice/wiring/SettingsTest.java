@@ -1,13 +1,14 @@
 package io.webdevice.wiring;
 
-import io.cucumber.spring.CucumberTestContext;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
 
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static io.webdevice.net.MaskingClassLoader.classLoaderMasking;
-import static io.webdevice.wiring.Settings.defaultScope;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SettingsTest {
@@ -42,7 +43,7 @@ public class SettingsTest {
                         .withScope(null)
                         .getScope()));
         // Setup a custom classloader that prevents CucumberTestContext from being seen
-        executor.setContextClassLoader(classLoaderMasking(CucumberTestContext.class));
+        executor.setContextClassLoader(classLoaderMasking("io.cucumber.spring.CucumberTestContext"));
         executor.start();
         executor.join();
 
@@ -51,10 +52,22 @@ public class SettingsTest {
     }
 
     @Test
-    public void shouldReturnCucumberScopeWhenNotSpecifiedAncCucumberPresent() {
-        settings.withScope(null);
+    public void shouldReturnCucumberGlueScopeWhenNotSpecifiedAndCucumberPresent()
+            throws Exception {
+        AtomicReference<String> scope = new AtomicReference<>(null);
+        Thread executor = new Thread(() -> scope.set(
+                new Settings()
+                        .withScope(null)
+                        .getScope()));
+        // Setup a custom classloader that allows CucumberTestContext to be seen
+        executor.setContextClassLoader(new URLClassLoader(new URL[]{
+                new ClassPathResource("stubs/cucumber-stub.jar")
+                        .getURL()},
+                getClass().getClassLoader()));
+        executor.start();
+        executor.join();
 
-        assertThat(settings.getScope())
+        assertThat(scope.get())
                 .isEqualTo("cucumber-glue");
     }
 
@@ -64,25 +77,5 @@ public class SettingsTest {
 
         assertThat(settings.getScope())
                 .isEqualTo("singleton");
-    }
-
-    @Test
-    public void settingsShouldReturnWebDeviceScopeWhenCucumberNotPresent()
-            throws Exception {
-        AtomicReference<String> scope = new AtomicReference<>(null);
-        Thread thread = new Thread(() -> scope.set(defaultScope()));
-        // Setup a custom classloader that prevents CucumberTestContext from being seen
-        thread.setContextClassLoader(classLoaderMasking(CucumberTestContext.class));
-        thread.start();
-        thread.join();
-
-        assertThat(scope.get())
-                .isEqualTo("webdevice");
-    }
-
-    @Test
-    public void settingsShouldReturnCucumberScopeWhenPresent() {
-        assertThat(defaultScope())
-                .isEqualTo("cucumber-glue");
     }
 }

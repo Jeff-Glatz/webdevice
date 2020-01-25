@@ -1,0 +1,6 @@
+{
+  "webdevice": {
+    "defaultDevice": "Direct",
+    "baseUrl": "https://webdevice.io"
+  }
+}
