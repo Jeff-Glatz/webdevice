@@ -24,7 +24,7 @@ public abstract class EnvironmentTest
     public void setUpEnvironment() {
         environment = new StandardEnvironment();
         environment.setConversionService(new DefaultConversionService());
-        settingsBinder = new DefaultSettingsBinder();
+        settingsBinder = new BeanWrapperBinder();
         propertySourceFactory = new DefaultPropertySourceFactory();
     }
 

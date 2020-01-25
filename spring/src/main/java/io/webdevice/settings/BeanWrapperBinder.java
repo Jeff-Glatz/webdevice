@@ -11,9 +11,9 @@ import static io.webdevice.wiring.WebDeviceScope.namespace;
 import static java.util.Arrays.stream;
 import static org.springframework.util.StringUtils.capitalize;
 
-public class DefaultSettingsBinder
+public class BeanWrapperBinder
         implements SettingsBinder {
-    private final Logger log = LoggerFactory.getLogger(DefaultSettingsBinder.class);
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     public Settings from(ConfigurableEnvironment environment) {
