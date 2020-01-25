@@ -247,7 +247,6 @@ public class WebDevice
 
     @Override
     public void quit() {
-        // TODO: Move release() here
         log.warn("Only the provider of the current device should manage the driver's lifecycle");
     }
 
