@@ -9,8 +9,8 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
 
 import java.net.URL;
 
-import static io.webdevice.util.Collections.mapOf;
-import static java.util.Arrays.asList;
+import static io.bestquality.util.MapBuilder.newMap;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.DesiredCapabilities.iphone;
 import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRASTRUCTURE;
@@ -63,7 +63,7 @@ public class RemoteDeviceDefinitionTest
                         .setInitMethodName("initialize")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
-                        .addPropertyValue("confidential", asList("accessKey"))
+                        .addPropertyValue("confidential", singletonList("accessKey"))
                         .getBeanDefinition());
     }
 
@@ -144,7 +144,9 @@ public class RemoteDeviceDefinitionTest
 
         MutableCapabilities expectedOptions = new MutableCapabilities();
         expectedOptions.setCapability("sauce:options",
-                new DesiredCapabilities(mapOf("accessKey", "2secret4u")));
+                new DesiredCapabilities(newMap(String.class, Object.class)
+                        .with("accessKey", "2secret4u")
+                        .build()));
 
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(RemoteDeviceProvider.class)
@@ -171,7 +173,9 @@ public class RemoteDeviceDefinitionTest
         MutableCapabilities expectedOptions = new MutableCapabilities();
         expectedOptions.setCapability("key", "value");
         expectedOptions.setCapability("sauce:options",
-                new DesiredCapabilities(mapOf("accessKey", "2secret4u")));
+                new DesiredCapabilities(newMap(String.class, Object.class)
+                        .with("accessKey", "2secret4u")
+                        .build()));
 
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(RemoteDeviceProvider.class)
@@ -240,7 +244,9 @@ public class RemoteDeviceDefinitionTest
 
         DesiredCapabilities expectedCapabilities = iphone();
         expectedCapabilities.setCapability("sauce:options",
-                new DesiredCapabilities(mapOf("accessKey", "2secret4u")));
+                new DesiredCapabilities(newMap(String.class, Object.class)
+                        .with("accessKey", "2secret4u")
+                        .build()));
 
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(RemoteDeviceProvider.class)
@@ -267,7 +273,9 @@ public class RemoteDeviceDefinitionTest
         DesiredCapabilities expectedCapabilities = iphone();
         expectedCapabilities.setCapability("key", "value");
         expectedCapabilities.setCapability("sauce:options",
-                new DesiredCapabilities(mapOf("accessKey", "2secret4u")));
+                new DesiredCapabilities(newMap(String.class, Object.class)
+                        .with("accessKey", "2secret4u")
+                        .build()));
 
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(RemoteDeviceProvider.class)
@@ -298,7 +306,9 @@ public class RemoteDeviceDefinitionTest
                         .setInitMethodName("initialize")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
-                        .addPropertyValue("capabilities", new DesiredCapabilities(mapOf("key", "value")))
+                        .addPropertyValue("capabilities", new DesiredCapabilities(newMap(String.class, Object.class)
+                                .with("key", "value")
+                                .build()))
                         .getBeanDefinition());
     }
 
@@ -312,9 +322,13 @@ public class RemoteDeviceDefinitionTest
                 .build()
                 .getBeanDefinition();
 
-        DesiredCapabilities expectedCapabilities = new DesiredCapabilities(mapOf("key", "value"));
+        DesiredCapabilities expectedCapabilities = new DesiredCapabilities(newMap(String.class, Object.class)
+                .with("key", "value")
+                .build());
         expectedCapabilities.setCapability("sauce:options",
-                new DesiredCapabilities(mapOf("accessKey", "2secret4u")));
+                new DesiredCapabilities(newMap(String.class, Object.class)
+                        .with("accessKey", "2secret4u")
+                        .build()));
 
         assertThat(actual)
                 .isEqualTo(genericBeanDefinition(RemoteDeviceProvider.class)
