@@ -3,7 +3,7 @@ package io.webdevice.wiring;
 import io.webdevice.device.DevicePool;
 import io.webdevice.device.WebDevice;
 import io.webdevice.settings.DeviceDefinition;
-import io.webdevice.settings.EnvironmentTest;
+import io.webdevice.settings.SettingsBasedTest;
 import io.webdevice.settings.MockSettingsBinder;
 import io.webdevice.settings.Settings;
 import io.webdevice.support.SimpleDeviceCheck;
@@ -39,7 +39,7 @@ import static org.springframework.beans.factory.support.AbstractBeanDefinition.A
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
 public class WebDeviceRegistrarTest
-        extends EnvironmentTest {
+        extends SettingsBasedTest {
 
     @Mock
     private AnnotationMetadata mockMetadata;

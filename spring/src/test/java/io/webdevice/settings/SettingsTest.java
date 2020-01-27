@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static io.bestquality.util.MapBuilder.newMap;
 import static io.webdevice.net.MaskingClassLoader.classLoaderMasking;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,6 +33,42 @@ public class SettingsTest {
 
         assertThat(settings.devices())
                 .contains(iPhone, iPad);
+    }
+
+    @Test
+    public void shouldApplyDevicesNameFromKeyWhenSetAsMap() {
+        settings.setDevices(newMap(String.class, DeviceDefinition.class)
+                .with("Firefox", new DeviceDefinition())
+                .with("iPhone8", new DeviceDefinition())
+                .build());
+
+        assertThat(settings.device("Firefox").getName())
+                .isEqualTo("Firefox");
+        assertThat(settings.device("iPhone8").getName())
+                .isEqualTo("iPhone8");
+    }
+
+    @Test
+    public void shouldFindDeviceByKeyWhenDirectlyAddedToDeviceMapAndKeyIsPresent() {
+        DeviceDefinition device = new DeviceDefinition();
+
+        settings.getDevices()
+                .put("iPhone8", device);
+
+        assertThat(settings.device("iPhone8"))
+                .isSameAs(device);
+    }
+
+    @Test
+    public void shouldFindDeviceByDeviceNameWhenDirectlyAddedToDeviceMapAndKeyIsNotPresent() {
+        DeviceDefinition device = new DeviceDefinition()
+                .withName("iPhone8");
+
+        settings.getDevices()
+                .put("0", device);
+
+        assertThat(settings.device("iPhone8"))
+                .isSameAs(device);
     }
 
     @Test

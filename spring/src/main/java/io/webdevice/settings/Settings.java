@@ -35,7 +35,13 @@ public class Settings
     }
 
     public DeviceDefinition device(String name) {
-        return devices.get(name);
+        if (devices.containsKey(name)) {
+            return devices.get(name);
+        }
+        return devices()
+                .filter(device -> name.equalsIgnoreCase(device.getName()))
+                .findFirst()
+                .orElse(null);
     }
 
     public Stream<DeviceDefinition> devices() {
@@ -133,12 +139,12 @@ public class Settings
     @Override
     public String toString() {
         return "Settings{" +
-                "devices=" + devices +
-                ", baseUrl=" + baseUrl +
+                "baseUrl=" + baseUrl +
                 ", defaultDevice='" + defaultDevice + '\'' +
                 ", eager=" + eager +
                 ", strict=" + strict +
                 ", scope='" + scope + '\'' +
+                ", devices=" + devices +
                 '}';
     }
 }

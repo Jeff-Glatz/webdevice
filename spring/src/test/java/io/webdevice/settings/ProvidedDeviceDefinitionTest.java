@@ -8,7 +8,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 
 import static io.webdevice.util.Collections.mapOf;
-import static io.webdevice.util.Collections.setOf;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.DesiredCapabilities.iphone;
 import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRASTRUCTURE;
@@ -54,7 +54,7 @@ public class ProvidedDeviceDefinitionTest
                         .addConstructorArgValue("myDevice")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
-                        .addPropertyValue("confidential", setOf("accessKey"))
+                        .addPropertyValue("confidential", asList("accessKey"))
                         .getBeanDefinition());
     }
 

@@ -9,7 +9,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.webdevice.util.Collections.setOf;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BasicDeviceDefinitionTest {
@@ -20,17 +20,23 @@ public class BasicDeviceDefinitionTest {
         definition = new DeviceDefinition();
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void shouldReturnUnmodifiableAliases() {
+    @Test
+    public void shouldReturnModifiableAliases() {
         definition.withAlias("Device");
+
+        assertThat(definition.getAliases())
+                .hasSize(1);
 
         definition.getAliases()
                 .add("Local Device");
+
+        assertThat(definition.getAliases())
+                .hasSize(2);
     }
 
     @Test
     public void shouldSetAliases() {
-        definition.setAliases(setOf("Local Device", "Device"));
+        definition.setAliases(asList("Local Device", "Device"));
 
         assertThat(definition.getAliases())
                 .containsExactly("Local Device", "Device");
@@ -57,12 +63,18 @@ public class BasicDeviceDefinitionTest {
                 .isTrue();
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void shouldReturnUnmodifiableCapabilities() {
+    @Test
+    public void shouldReturnModifiableCapabilities() {
         definition.withCapability("name", "value");
+
+        assertThat(definition.getCapabilities())
+                .hasSize(1);
 
         definition.getCapabilities()
                 .put("name-2", "value-2");
+
+        assertThat(definition.getCapabilities())
+                .hasSize(2);
     }
 
     @Test
@@ -77,12 +89,18 @@ public class BasicDeviceDefinitionTest {
                 .isEqualTo(capabilities);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void shouldReturnUnmodifiableExtraOptions() {
+    @Test
+    public void shouldReturnModifiableExtraOptions() {
         definition.withExtraOption("name", "value");
+
+        assertThat(definition.getExtraOptions())
+                .hasSize(1);
 
         definition.getExtraOptions()
                 .put("name-2", "value-2");
+
+        assertThat(definition.getExtraOptions())
+                .hasSize(2);
     }
 
     @Test
@@ -97,17 +115,23 @@ public class BasicDeviceDefinitionTest {
                 .isEqualTo(extraOptions);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void shouldReturnUnmodifiableConfidentialKeys() {
+    @Test
+    public void shouldReturnModifiableConfidentialKeys() {
         definition.withConfidential("accessKey");
+
+        assertThat(definition.getConfidential())
+                .hasSize(1);
 
         definition.getConfidential()
                 .add("password");
+
+        assertThat(definition.getConfidential())
+                .hasSize(2);
     }
 
     @Test
     public void shouldSetConfidentialKeys() {
-        definition.setConfidential(setOf("accessKey", "password"));
+        definition.setConfidential(asList("accessKey", "password"));
 
         assertThat(definition.getConfidential())
                 .containsExactly("accessKey", "password");

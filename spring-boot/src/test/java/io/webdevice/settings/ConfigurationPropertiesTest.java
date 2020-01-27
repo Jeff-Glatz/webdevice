@@ -1,18 +1,25 @@
 package io.webdevice.settings;
 
 import io.webdevice.support.YamlPropertySourceFactory;
-import org.junit.Before;
 import org.springframework.boot.convert.ApplicationConversionService;
-import org.springframework.core.env.StandardEnvironment;
+import org.springframework.core.convert.support.ConfigurableConversionService;
+import org.springframework.core.io.support.PropertySourceFactory;
 
 public abstract class ConfigurationPropertiesTest
-        extends EnvironmentTest {
+        extends SettingsBasedTest {
 
-    @Before
-    public void setUpEnvironment() {
-        environment = new StandardEnvironment();
-        environment.setConversionService(new ApplicationConversionService());
-        settingsBinder = new ConfigurationPropertiesBinder();
-        propertySourceFactory = new YamlPropertySourceFactory();
+    @Override
+    protected SettingsBinder makeSettingsBinder() {
+        return new ConfigurationPropertiesBinder();
+    }
+
+    @Override
+    protected ConfigurableConversionService makeConversionService() {
+        return new ApplicationConversionService();
+    }
+
+    @Override
+    protected PropertySourceFactory makePropertySourceFactory() {
+        return new YamlPropertySourceFactory();
     }
 }
