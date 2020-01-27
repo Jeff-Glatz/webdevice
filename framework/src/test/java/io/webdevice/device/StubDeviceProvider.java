@@ -1,16 +1,14 @@
-package io.webdevice.support;
+package io.webdevice.device;
 
-import io.webdevice.device.BaseDeviceProvider;
-import io.webdevice.device.Device;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import static io.webdevice.device.Devices.directDevice;
 
-public class GenericDeviceProvider
+public class StubDeviceProvider
         extends BaseDeviceProvider<RemoteWebDriver> {
 
-    public GenericDeviceProvider(String name) {
+    public StubDeviceProvider(String name) {
         super(name);
     }
 

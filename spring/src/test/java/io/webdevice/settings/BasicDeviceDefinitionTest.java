@@ -1,6 +1,6 @@
 package io.webdevice.settings;
 
-import io.webdevice.support.GenericDeviceProvider;
+import io.webdevice.device.StubDeviceProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.MutableCapabilities;
@@ -140,11 +140,11 @@ public class BasicDeviceDefinitionTest {
     @Test
     public void twoProvidedDevicesShouldBeEqual() {
         definition.withName("myDevice")
-                .withProvider(GenericDeviceProvider.class);
+                .withProvider(StubDeviceProvider.class);
 
         DeviceDefinition metadata2 = new DeviceDefinition()
                 .withName("myDevice")
-                .withProvider(GenericDeviceProvider.class);
+                .withProvider(StubDeviceProvider.class);
 
         assertThat(metadata2)
                 .isEqualTo(definition);

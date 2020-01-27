@@ -1,6 +1,6 @@
 package io.webdevice.settings;
 
-import io.webdevice.support.GenericDeviceProvider;
+import io.webdevice.device.StubDeviceProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.MutableCapabilities;
@@ -29,12 +29,12 @@ public class ProvidedDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithoutCapabilitiesAndWithoutConfidential() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withProvider(GenericDeviceProvider.class)
+                .withProvider(StubDeviceProvider.class)
                 .build()
                 .getBeanDefinition();
 
         assertThat(actual)
-                .isEqualTo(genericBeanDefinition(GenericDeviceProvider.class)
+                .isEqualTo(genericBeanDefinition(StubDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -44,13 +44,13 @@ public class ProvidedDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithoutCapabilitiesAndWithConfidential() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withProvider(GenericDeviceProvider.class)
+                .withProvider(StubDeviceProvider.class)
                 .withConfidential("accessKey")
                 .build()
                 .getBeanDefinition();
 
         assertThat(actual)
-                .isEqualTo(genericBeanDefinition(GenericDeviceProvider.class)
+                .isEqualTo(genericBeanDefinition(StubDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -63,13 +63,13 @@ public class ProvidedDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithCapabilitiesReference() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withProvider(GenericDeviceProvider.class)
+                .withProvider(StubDeviceProvider.class)
                 .withCapabilitiesRef("myDeviceCapabilities")
                 .build()
                 .getBeanDefinition();
 
         assertThat(actual)
-                .isEqualTo(genericBeanDefinition(GenericDeviceProvider.class)
+                .isEqualTo(genericBeanDefinition(StubDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -82,13 +82,13 @@ public class ProvidedDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithOptionsOnly() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withProvider(GenericDeviceProvider.class)
+                .withProvider(StubDeviceProvider.class)
                 .withOptions(MutableCapabilities.class)
                 .build()
                 .getBeanDefinition();
 
         assertThat(actual)
-                .isEqualTo(genericBeanDefinition(GenericDeviceProvider.class)
+                .isEqualTo(genericBeanDefinition(StubDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -99,7 +99,7 @@ public class ProvidedDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithOptionsMergingCapabilities() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withProvider(GenericDeviceProvider.class)
+                .withProvider(StubDeviceProvider.class)
                 .withOptions(MutableCapabilities.class)
                 .withCapability("key", "value")
                 .build()
@@ -109,7 +109,7 @@ public class ProvidedDeviceDefinitionTest
         expectedOptions.setCapability("key", "value");
 
         assertThat(actual)
-                .isEqualTo(genericBeanDefinition(GenericDeviceProvider.class)
+                .isEqualTo(genericBeanDefinition(StubDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -120,7 +120,7 @@ public class ProvidedDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithOptionsMergingExtraCapabilities() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withProvider(GenericDeviceProvider.class)
+                .withProvider(StubDeviceProvider.class)
                 .withOptions(MutableCapabilities.class)
                 .withExtraCapability("sauce:options")
                 .withExtraOption("accessKey", "2secret4u")
@@ -134,7 +134,7 @@ public class ProvidedDeviceDefinitionTest
                         .build()));
 
         assertThat(actual)
-                .isEqualTo(genericBeanDefinition(GenericDeviceProvider.class)
+                .isEqualTo(genericBeanDefinition(StubDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -145,7 +145,7 @@ public class ProvidedDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithOptionsMergingCapabilitiesAndExtraCapabilities() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withProvider(GenericDeviceProvider.class)
+                .withProvider(StubDeviceProvider.class)
                 .withOptions(MutableCapabilities.class)
                 .withCapability("key", "value")
                 .withExtraCapability("sauce:options")
@@ -161,7 +161,7 @@ public class ProvidedDeviceDefinitionTest
                         .build()));
 
         assertThat(actual)
-                .isEqualTo(genericBeanDefinition(GenericDeviceProvider.class)
+                .isEqualTo(genericBeanDefinition(StubDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -174,13 +174,13 @@ public class ProvidedDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithDesiredOnly() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withProvider(GenericDeviceProvider.class)
+                .withProvider(StubDeviceProvider.class)
                 .withDesired("iphone")
                 .build()
                 .getBeanDefinition();
 
         assertThat(actual)
-                .isEqualTo(genericBeanDefinition(GenericDeviceProvider.class)
+                .isEqualTo(genericBeanDefinition(StubDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -191,7 +191,7 @@ public class ProvidedDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithDesiredMergingCapabilities() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withProvider(GenericDeviceProvider.class)
+                .withProvider(StubDeviceProvider.class)
                 .withDesired("iphone")
                 .withCapability("key", "value")
                 .build()
@@ -201,7 +201,7 @@ public class ProvidedDeviceDefinitionTest
         expectedCapabilities.setCapability("key", "value");
 
         assertThat(actual)
-                .isEqualTo(genericBeanDefinition(GenericDeviceProvider.class)
+                .isEqualTo(genericBeanDefinition(StubDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -212,7 +212,7 @@ public class ProvidedDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithDesiredMergingExtraCapabilities() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withProvider(GenericDeviceProvider.class)
+                .withProvider(StubDeviceProvider.class)
                 .withDesired("iphone")
                 .withExtraCapability("sauce:options")
                 .withExtraOption("accessKey", "2secret4u")
@@ -226,7 +226,7 @@ public class ProvidedDeviceDefinitionTest
                         .build()));
 
         assertThat(actual)
-                .isEqualTo(genericBeanDefinition(GenericDeviceProvider.class)
+                .isEqualTo(genericBeanDefinition(StubDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -237,7 +237,7 @@ public class ProvidedDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithDesiredMergingCapabilitiesAndExtraCapabilities() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withProvider(GenericDeviceProvider.class)
+                .withProvider(StubDeviceProvider.class)
                 .withDesired("iphone")
                 .withCapability("key", "value")
                 .withExtraCapability("sauce:options")
@@ -253,7 +253,7 @@ public class ProvidedDeviceDefinitionTest
                         .build()));
 
         assertThat(actual)
-                .isEqualTo(genericBeanDefinition(GenericDeviceProvider.class)
+                .isEqualTo(genericBeanDefinition(StubDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -267,13 +267,13 @@ public class ProvidedDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithMapOnly() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withProvider(GenericDeviceProvider.class)
+                .withProvider(StubDeviceProvider.class)
                 .withCapability("key", "value")
                 .build()
                 .getBeanDefinition();
 
         assertThat(actual)
-                .isEqualTo(genericBeanDefinition(GenericDeviceProvider.class)
+                .isEqualTo(genericBeanDefinition(StubDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
@@ -286,7 +286,7 @@ public class ProvidedDeviceDefinitionTest
     @Test
     public void shouldBuildDefinitionWithMapMergingExtraCapabilities() {
         AbstractBeanDefinition actual = definition.withName("myDevice")
-                .withProvider(GenericDeviceProvider.class)
+                .withProvider(StubDeviceProvider.class)
                 .withCapability("key", "value")
                 .withExtraCapability("sauce:options")
                 .withExtraOption("accessKey", "2secret4u")
@@ -302,7 +302,7 @@ public class ProvidedDeviceDefinitionTest
                         .build()));
 
         assertThat(actual)
-                .isEqualTo(genericBeanDefinition(GenericDeviceProvider.class)
+                .isEqualTo(genericBeanDefinition(StubDeviceProvider.class)
                         .addConstructorArgValue("myDevice")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
