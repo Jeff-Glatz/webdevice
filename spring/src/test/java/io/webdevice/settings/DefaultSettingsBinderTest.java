@@ -10,13 +10,13 @@ import java.net.URL;
 import static io.bestquality.util.MapBuilder.newMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BeanWrapperBinderTest
+public class DefaultSettingsBinderTest
         extends EnvironmentBasedTest {
-    private BeanWrapperBinder binder;
+    private DefaultSettingsBinder binder;
 
     @Before
     public void setUp() {
-        binder = new BeanWrapperBinder();
+        binder = new DefaultSettingsBinder();
         System.setProperty("saucelabs_username", "saucy");
         System.setProperty("saucelabs_accessKey", "2secret4u");
     }

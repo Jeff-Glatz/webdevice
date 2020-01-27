@@ -5,7 +5,7 @@ import io.webdevice.device.WebDevice;
 import io.webdevice.settings.DeviceDefinition;
 import io.webdevice.settings.Settings;
 import io.webdevice.settings.SettingsFromEnvironment;
-import io.webdevice.settings.SettingsFromJsonResource;
+import io.webdevice.settings.SettingsFromResource;
 import io.webdevice.support.AnnotationAttributes;
 import io.webdevice.support.SimpleDeviceCheck;
 import io.webdevice.support.SpringDeviceRegistry;
@@ -64,7 +64,7 @@ public class WebDeviceRegistrar
         AnnotationAttributes attributes = attributesOf(EnableWebDevice.class, metadata);
         return applySettingsFromAnnotation(
                 attributes.valueOf("settings", String.class,
-                        new SettingsFromJsonResource(environment),
+                        new SettingsFromResource(environment),
                         new SettingsFromEnvironment(environment, attributes)),
                 attributes);
     }

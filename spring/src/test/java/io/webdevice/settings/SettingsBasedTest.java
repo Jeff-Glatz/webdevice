@@ -13,7 +13,7 @@ public abstract class SettingsBasedTest
     }
 
     protected SettingsBinder makeSettingsBinder() {
-        return new BeanWrapperBinder();
+        return new DefaultSettingsBinder();
     }
 
     protected Settings settingsFrom(ConfigurableEnvironment environment)

@@ -15,22 +15,22 @@ import java.io.IOException;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class SettingsFromJsonResource
+public class SettingsFromResource
         implements CheckedFunction<String, Settings> {
     private final ConfigurableEnvironment environment;
 
-    public SettingsFromJsonResource(ConfigurableEnvironment environment) {
+    public SettingsFromResource(ConfigurableEnvironment environment) {
         this.environment = environment;
     }
 
     @Override
-    public Settings apply(String value)
+    public Settings apply(String path)
             throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new SimpleModule()
                 .addDeserializer(Class.class, new ClassDeserializer()));
         String content = environment.resolvePlaceholders(IOUtils.toString(
-                new ClassPathResource(value).getURL(), UTF_8));
+                new ClassPathResource(path).getURL(), UTF_8));
         return mapper.convertValue(mapper.readTree(content)
                 .findValue("webdevice"), Settings.class);
     }

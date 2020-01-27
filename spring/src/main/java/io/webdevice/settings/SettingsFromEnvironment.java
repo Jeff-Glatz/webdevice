@@ -46,7 +46,7 @@ public class SettingsFromEnvironment
                     }
                     // Spring Boot is not available, load from Environment or use default
                     Class<?> binderClass = environment.getProperty("webdevice.binder", Class.class,
-                            BeanWrapperBinder.class);
+                            DefaultSettingsBinder.class);
                     return (SettingsBinder) binderClass
                             .getDeclaredConstructor()
                             .newInstance();
