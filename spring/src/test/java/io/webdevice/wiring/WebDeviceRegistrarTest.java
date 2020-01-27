@@ -5,7 +5,7 @@ import io.webdevice.device.WebDevice;
 import io.webdevice.settings.DeviceDefinition;
 import io.webdevice.settings.MockSettingsBinder;
 import io.webdevice.settings.Settings;
-import io.webdevice.settings.SettingsBasedTest;
+import io.webdevice.settings.BoundSettingsTest;
 import io.webdevice.support.SimpleDeviceCheck;
 import io.webdevice.support.SpringDeviceRegistry;
 import org.junit.After;
@@ -39,7 +39,7 @@ import static org.springframework.beans.factory.support.AbstractBeanDefinition.A
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
 public class WebDeviceRegistrarTest
-        extends SettingsBasedTest {
+        extends BoundSettingsTest {
 
     @Mock
     private AnnotationMetadata mockMetadata;
@@ -63,7 +63,7 @@ public class WebDeviceRegistrarTest
                 .withEager(false)
                 .withBaseUrl(null);
 
-        Settings actual = settingsFrom(environment);
+        Settings actual = bindFrom(environment);
         assertThat(actual)
                 .isEqualTo(expected);
     }
@@ -78,7 +78,7 @@ public class WebDeviceRegistrarTest
                 .withEager(true)
                 .withBaseUrl(new URL("http://webdevice.io"));
 
-        Settings actual = settingsFrom(environmentWith("io/webdevice/wiring/non-defaults.properties"));
+        Settings actual = bindFrom(environmentWith("io/webdevice/wiring/non-defaults.properties"));
         assertThat(actual)
                 .isEqualTo(expected);
     }
@@ -106,7 +106,7 @@ public class WebDeviceRegistrarTest
                 .isEqualTo(genericBeanDefinition(Settings.class)
                         .getBeanDefinition());
         assertThat(definition.getInstanceSupplier().get())
-                .isEqualTo(settingsFrom(environment));
+                .isEqualTo(bindFrom(environment));
     }
 
     @Test
@@ -431,7 +431,7 @@ public class WebDeviceRegistrarTest
 
         // Provider definition
         GenericBeanDefinition provider = definitionCaptor.getValue();
-        DeviceDefinition definition = settingsFrom(environment)
+        DeviceDefinition definition = bindFrom(environment)
                 .device("Direct");
         assertThat(provider)
                 .isEqualTo(definition.build()
@@ -533,7 +533,7 @@ public class WebDeviceRegistrarTest
         // Provider definition
         GenericBeanDefinition provider = definitionCaptor.getAllValues()
                 .get(0);
-        DeviceDefinition definition = settingsFrom(environment)
+        DeviceDefinition definition = bindFrom(environment)
                 .device("Direct");
         assertThat(provider)
                 .isEqualTo(definition.build()
@@ -595,7 +595,7 @@ public class WebDeviceRegistrarTest
 
         // Provider definition
         GenericBeanDefinition provider = definitionCaptor.getValue();
-        DeviceDefinition definition = settingsFrom(environment)
+        DeviceDefinition definition = bindFrom(environment)
                 .device("Direct");
         assertThat(provider)
                 .isEqualTo(definition.build()

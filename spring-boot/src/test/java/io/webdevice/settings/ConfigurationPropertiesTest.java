@@ -6,7 +6,7 @@ import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.core.io.support.PropertySourceFactory;
 
 public abstract class ConfigurationPropertiesTest
-        extends SettingsBasedTest {
+        extends BoundSettingsTest {
 
     @Override
     protected SettingsBinder makeSettingsBinder() {

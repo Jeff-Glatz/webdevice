@@ -3,21 +3,21 @@ package io.webdevice.settings;
 import org.junit.Before;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-public abstract class SettingsBasedTest
+public abstract class BoundSettingsTest
         extends EnvironmentBasedTest {
-    protected SettingsBinder settingsBinder;
+    private SettingsBinder binder;
 
     @Before
     public void setUpBinder() {
-        settingsBinder = makeSettingsBinder();
+        binder = makeSettingsBinder();
     }
 
     protected SettingsBinder makeSettingsBinder() {
         return new DefaultSettingsBinder();
     }
 
-    protected Settings settingsFrom(ConfigurableEnvironment environment)
+    protected Settings bindFrom(ConfigurableEnvironment environment)
             throws Exception {
-        return settingsBinder.from(environment);
+        return binder.from(environment);
     }
 }

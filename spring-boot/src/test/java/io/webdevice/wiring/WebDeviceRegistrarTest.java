@@ -62,7 +62,7 @@ public class WebDeviceRegistrarTest
                 .withEager(false)
                 .withBaseUrl(null);
 
-        Settings actual = settingsFrom(environment);
+        Settings actual = bindFrom(environment);
         assertThat(actual)
                 .isEqualTo(expected);
     }
@@ -77,7 +77,7 @@ public class WebDeviceRegistrarTest
                 .withEager(true)
                 .withBaseUrl(new URL("http://webdevice.io"));
 
-        Settings actual = settingsFrom(environmentWith("io/webdevice/wiring/non-defaults.yaml"));
+        Settings actual = bindFrom(environmentWith("io/webdevice/wiring/non-defaults.yaml"));
         assertThat(actual)
                 .isEqualTo(expected);
     }
@@ -105,7 +105,7 @@ public class WebDeviceRegistrarTest
                 .isEqualTo(genericBeanDefinition(Settings.class)
                         .getBeanDefinition());
         assertThat(definition.getInstanceSupplier().get())
-                .isEqualTo(settingsFrom(environment));
+                .isEqualTo(bindFrom(environment));
     }
 
     @Test
@@ -341,7 +341,7 @@ public class WebDeviceRegistrarTest
 
         // Provider definition
         GenericBeanDefinition provider = definitionCaptor.getValue();
-        DeviceDefinition definition = settingsFrom(environment)
+        DeviceDefinition definition = bindFrom(environment)
                 .device("Direct");
         assertThat(provider)
                 .isEqualTo(definition.build().getBeanDefinition());
@@ -442,7 +442,7 @@ public class WebDeviceRegistrarTest
         // Provider definition
         GenericBeanDefinition provider = definitionCaptor.getAllValues()
                 .get(0);
-        DeviceDefinition definition = settingsFrom(environment)
+        DeviceDefinition definition = bindFrom(environment)
                 .device("Direct");
         assertThat(provider)
                 .isEqualTo(definition.build().getBeanDefinition());
@@ -503,7 +503,7 @@ public class WebDeviceRegistrarTest
 
         // Provider definition
         GenericBeanDefinition provider = definitionCaptor.getValue();
-        DeviceDefinition definition = settingsFrom(environment)
+        DeviceDefinition definition = bindFrom(environment)
                 .device("Direct");
         assertThat(provider)
                 .isEqualTo(definition.build().getBeanDefinition());
