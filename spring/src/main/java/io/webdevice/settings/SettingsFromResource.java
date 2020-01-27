@@ -15,6 +15,10 @@ import java.io.IOException;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+/**
+ * This class allows the {@link io.webdevice.wiring.WebDeviceRuntime} to be configured
+ * with a {@link Settings} loaded from a {@link ClassPathResource}
+ */
 public class SettingsFromResource
         implements CheckedFunction<String, Settings> {
     private final ConfigurableEnvironment environment;

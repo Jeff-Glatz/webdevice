@@ -9,6 +9,14 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import static org.springframework.util.ClassUtils.forName;
 import static org.springframework.util.ClassUtils.isPresent;
 
+/**
+ * The {@link SettingsFromEnvironment} class uses an annotation-configurable
+ * {@link SettingsBinder} to bind properties from the execution environment
+ * onto the {@link Settings} used to configure the {@link io.webdevice.wiring.WebDeviceRuntime}
+ * <p>
+ * Applying the Strategy Design Pattern allows the {@link io.webdevice.wiring.WebDeviceRuntime}
+ * to be used in both Spring Boot and traditional Spring contexts.
+ */
 public class SettingsFromEnvironment
         implements CheckedSupplier<Settings> {
     private final Logger log = LoggerFactory.getLogger(getClass());
