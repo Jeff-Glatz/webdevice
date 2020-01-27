@@ -1,6 +1,7 @@
 package io.webdevice.settings;
 
 import io.webdevice.test.UnitTest;
+import org.junit.After;
 import org.junit.Before;
 import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
@@ -23,10 +24,22 @@ public abstract class EnvironmentBasedTest
     protected PropertySourceFactory propertySourceFactory;
 
     @Before
+    public void setUpSystemProperties() {
+        System.setProperty("saucelabs_username", "saucy");
+        System.setProperty("saucelabs_accessKey", "2secret4u");
+    }
+
+    @Before
     public void setUpEnvironment() {
         environment = new StandardEnvironment();
         environment.setConversionService(makeConversionService());
         propertySourceFactory = makePropertySourceFactory();
+    }
+
+    @After
+    public void tearDownSystemProperties() {
+        System.clearProperty("saucelabs_accessKey");
+        System.clearProperty("saucelabs_username");
     }
 
     protected ConfigurableConversionService makeConversionService() {

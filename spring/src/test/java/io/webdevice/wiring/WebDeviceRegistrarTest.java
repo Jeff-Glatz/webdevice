@@ -3,9 +3,9 @@ package io.webdevice.wiring;
 import io.webdevice.device.DevicePool;
 import io.webdevice.device.WebDevice;
 import io.webdevice.settings.DeviceDefinition;
-import io.webdevice.settings.SettingsBasedTest;
 import io.webdevice.settings.MockSettingsBinder;
 import io.webdevice.settings.Settings;
+import io.webdevice.settings.SettingsBasedTest;
 import io.webdevice.support.SimpleDeviceCheck;
 import io.webdevice.support.SpringDeviceRegistry;
 import org.junit.After;
@@ -127,7 +127,7 @@ public class WebDeviceRegistrarTest
                         .withAlias("iPhone")
                         .withRemoteAddress(new URL("http://selenium.grid:4444/wd/hub"))
                         .withCapability("version", "60")
-                        .withCapability("username", "user")
+                        .withCapability("username", "saucy")
                         .withCapability("accessKey", "2secret4u")
                         .withConfidential("accessKey")
                         .withPooled(false));

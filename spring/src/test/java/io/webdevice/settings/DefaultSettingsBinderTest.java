@@ -1,6 +1,5 @@
 package io.webdevice.settings;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -17,14 +16,6 @@ public class DefaultSettingsBinderTest
     @Before
     public void setUp() {
         binder = new DefaultSettingsBinder();
-        System.setProperty("saucelabs_username", "saucy");
-        System.setProperty("saucelabs_accessKey", "2secret4u");
-    }
-
-    @After
-    public void tearDown() {
-        System.clearProperty("saucelabs_accessKey");
-        System.clearProperty("saucelabs_username");
     }
 
     @Test
