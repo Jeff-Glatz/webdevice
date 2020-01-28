@@ -3,6 +3,7 @@ package io.webdevice.settings;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.springframework.context.ApplicationContextException;
 
 import java.net.URL;
 
@@ -49,5 +50,28 @@ public class SettingsFromResourceTest
     public void shouldRaiseIllegalArgumentExceptionFromJsonResourceWhenDriverClassNotFound()
             throws Exception {
         function.apply("io/webdevice/settings/driver-class-not-found.json");
+    }
+
+    @Test
+    public void shouldLoadSettingsFromPropertiesResource()
+            throws Exception {
+        Settings expected = new Settings()
+                .withBaseUrl(new URL("https://webdevice.io"))
+                .withDefaultDevice("Remote")
+                .withDevice(new DeviceDefinition()
+                        .withName("Remote")
+                        .withRemoteAddress(new URL("https://ondemand.saucelabs.com:443/wd/hub"))
+                        .withCapability("username", "saucy")
+                        .withCapability("accessKey", "2secret4u"));
+
+        Settings actual = function.apply("io/webdevice/settings/device-with-placeholders.properties");
+        assertThat(actual)
+                .isEqualTo(expected);
+    }
+
+    @Test(expected = ApplicationContextException.class)
+    public void shouldRaiseApplicationContextExceptionWhenResourceUnsupported()
+            throws Exception {
+        function.apply("io/webdevice/settings/unsupported-resource.yaml");
     }
 }

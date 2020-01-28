@@ -49,7 +49,7 @@ public class DefaultSettingsBinder
         return propertyValues;
     }
 
-    private static String toCamelCase(String value) {
+    static String toCamelCase(String value) {
         StringBuilder builder = new StringBuilder();
         for (String part : value.split("-")) {
             builder.append(builder.length() == 0
