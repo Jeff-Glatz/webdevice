@@ -4,6 +4,10 @@ import io.webdevice.wiring.WebDeviceScope;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.env.ConfigurableEnvironment;
 
+/**
+ * This implementation uses the {@link Binder} to bind {@link Settings} from the
+ * execution {@link ConfigurableEnvironment environment}.
+ */
 public class ConfigurationPropertiesBinder
         implements SettingsBinder {
 

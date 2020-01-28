@@ -13,7 +13,9 @@ import static org.springframework.util.StringUtils.capitalize;
 
 /**
  * This class allows the {@link io.webdevice.wiring.WebDeviceRuntime} to be used
- * in a core spring context where spring boot is not available.
+ * in a core spring context where spring boot is not available. This implementation
+ * uses the {@link DataBinder} to bind {@link Settings} from the execution
+ * {@link ConfigurableEnvironment environment}.
  */
 public class DefaultSettingsBinder
         implements SettingsBinder {
