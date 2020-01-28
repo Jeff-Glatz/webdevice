@@ -32,7 +32,12 @@ import static org.springframework.util.ClassUtils.forName;
  * This class allows the {@link io.webdevice.wiring.WebDeviceRuntime} to be configured
  * with a {@link Settings} loaded from a {@link ClassPathResource}.
  * <p>
- * The following resources are supported:
+ * This instance is activated when {@link io.webdevice.wiring.EnableWebDevice#settings()}
+ * has been specified as an override to the settings normally bound from the execution
+ * environment.
+ *
+ * <p>
+ * The following resources types are supported:
  * <ul>
  *     <li>.json</li>
  *     <li>.properties</li>
