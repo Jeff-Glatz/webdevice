@@ -47,19 +47,19 @@ public class SettingsFromResource
         implements CheckedFunction<String, Settings> {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final SettingsLoader defaultLoader = new UnsupportedLoader();
-    private final Map<String, SettingsLoader> readers = new HashMap<>();
+    private final Map<String, SettingsLoader> loaders = new HashMap<>();
     private final ConfigurableEnvironment environment;
 
     public SettingsFromResource(ConfigurableEnvironment environment) {
         this.environment = environment;
-        readers.put(".json", new JsonLoader());
-        readers.put(".properties", new PropertiesLoader());
+        loaders.put(".json", new JsonLoader());
+        loaders.put(".properties", new PropertiesLoader());
     }
 
     @Override
     public Settings apply(String path)
             throws Exception {
-        SettingsLoader loader = readers.getOrDefault(
+        SettingsLoader loader = loaders.getOrDefault(
                 path.substring(path.lastIndexOf('.')),
                 defaultLoader);
         return loader.from(new ClassPathResource(path));
