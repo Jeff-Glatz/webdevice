@@ -46,7 +46,7 @@ import static org.springframework.util.ClassUtils.forName;
 public class SettingsFromResource
         implements CheckedFunction<String, Settings> {
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private final SettingsLoader unsupportedReader = new UnsupportedLoader();
+    private final SettingsLoader defaultLoader = new UnsupportedLoader();
     private final Map<String, SettingsLoader> readers = new HashMap<>();
     private final ConfigurableEnvironment environment;
 
@@ -61,7 +61,7 @@ public class SettingsFromResource
             throws Exception {
         SettingsLoader loader = readers.getOrDefault(
                 path.substring(path.lastIndexOf('.')),
-                unsupportedReader);
+                defaultLoader);
         return loader.from(new ClassPathResource(path));
     }
 
