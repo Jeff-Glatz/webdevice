@@ -16,6 +16,8 @@ import static org.springframework.util.ClassUtils.isPresent;
  * <p>
  * Applying the Strategy Design Pattern allows the {@link io.webdevice.wiring.WebDeviceRuntime}
  * to be used in both Spring Boot and traditional Spring contexts.
+ *
+ * @see SettingsBinder
  */
 public class SettingsFromEnvironment
         implements CheckedSupplier<Settings> {
