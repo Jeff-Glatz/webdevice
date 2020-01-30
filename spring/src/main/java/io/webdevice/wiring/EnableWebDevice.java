@@ -1,5 +1,6 @@
 package io.webdevice.wiring;
 
+import io.webdevice.lang.annotation.Toggle;
 import io.webdevice.settings.SettingsBinder;
 import org.springframework.context.annotation.Import;
 
@@ -8,7 +9,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import static io.webdevice.wiring.EnableWebDevice.Toggle.UNSET;
+import static io.webdevice.lang.annotation.Toggle.UNSET;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -16,7 +17,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 @Target(TYPE)
 @Retention(RUNTIME)
-@Import({WebDeviceBootstrap.class})
+@Import(WebDeviceBootstrap.class)
 public @interface EnableWebDevice {
 
     /**
@@ -78,20 +79,4 @@ public @interface EnableWebDevice {
      * @return The base URL against which relative URLs will be resolved.
      */
     String baseUrl() default "";
-
-    enum Toggle {
-        ON(true),
-        OFF(false),
-        UNSET(null);
-
-        private final Boolean value;
-
-        Toggle(Boolean value) {
-            this.value = value;
-        }
-
-        public Boolean value() {
-            return value;
-        }
-    }
 }

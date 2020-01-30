@@ -9,6 +9,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.util.HashMap;
 import java.util.Map;
 
+import static io.bestquality.util.MapBuilder.newMap;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,6 +47,17 @@ public class BasicDeviceDefinitionTest {
     public void shouldReturnStreamOfAliases() {
         definition.withAlias("Device")
                 .withAlias("Local Device");
+
+        assertThat(definition.aliases())
+                .containsExactly("Device", "Local Device");
+    }
+
+    @Test
+    public void shouldNotClearAliasesWhenSetToSameInstance() {
+        definition.withAlias("Device")
+                .withAlias("Local Device");
+
+        definition.setAliases(definition.getAliases());
 
         assertThat(definition.aliases())
                 .containsExactly("Device", "Local Device");
@@ -90,6 +102,20 @@ public class BasicDeviceDefinitionTest {
     }
 
     @Test
+    public void shouldNotClearCapabilitiesWhenSetToSameInstance() {
+        definition.withCapability("name-1", "value-1")
+                .withCapability("name-2", "value-2");
+
+        definition.setCapabilities(definition.getCapabilities());
+
+        assertThat(definition.getCapabilities())
+                .isEqualTo(newMap(String.class, Object.class)
+                        .with("name-1", "value-1")
+                        .with("name-2", "value-2")
+                        .build());
+    }
+
+    @Test
     public void shouldReturnModifiableExtraOptions() {
         definition.withExtraOption("name", "value");
 
@@ -116,6 +142,20 @@ public class BasicDeviceDefinitionTest {
     }
 
     @Test
+    public void shouldNotClearExtraOptionsWhenSetToSameInstance() {
+        definition.withExtraOption("name-1", "value-1")
+                .withExtraOption("name-2", "value-2");
+
+        definition.setExtraOptions(definition.getExtraOptions());
+
+        assertThat(definition.getExtraOptions())
+                .isEqualTo(newMap(String.class, Object.class)
+                        .with("name-1", "value-1")
+                        .with("name-2", "value-2")
+                        .build());
+    }
+
+    @Test
     public void shouldReturnModifiableConfidentialKeys() {
         definition.withConfidential("accessKey");
 
@@ -132,6 +172,16 @@ public class BasicDeviceDefinitionTest {
     @Test
     public void shouldSetConfidentialKeys() {
         definition.setConfidential(asList("accessKey", "password"));
+
+        assertThat(definition.getConfidential())
+                .containsExactly("accessKey", "password");
+    }
+
+    @Test
+    public void shouldNotClearConfidentialKeysWhenSetToSameInstance() {
+        definition.setConfidential(asList("accessKey", "password"));
+
+        definition.setConfidential(definition.getConfidential());
 
         assertThat(definition.getConfidential())
                 .containsExactly("accessKey", "password");

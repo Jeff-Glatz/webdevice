@@ -3,6 +3,7 @@ package io.webdevice.support;
 import io.bestquality.lang.CheckedFunction;
 import io.bestquality.lang.CheckedSupplier;
 import org.springframework.core.convert.ConversionException;
+import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.type.AnnotationMetadata;
@@ -38,9 +39,9 @@ public class AnnotationAttributes {
         return new MapPropertySource(annotation.getSimpleName(), attributes);
     }
 
-    public PropertySource<?> asPropertySource(Predicate<Map.Entry<String, Object>> filter,
-                                              Function<Map.Entry<String, Object>, String> keyMapper,
-                                              Function<Map.Entry<String, Object>, Object> valueMapper) {
+    public EnumerablePropertySource<Map<String, Object>> asPropertySource(Predicate<Map.Entry<String, Object>> filter,
+                                                                          Function<Map.Entry<String, Object>, String> keyMapper,
+                                                                          Function<Map.Entry<String, Object>, Object> valueMapper) {
         return new MapPropertySource(annotation.getSimpleName(), attributes.entrySet().stream()
                 .filter(filter)
                 .collect(toMap(keyMapper, valueMapper)));

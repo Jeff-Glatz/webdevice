@@ -71,8 +71,10 @@ public class DeviceDefinition
     }
 
     public void setAliases(List<String> aliases) {
-        this.aliases.clear();
-        this.aliases.addAll(aliases);
+        if (this.aliases != aliases) {
+            this.aliases.clear();
+            this.aliases.addAll(aliases);
+        }
     }
 
     public DeviceDefinition withAlias(String alias) {
@@ -188,8 +190,10 @@ public class DeviceDefinition
     }
 
     public void setCapabilities(Map<String, Object> capabilities) {
-        this.capabilities.clear();
-        this.capabilities.putAll(capabilities);
+        if (this.capabilities != capabilities) {
+            this.capabilities.clear();
+            this.capabilities.putAll(capabilities);
+        }
     }
 
     public DeviceDefinition withCapability(String capability, Object value) {
@@ -215,8 +219,10 @@ public class DeviceDefinition
     }
 
     public void setExtraOptions(Map<String, Object> extraOptions) {
-        this.extraOptions.clear();
-        this.extraOptions.putAll(extraOptions);
+        if (this.extraOptions != extraOptions) {
+            this.extraOptions.clear();
+            this.extraOptions.putAll(extraOptions);
+        }
     }
 
     public DeviceDefinition withExtraOption(String option, Object value) {
@@ -229,8 +235,10 @@ public class DeviceDefinition
     }
 
     public void setConfidential(List<String> confidential) {
-        this.confidential.clear();
-        this.confidential.addAll(confidential);
+        if (this.confidential != confidential) {
+            this.confidential.clear();
+            this.confidential.addAll(confidential);
+        }
     }
 
     public DeviceDefinition withConfidential(String mask) {

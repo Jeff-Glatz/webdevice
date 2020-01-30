@@ -12,12 +12,7 @@ import static org.springframework.util.ClassUtils.isPresent;
 public class Settings
         implements Serializable {
 
-    private final Map<String, DeviceDefinition> devices = new LinkedHashMap<String, DeviceDefinition>() {
-        @Override
-        public DeviceDefinition put(String key, DeviceDefinition value) {
-            return super.put(key, value.withName(key));
-        }
-    };
+    private final Map<String, DeviceDefinition> devices = new DeviceMap();
     private URL baseUrl;
     private String defaultDevice;
     private boolean eager = false;
@@ -29,9 +24,12 @@ public class Settings
     }
 
     public void setDevices(Map<String, DeviceDefinition> devices) {
-        this.devices.clear();
-        this.devices.putAll(devices);
-        this.devices.forEach((name, device) -> device.setName(name));
+        // In certain data binding scenarios, the getter will be invoked, modified, and then set, so that clearing
+        // the local instance actually clears the incoming map (since it is the same instance)
+        if (this.devices != devices) {
+            this.devices.clear();
+            this.devices.putAll(devices);
+        }
     }
 
     public Settings withDevice(DeviceDefinition device) {
@@ -151,5 +149,23 @@ public class Settings
                 ", scope='" + scope + '\'' +
                 ", devices=" + devices +
                 '}';
+    }
+
+    /**
+     * This class exists to ensure key names and device names remain synchronized
+     */
+    private static class DeviceMap
+            extends LinkedHashMap<String, DeviceDefinition> {
+
+        @Override
+        public DeviceDefinition put(String key, DeviceDefinition value) {
+            return super.put(key, value.withName(key));
+        }
+
+        @Override
+        public void putAll(Map<? extends String, ? extends DeviceDefinition> map) {
+            map.forEach((name, device) -> device.setName(name));
+            super.putAll(map);
+        }
     }
 }

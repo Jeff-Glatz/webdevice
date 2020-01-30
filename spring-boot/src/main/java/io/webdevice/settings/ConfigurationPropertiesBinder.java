@@ -14,6 +14,7 @@ public class ConfigurationPropertiesBinder
 
     @Override
     public Settings from(ConfigurableEnvironment environment) {
+        // Ensure any injected property sources get collected as ConfigurationPropertySources before binding
         ConfigurationPropertySources.attach(environment);
         return Binder.get(environment)
                 .bind(WebDeviceScope.NAME, Settings.class)

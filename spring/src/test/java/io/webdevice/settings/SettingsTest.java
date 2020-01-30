@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static io.bestquality.util.MapBuilder.newMap;
@@ -34,6 +35,22 @@ public class SettingsTest {
     }
 
     @Test
+    public void shouldNotClearDevicesWhenSetToSameInstance() {
+        DeviceDefinition iPhone = new DeviceDefinition()
+                .withName("iPhone");
+        DeviceDefinition iPad = new DeviceDefinition()
+                .withName("iPad");
+
+        settings.withDevice(iPhone)
+                .withDevice(iPad);
+
+        settings.setDevices(settings.getDevices());
+
+        assertThat(settings.devices())
+                .contains(iPhone, iPad);
+    }
+
+    @Test
     public void shouldApplyDeviceNameFromKeyWhenSetAsMap() {
         settings.setDevices(newMap(String.class, DeviceDefinition.class)
                 .with("Firefox", new DeviceDefinition())
@@ -57,6 +74,31 @@ public class SettingsTest {
         assertThat(device.getName())
                 .isEqualTo("Bar");
         assertThat(settings.device("Bar"))
+                .isSameAs(device);
+    }
+
+    @Test
+    public void shouldApplyDeviceNameFromKeyWhenAllPutDirectlyInMap() {
+        DeviceDefinition device = new DeviceDefinition()
+                .withName("Foo");
+
+        Map<String, DeviceDefinition> all = newMap(String.class, DeviceDefinition.class)
+                .with("0", device)
+                .build();
+
+        // Device name remains unchanged
+        assertThat(device.getName())
+                .isEqualTo("Foo");
+
+        // Device name will be assigned from key
+        Map<String, DeviceDefinition> devices = settings.getDevices();
+        devices.putAll(all);
+
+        assertThat(device.getName())
+                .isEqualTo("0");
+        assertThat(settings.device("Foo"))
+                .isNull();
+        assertThat(settings.device("0"))
                 .isSameAs(device);
     }
 
