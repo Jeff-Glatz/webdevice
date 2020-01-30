@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.webdevice.examples</groupId>
+        <artifactId>examples-parent</artifactId>
+        <version>0.0.13-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>spring-boot-test</artifactId>
+    <name>Examples: Spring Boot Test</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.webdevice</groupId>
+            <artifactId>webdevice-spring-boot</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+</project>

@@ -12,8 +12,8 @@
     <groupId>io.webdevice</groupId>
     <artifactId>webdevice-parent</artifactId>
     <version>0.0.13-SNAPSHOT</version>
-    <name>WebDevice.IO</name>
-    <description>WebDevice.IO Parent</description>
+    <name>WebDevice</name>
+    <description>WebDevice Parent</description>
     <packaging>pom</packaging>
 
     <properties>
@@ -87,6 +87,11 @@
             </dependency>
             <dependency>
                 <groupId>io.webdevice</groupId>
+                <artifactId>webdevice-spring-boot</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.webdevice</groupId>
                 <artifactId>webdevice-framework</artifactId>
                 <version>${project.version}</version>
                 <classifier>tests</classifier>
@@ -99,6 +104,13 @@
                 <classifier>tests</classifier>
                 <type>test-jar</type>
             </dependency>
+            <dependency>
+                <groupId>io.webdevice</groupId>
+                <artifactId>webdevice-spring-boot</artifactId>
+                <version>${project.version}</version>
+                <classifier>tests</classifier>
+                <type>test-jar</type>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -106,6 +118,7 @@
         <module>framework</module>
         <module>spring-base</module>
         <module>spring-boot</module>
+        <module>examples</module>
     </modules>
 
 </project>

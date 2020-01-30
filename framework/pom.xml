@@ -9,8 +9,8 @@
     </parent>
 
     <artifactId>webdevice-framework</artifactId>
-    <name>Framework Module</name>
-    <description>WebDevice.IO Framework Module</description>
+    <name>WebDevice: Framework Module</name>
+    <description>WebDevice Framework Module</description>
 
     <dependencies>
         <dependency>

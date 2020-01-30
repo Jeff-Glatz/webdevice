@@ -10,8 +10,8 @@
     </parent>
 
     <artifactId>webdevice-spring-base</artifactId>
-    <name>Spring Base Module</name>
-    <description>WebDevice.IO Spring Base Module</description>
+    <name>WebDevice: Spring Base Module</name>
+    <description>WebDevice Spring Base Module</description>
 
     <dependencies>
         <dependency>

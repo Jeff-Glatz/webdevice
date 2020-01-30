@@ -9,8 +9,8 @@
     </parent>
 
     <artifactId>webdevice-spring-boot</artifactId>
-    <name>Spring Boot Module</name>
-    <description>WebDevice.IO Spring Boot Module</description>
+    <name>WebDevice: Spring Boot Module</name>
+    <description>WebDevice Spring Boot Module</description>
 
     <dependencies>
         <dependency>
