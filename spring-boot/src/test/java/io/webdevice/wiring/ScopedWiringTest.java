@@ -13,7 +13,7 @@ public class ScopedWiringTest
     @Test
     public void shouldCreateInCucumberGlueScopeWhenCucumberTestContextOnClasspath() {
         // CucumberTestContext is on the test classpath
-        runner.withUserConfiguration(WebDeviceRuntime.class)
+        configuredBy(WebDeviceRuntime.class)
                 .run(context -> {
                     ConfigurableListableBeanFactory factory = context.getBeanFactory();
                     assertThat(factory.getBeanDefinition("webdevice.WebDevice").getScope())
@@ -26,7 +26,7 @@ public class ScopedWiringTest
     @Test
     public void shouldCreateInWebDeviceScopeWhenCucumberTestContextNotOnClasspath() {
         // CucumberTestContext is not on the test classpath
-        runner.withUserConfiguration(WebDeviceRuntime.class)
+        configuredBy(WebDeviceRuntime.class)
                 .withClassLoader(classLoaderMasking(CucumberTestContext.class))
                 .run(context -> {
                     ConfigurableListableBeanFactory factory = context.getBeanFactory();
@@ -40,7 +40,7 @@ public class ScopedWiringTest
     @Test
     public void shouldCreateInConfiguredScopeWhenCucumberTestContextOnClasspath() {
         // CucumberTestContext is on the test classpath
-        runner.withUserConfiguration(WebDeviceRuntime.class)
+        configuredBy(WebDeviceRuntime.class)
                 .withPropertyValues("webdevice.scope=application")
                 .run(context -> {
                     ConfigurableListableBeanFactory factory = context.getBeanFactory();
