@@ -72,6 +72,26 @@ public class SettingsTest {
     }
 
     @Test
+    public void shouldFindDeviceByKeyBySearchingDevicesByName() {
+        DeviceDefinition device = new DeviceDefinition();
+
+        settings.getDevices()
+                .put("0", device);
+
+        assertThat(settings.device("0"))
+                .isSameAs(device);
+        assertThat(settings.device("Foo"))
+                .isNull();
+
+        device.setName("Foo");
+
+        assertThat(settings.device("0"))
+                .isSameAs(device);
+        assertThat(settings.device("Foo"))
+                .isSameAs(device);
+    }
+
+    @Test
     public void shouldReturnWebDeviceScopeWhenNotSpecifiedAndCucumberNotPresent()
             throws Exception {
         // Setup a custom classloader that prevents CucumberTestContext from being seen

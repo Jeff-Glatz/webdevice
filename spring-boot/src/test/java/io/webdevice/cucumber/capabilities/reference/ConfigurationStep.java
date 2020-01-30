@@ -13,7 +13,7 @@ public class ConfigurationStep
         implements En {
 
     @Configuration
-    @EnableWebDevice(settings = "classpath:io/webdevice/cucumber/capabilities/reference/webdevice.yaml")
+    @EnableWebDevice(settings = "io/webdevice/cucumber/capabilities/reference/webdevice.yaml")
     public static class TestConfiguration {
 
         @Value("${saucelabs_username}")

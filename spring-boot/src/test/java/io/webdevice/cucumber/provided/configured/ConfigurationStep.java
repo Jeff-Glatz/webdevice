@@ -10,7 +10,7 @@ public class ConfigurationStep
         implements En {
 
     @Configuration
-    @EnableWebDevice(settings = "classpath:io/webdevice/cucumber/provided/configured/webdevice.yaml")
+    @EnableWebDevice(settings = "io/webdevice/cucumber/provided/configured/webdevice.yaml")
     public static class TestConfiguration {
     }
 }

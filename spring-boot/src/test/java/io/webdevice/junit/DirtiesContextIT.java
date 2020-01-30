@@ -40,7 +40,7 @@ public class DirtiesContextIT {
     }
 
     @Configuration
-    @EnableWebDevice(settings = "classpath:io/webdevice/junit/prototype-device.yaml")
+    @EnableWebDevice(settings = "io/webdevice/junit/prototype-device.yaml")
     public static class Wiring {
     }
 }

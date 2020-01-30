@@ -1,2 +1,4 @@
 org.springframework.test.context.TestExecutionListener=\
 io.webdevice.wiring.WebDeviceScopeDisposer
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+io.webdevice.wiring.WebDeviceRuntime

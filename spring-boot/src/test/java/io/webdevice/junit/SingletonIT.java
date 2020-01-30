@@ -44,7 +44,7 @@ public class SingletonIT {
     }
 
     @Configuration
-    @EnableWebDevice(settings = "classpath:io/webdevice/junit/singleton-device.yaml")
+    @EnableWebDevice(settings = "io/webdevice/junit/singleton-device.yaml")
     public static class Wiring {
     }
 }
