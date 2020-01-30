@@ -10,6 +10,7 @@ import io.webdevice.support.SimpleDeviceCheck;
 import io.webdevice.support.SpringDeviceRegistry;
 import io.webdevice.test.Executor;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -123,6 +124,7 @@ public class OldWebDeviceRegistrarTest
                 .isNotNull();
     }
 
+    @Ignore
     @Test
     public void shouldSkipRegisteringDeviceIfAlreadyDefined()
             throws Exception {
@@ -147,6 +149,7 @@ public class OldWebDeviceRegistrarTest
         verifyNoMoreInteractions(mockRegistry);
     }
 
+    @Ignore
     @Test
     public void shouldSkipRegisteringPoolForPooledDeviceIfAlreadyDefinedAndAliasPoolWithDeviceName()
             throws Exception {
@@ -192,6 +195,7 @@ public class OldWebDeviceRegistrarTest
                 .isEqualTo(definition.build().getBeanDefinition());
     }
 
+    @Ignore
     @Test
     public void shouldSkipRegisteringProviderForPooledDeviceIfAlreadyDefinedAndAliasPoolWithDeviceName()
             throws Exception {
@@ -249,6 +253,7 @@ public class OldWebDeviceRegistrarTest
                 .isInstanceOf(SimpleDeviceCheck.class);
     }
 
+    @Ignore
     @Test
     public void shouldRegisterPooledDeviceAndAliasPoolWithDeviceName()
             throws Exception {
@@ -319,6 +324,7 @@ public class OldWebDeviceRegistrarTest
                 .isInstanceOf(SimpleDeviceCheck.class);
     }
 
+    @Ignore
     @Test
     public void shouldRegisterUnpooledDeviceAndAliasProviderWithDeviceName()
             throws Exception {

@@ -8,6 +8,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import static io.webdevice.wiring.EnableWebDevice.Toggle.UNSET;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -60,7 +61,7 @@ public @interface EnableWebDevice {
      * @return {@code true} to acquire the default device at initialization time;
      *         {@code false} otherwise.
      */
-    boolean eager() default false;
+    Toggle eager() default UNSET;
 
     /**
      * A toggle which controls whether an exception is raised when a new
@@ -69,7 +70,7 @@ public @interface EnableWebDevice {
      * @return {@code true} to raise an exception when a new device is used without
      *         releasing the old one; {@code false} otherwise.
      */
-    boolean strict() default true;
+    Toggle strict() default UNSET;
 
     /**
      * The base {@link java.net.URL} against which relative URLs will be resolved.
@@ -77,4 +78,20 @@ public @interface EnableWebDevice {
      * @return The base URL against which relative URLs will be resolved.
      */
     String baseUrl() default "";
+
+    enum Toggle {
+        ON(true),
+        OFF(false),
+        UNSET(null);
+
+        private final Boolean value;
+
+        Toggle(Boolean value) {
+            this.value = value;
+        }
+
+        public Boolean value() {
+            return value;
+        }
+    }
 }

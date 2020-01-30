@@ -21,6 +21,7 @@ import org.springframework.core.type.AnnotationMetadata;
 import java.io.IOException;
 
 import static io.webdevice.support.AnnotationAttributes.attributesOf;
+import static io.webdevice.wiring.EnableWebDevice.Toggle.UNSET;
 import static io.webdevice.wiring.WebDeviceScope.namespace;
 import static java.lang.String.format;
 import static org.springframework.util.StringUtils.isEmpty;
@@ -58,10 +59,12 @@ public class WebDeviceSettings
         }
         log.info("Exporting settings from @EnableWebDevice {}", attributes.asMap());
         sources.addFirst(attributes.asPropertySource(
-                entry -> !entry.getKey().equals("settings") && !isEmpty(entry.getValue()),
+                entry -> !entry.getKey().equals("settings") && !isEmpty(entry.getValue()) && entry.getValue() != UNSET,
                 entry -> namespace(entry.getKey()),
                 entry -> entry.getValue() instanceof Class
                         ? ((Class<?>) entry.getValue()).getName()
+                        : entry.getValue() instanceof EnableWebDevice.Toggle
+                        ? ((EnableWebDevice.Toggle) entry.getValue()).value()
                         : entry.getValue()));
         log.info("WebDevice settings exported.");
     }
