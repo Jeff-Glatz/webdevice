@@ -39,7 +39,8 @@ public class WebDeviceRegistrar
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
-        Settings settings = registerSettings(settings(), registry);
+        SettingsBinder binder = binder();
+        Settings settings = registerSettings(binder.from(environment), registry);
         registerScope((ConfigurableBeanFactory) registry);
         registerDevices(settings, registry);
         registerDeviceRegistry(settings, registry);
@@ -47,7 +48,7 @@ public class WebDeviceRegistrar
     }
 
     @SuppressWarnings("unchecked")
-    private Settings settings() {
+    private SettingsBinder binder() {
         String impl = environment.getProperty(
                 namespace("binder"), String.class, SettingsBinder.class.getName());
         if (SettingsBinder.class.getName().equals(impl)) {
@@ -55,14 +56,13 @@ public class WebDeviceRegistrar
         }
         log.info("Using {} to bind Settings from environment", impl);
         try {
-            SettingsBinder binder = ((Class<? extends SettingsBinder>) forName(impl, null))
+            return ((Class<? extends SettingsBinder>) forName(impl, null))
                     .getDeclaredConstructor()
                     .newInstance();
-            return binder.from(environment);
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw new ApplicationContextException("Failure binding settings from environment", e);
+            throw new ApplicationContextException("Failure loading SettingsBinder", e);
         }
     }
 
