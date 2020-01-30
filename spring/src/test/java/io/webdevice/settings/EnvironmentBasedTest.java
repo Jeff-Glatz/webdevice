@@ -16,7 +16,7 @@ import org.springframework.core.io.support.PropertySourceFactory;
 import java.io.IOException;
 import java.util.Map;
 
-import static io.webdevice.wiring.WebDeviceScope.NAME;
+import static java.lang.String.valueOf;
 
 public abstract class EnvironmentBasedTest
         extends UnitTest {
@@ -55,7 +55,7 @@ public abstract class EnvironmentBasedTest
         for (String resource : resources) {
             environment.getPropertySources()
                     .addLast(propertySourceFactory
-                            .createPropertySource(NAME,
+                            .createPropertySource(null,
                                     new EncodedResource(new ClassPathResource(resource))));
         }
         return environment;
@@ -63,7 +63,7 @@ public abstract class EnvironmentBasedTest
 
     protected ConfigurableEnvironment environmentWith(Map<String, Object> properties) {
         environment.getPropertySources()
-                .addLast(new MapPropertySource(NAME, properties));
+                .addLast(new MapPropertySource(valueOf(properties.hashCode()), properties));
         return environment;
     }
 }
