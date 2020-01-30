@@ -15,6 +15,8 @@ import static org.springframework.util.StringUtils.isEmpty;
 /**
  * Use this in conjunction with {@link org.springframework.context.annotation.PropertySource#factory()}
  * to load a specific webdevice {@link io.webdevice.settings.Settings} instance from a YAML file.
+ *
+ * @see YamlPropertySource
  */
 public class YamlPropertySourceFactory
         extends DefaultPropertySourceFactory {

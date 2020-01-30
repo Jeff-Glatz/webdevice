@@ -20,7 +20,7 @@ import static org.springframework.test.context.support.DependencyInjectionTestEx
 
 public class WebDeviceScopeDisposerTest
         extends UnitTest {
-    private WebDeviceScopeDisposer listener;
+    private WebDeviceScopeDisposer disposer;
 
     @Mock
     private TestContext mockTestContext;
@@ -36,15 +36,15 @@ public class WebDeviceScopeDisposerTest
 
     @Before
     public void setUp() {
-        listener = new WebDeviceScopeDisposer();
+        disposer = new WebDeviceScopeDisposer();
     }
 
     @Test
-    public void shouldDoNothingWhenScopeIsNull() {
+    public void shouldDoNothingWhenScopeIsNullAfterTestMethod() {
         given(mockTestContext.getApplicationContext())
                 .willReturn(mockApplicationContext);
 
-        listener.afterTestMethod(mockTestContext);
+        disposer.afterTestMethod(mockTestContext);
 
         verify(mockTestContext)
                 .getApplicationContext();
@@ -54,7 +54,7 @@ public class WebDeviceScopeDisposerTest
     }
 
     @Test
-    public void shouldDoNothingWhenScopeWasNotDisposed() {
+    public void shouldDoNothingWhenScopeWasNotDisposedAfterTestMethod() {
         WebDeviceScope scope = new WebDeviceScope();
         assertThat(scope.dispose())
                 .isFalse();
@@ -66,7 +66,7 @@ public class WebDeviceScopeDisposerTest
         given(mockBeanFactory.getRegisteredScope("webdevice"))
                 .willReturn(scope);
 
-        listener.afterTestMethod(mockTestContext);
+        disposer.afterTestMethod(mockTestContext);
 
         verify(mockTestContext)
                 .getApplicationContext();
@@ -78,9 +78,12 @@ public class WebDeviceScopeDisposerTest
     }
 
     @Test
-    public void shouldSetReinjectDepedenciesAttributeWhenScopeIsDisposed() {
+    public void shouldSetReinjectDependenciesAttributeWhenScopeIsDisposedAfterTestMethod() {
         WebDeviceScope scope = new WebDeviceScope();
         scope.get("prototype", () -> mock(WebDevice.class));
+
+        assertThat(scope.isEmpty())
+                .isFalse();
 
         given(mockTestContext.getApplicationContext())
                 .willReturn(mockConfigurableContext);
@@ -89,7 +92,10 @@ public class WebDeviceScopeDisposerTest
         given(mockBeanFactory.getRegisteredScope("webdevice"))
                 .willReturn(scope);
 
-        listener.afterTestMethod(mockTestContext);
+        disposer.afterTestMethod(mockTestContext);
+
+        assertThat(scope.isEmpty())
+                .isTrue();
 
         verify(mockTestContext)
                 .getApplicationContext();
@@ -97,6 +103,73 @@ public class WebDeviceScopeDisposerTest
                 .getBeanFactory();
         verify(mockTestContext)
                 .setAttribute(REINJECT_DEPENDENCIES_ATTRIBUTE, TRUE);
+        verifyNoMoreInteractions(mockConfigurableContext,
+                mockApplicationContext,
+                mockTestContext);
+    }
+
+    @Test
+    public void shouldDoNothingWhenScopeIsNullAfterTestClass() {
+        given(mockTestContext.getApplicationContext())
+                .willReturn(mockApplicationContext);
+
+        disposer.afterTestClass(mockTestContext);
+
+        verify(mockTestContext)
+                .getApplicationContext();
+        verifyNoMoreInteractions(mockConfigurableContext,
+                mockApplicationContext,
+                mockTestContext);
+    }
+
+    @Test
+    public void shouldDoNothingWhenScopeIsPresentAndEmptyAfterTestClass() {
+        WebDeviceScope scope = new WebDeviceScope();
+        assertThat(scope.isEmpty())
+                .isTrue();
+
+        given(mockTestContext.getApplicationContext())
+                .willReturn(mockConfigurableContext);
+        given(mockConfigurableContext.getBeanFactory())
+                .willReturn(mockBeanFactory);
+        given(mockBeanFactory.getRegisteredScope("webdevice"))
+                .willReturn(scope);
+
+        disposer.afterTestClass(mockTestContext);
+
+        verify(mockTestContext)
+                .getApplicationContext();
+        verify(mockConfigurableContext)
+                .getBeanFactory();
+        verifyNoMoreInteractions(mockConfigurableContext,
+                mockApplicationContext,
+                mockTestContext);
+    }
+
+    @Test
+    public void shouldDisposeWhenScopeIsPresentAndNotEmptyAfterTestMethod() {
+        WebDeviceScope scope = new WebDeviceScope();
+        scope.get("prototype", () -> mock(WebDevice.class));
+
+        assertThat(scope.isEmpty())
+                .isFalse();
+
+        given(mockTestContext.getApplicationContext())
+                .willReturn(mockConfigurableContext);
+        given(mockConfigurableContext.getBeanFactory())
+                .willReturn(mockBeanFactory);
+        given(mockBeanFactory.getRegisteredScope("webdevice"))
+                .willReturn(scope);
+
+        disposer.afterTestClass(mockTestContext);
+
+        assertThat(scope.isEmpty())
+                .isTrue();
+
+        verify(mockTestContext)
+                .getApplicationContext();
+        verify(mockConfigurableContext)
+                .getBeanFactory();
         verifyNoMoreInteractions(mockConfigurableContext,
                 mockApplicationContext,
                 mockTestContext);

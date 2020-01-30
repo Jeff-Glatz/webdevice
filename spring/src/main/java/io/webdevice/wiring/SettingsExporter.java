@@ -56,7 +56,6 @@ public class SettingsExporter
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
-        log.info("Exporting WebDevice settings ...");
         AnnotationAttributes attributes = attributesOf(EnableWebDevice.class, metadata);
         MutablePropertySources sources = environment.getPropertySources();
         if (attributes.hasValue("settings")) {
@@ -87,6 +86,5 @@ public class SettingsExporter
             log.info("Exporting settings from @EnableWebDevice {} to the execution environment", attributes.asMap());
             sources.addFirst(source);
         }
-        log.info("WebDevice settings exported.");
     }
 }

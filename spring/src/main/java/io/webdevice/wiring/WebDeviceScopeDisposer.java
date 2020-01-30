@@ -17,4 +17,12 @@ public class WebDeviceScopeDisposer
             context.setAttribute(REINJECT_DEPENDENCIES_ATTRIBUTE, TRUE);
         }
     }
+
+    @Override
+    public void afterTestClass(TestContext context) {
+        WebDeviceScope scope = scope(context.getApplicationContext());
+        if (scope != null && !scope.isEmpty()) {
+            scope.dispose();
+        }
+    }
 }
