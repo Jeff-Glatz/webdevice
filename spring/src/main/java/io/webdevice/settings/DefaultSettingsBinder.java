@@ -24,11 +24,13 @@ public class DefaultSettingsBinder
 
     @Override
     public Settings from(ConfigurableEnvironment environment) {
+        log.info("Binding Settings instance from environment ...");
         Settings settings = new Settings();
         DataBinder binder = new DataBinder(settings, "settings");
         binder.setConversionService(environment.getConversionService());
         binder.setAutoGrowNestedPaths(true);
         binder.bind(collectPropertyValues(environment));
+        log.info("Settings bound.");
         return settings;
     }
 
@@ -45,7 +47,7 @@ public class DefaultSettingsBinder
                 // Apply each property to the settings
                 .forEach(path -> {
                     String property = normalize(path.substring(prefix.length()));
-                    log.info("Mapped environment property {} to {}", path, property);
+                    log.debug("Mapped environment property {} to {}", path, property);
                     Object value = environment.getProperty(path, Object.class);
                     propertyValues.addPropertyValue(property, value);
                 });

@@ -11,6 +11,7 @@ import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.EncodedResource;
@@ -44,7 +45,7 @@ public class WebDeviceSettings
     public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
         log.info("Exporting WebDevice settings ...");
         AnnotationAttributes attributes = attributesOf(EnableWebDevice.class, metadata);
-        MutablePropertySources sources = environment.getPropertySources();
+        MutablePropertySources sources = sources();
         if (attributes.hasValue("settings")) {
             String location = attributes.valueOf("settings");
             Resource resource = loader.getResource(location);
@@ -62,5 +63,13 @@ public class WebDeviceSettings
                 entry -> namespace(entry.getKey()),
                 Map.Entry::getValue));
         log.info("WebDevice settings exported.");
+    }
+
+    private MutablePropertySources sources() {
+        MutablePropertySources sources = environment.getPropertySources();
+        if (sources.contains("configurationProperties")) {
+            PropertySource<?> source = sources.get("configurationProperties");
+        }
+        return sources;
     }
 }

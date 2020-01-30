@@ -14,6 +14,11 @@
       "sourceType": "io.webdevice.settings.Settings"
     },
     {
+      "name": "webdevice.binder",
+      "type": "java.lang.Class<io.webdevice.settings.SettingsBinder>",
+      "description": "SettingsBinder implementation used to bind Settings from Environment."
+    },
+    {
       "name": "webdevice.default-device",
       "type": "java.lang.String",
       "description": "Default browser device.",

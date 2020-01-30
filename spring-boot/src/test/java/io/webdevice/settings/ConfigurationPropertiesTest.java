@@ -7,6 +7,11 @@ public abstract class ConfigurationPropertiesTest
         extends BoundSettingsTest {
 
     @Override
+    protected SettingsBinder makeSettingsBinder() {
+        return new ConfigurationPropertiesBinder();
+    }
+
+    @Override
     protected ConfigurableConversionService makeConversionService() {
         return new ApplicationConversionService();
     }
