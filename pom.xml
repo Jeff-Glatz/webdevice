@@ -82,7 +82,7 @@
             </dependency>
             <dependency>
                 <groupId>io.webdevice</groupId>
-                <artifactId>webdevice-spring</artifactId>
+                <artifactId>webdevice-spring-base</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -94,7 +94,7 @@
             </dependency>
             <dependency>
                 <groupId>io.webdevice</groupId>
-                <artifactId>webdevice-spring</artifactId>
+                <artifactId>webdevice-spring-base</artifactId>
                 <version>${project.version}</version>
                 <classifier>tests</classifier>
                 <type>test-jar</type>
@@ -104,7 +104,7 @@
 
     <modules>
         <module>framework</module>
-        <module>spring</module>
+        <module>spring-base</module>
         <module>spring-boot</module>
     </modules>
 

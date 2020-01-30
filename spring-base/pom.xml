@@ -9,9 +9,9 @@
         <version>0.0.13-SNAPSHOT</version>
     </parent>
 
-    <artifactId>webdevice-spring</artifactId>
-    <name>Spring Core Module</name>
-    <description>WebDevice.IO Spring Module</description>
+    <artifactId>webdevice-spring-base</artifactId>
+    <name>Spring Base Module</name>
+    <description>WebDevice.IO Spring Base Module</description>
 
     <dependencies>
         <dependency>

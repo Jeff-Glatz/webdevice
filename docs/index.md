@@ -1,6 +1,6 @@
 [![Build Status](https://img.shields.io/travis/ruffkat/webdevice/master?color=green)](https://travis-ci.com/ruffkat/webdevice)
 [![Code Coverage](https://codecov.io/gh/ruffkat/webdevice/branch/master/graph/badge.svg)](https://codecov.io/gh/ruffkat/webdevice)
-[![Maven Central](https://img.shields.io/maven-central/v/io.webdevice/webdevice-spring.svg?color=green&label=maven%20central)](https://search.maven.org/search?q=g:io.webdevice)
+[![Maven Central](https://img.shields.io/maven-central/v/io.webdevice/webdevice-spring-boot.svg?color=green&label=maven%20central)](https://search.maven.org/search?q=g:io.webdevice)
 
 # WebDevice.IO
 WebDevice.IO is a lightweight Java-based framework, initially for use within `Cucumber` test suites 

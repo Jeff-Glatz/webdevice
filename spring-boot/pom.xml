@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>io.webdevice</groupId>
-            <artifactId>webdevice-spring</artifactId>
+            <artifactId>webdevice-spring-base</artifactId>
         </dependency>
 
         <!-- Provided Dependencies -->
@@ -52,7 +52,7 @@
         </dependency>
         <dependency>
             <groupId>io.webdevice</groupId>
-            <artifactId>webdevice-spring</artifactId>
+            <artifactId>webdevice-spring-base</artifactId>
             <classifier>tests</classifier>
             <type>test-jar</type>
             <scope>test</scope>
