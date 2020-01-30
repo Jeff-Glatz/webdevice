@@ -23,7 +23,7 @@ import org.springframework.core.type.AnnotationMetadata;
 
 import java.net.URL;
 
-import static io.bestquality.util.MapBuilder.newMap;
+import static io.bestquality.util.MapBuilder.mapOf;
 import static io.webdevice.wiring.WebDeviceScope.namespace;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -120,7 +120,7 @@ public class WebDeviceRegistrarTest
     public void shouldUseCustomBinderToBindSettingsFromEnvironment() {
         Settings expected = MockSettingsBinder.install(new Settings());
 
-        WebDeviceRegistrar registrar = new WebDeviceRegistrar(environmentWith(newMap(String.class, Object.class)
+        WebDeviceRegistrar registrar = new WebDeviceRegistrar(environmentWith(mapOf(String.class, Object.class)
                 .with(namespace("binder"), MockSettingsBinder.class.getName())
                 .build()));
         registrar.registerBeanDefinitions(mockMetadata, mockRegistry);

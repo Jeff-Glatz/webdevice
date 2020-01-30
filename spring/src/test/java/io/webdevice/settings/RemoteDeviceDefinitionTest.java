@@ -9,7 +9,7 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
 
 import java.net.URL;
 
-import static io.bestquality.util.MapBuilder.newMap;
+import static io.bestquality.util.MapBuilder.mapOf;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.DesiredCapabilities.iphone;
@@ -144,7 +144,7 @@ public class RemoteDeviceDefinitionTest
 
         MutableCapabilities expectedOptions = new MutableCapabilities();
         expectedOptions.setCapability("sauce:options",
-                new DesiredCapabilities(newMap(String.class, Object.class)
+                new DesiredCapabilities(mapOf(String.class, Object.class)
                         .with("accessKey", "2secret4u")
                         .build()));
 
@@ -173,7 +173,7 @@ public class RemoteDeviceDefinitionTest
         MutableCapabilities expectedOptions = new MutableCapabilities();
         expectedOptions.setCapability("key", "value");
         expectedOptions.setCapability("sauce:options",
-                new DesiredCapabilities(newMap(String.class, Object.class)
+                new DesiredCapabilities(mapOf(String.class, Object.class)
                         .with("accessKey", "2secret4u")
                         .build()));
 
@@ -244,7 +244,7 @@ public class RemoteDeviceDefinitionTest
 
         DesiredCapabilities expectedCapabilities = iphone();
         expectedCapabilities.setCapability("sauce:options",
-                new DesiredCapabilities(newMap(String.class, Object.class)
+                new DesiredCapabilities(mapOf(String.class, Object.class)
                         .with("accessKey", "2secret4u")
                         .build()));
 
@@ -273,7 +273,7 @@ public class RemoteDeviceDefinitionTest
         DesiredCapabilities expectedCapabilities = iphone();
         expectedCapabilities.setCapability("key", "value");
         expectedCapabilities.setCapability("sauce:options",
-                new DesiredCapabilities(newMap(String.class, Object.class)
+                new DesiredCapabilities(mapOf(String.class, Object.class)
                         .with("accessKey", "2secret4u")
                         .build()));
 
@@ -306,7 +306,7 @@ public class RemoteDeviceDefinitionTest
                         .setInitMethodName("initialize")
                         .setScope(SCOPE_SINGLETON)
                         .setRole(ROLE_INFRASTRUCTURE)
-                        .addPropertyValue("capabilities", new DesiredCapabilities(newMap(String.class, Object.class)
+                        .addPropertyValue("capabilities", new DesiredCapabilities(mapOf(String.class, Object.class)
                                 .with("key", "value")
                                 .build()))
                         .getBeanDefinition());
@@ -322,11 +322,11 @@ public class RemoteDeviceDefinitionTest
                 .build()
                 .getBeanDefinition();
 
-        DesiredCapabilities expectedCapabilities = new DesiredCapabilities(newMap(String.class, Object.class)
+        DesiredCapabilities expectedCapabilities = new DesiredCapabilities(mapOf(String.class, Object.class)
                 .with("key", "value")
                 .build());
         expectedCapabilities.setCapability("sauce:options",
-                new DesiredCapabilities(newMap(String.class, Object.class)
+                new DesiredCapabilities(mapOf(String.class, Object.class)
                         .with("accessKey", "2secret4u")
                         .build()));
 

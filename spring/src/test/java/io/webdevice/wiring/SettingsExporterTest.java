@@ -1,43 +1,144 @@
 package io.webdevice.wiring;
 
 import io.webdevice.settings.EnvironmentBasedTest;
+import io.webdevice.settings.SettingsBinder;
+import io.webdevice.support.YamlPropertySource;
 import io.webdevice.test.Executor;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContextException;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.EncodedResource;
 import org.springframework.core.type.AnnotationMetadata;
 import org.yaml.snakeyaml.Yaml;
 
-import static io.bestquality.util.MapBuilder.newMap;
+import static io.bestquality.util.MapBuilder.mapOf;
+import static io.webdevice.lang.annotation.Toggle.UNSET;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
-public class WebDeviceSettingsTest
+public class SettingsExporterTest
         extends EnvironmentBasedTest {
+    @Mock
+    private ConfigurableEnvironment mockEnvironment;
     @Mock
     private AnnotationMetadata mockMetadata;
     @Mock
     private BeanDefinitionRegistry mockRegistry;
 
-    private WebDeviceSettings exporter;
+    private ResourceLoader loader;
+    private SettingsExporter exporter;
 
     @Before
     public void setUp() {
-        exporter = new WebDeviceSettings(
-                environmentWith(newMap(String.class, Object.class)
+        loader = new DefaultResourceLoader();
+        exporter = new SettingsExporter(
+                environmentWith(mapOf(String.class, Object.class)
                         .with("saucelabs_username", "saucy")
                         .with("saucelabs_accessKey", "2secret4u")
                         .build()),
-                new DefaultResourceLoader());
+                loader);
+    }
+
+    @Test
+    public void shouldExportNothing() {
+        MutablePropertySources sources = new MutablePropertySources();
+        given(mockEnvironment.getPropertySources())
+                .willReturn(sources);
+
+        exporter = new SettingsExporter(mockEnvironment, loader);
+        exporter.registerBeanDefinitions(mockMetadata, mockRegistry);
+
+        assertThat(sources.size())
+                .isEqualTo(0);
+    }
+
+    @Test
+    public void shouldExportNothingWhenAnnotationAttributesAreAllFiltered() {
+        MutablePropertySources sources = new MutablePropertySources();
+        given(mockEnvironment.getPropertySources())
+                .willReturn(sources);
+        given(mockMetadata.getAnnotationAttributes(EnableWebDevice.class.getName()))
+                .willReturn(mapOf(String.class, Object.class)
+                        .with("strict", UNSET)
+                        .with("eager", UNSET)
+                        .with("baseUrl", "")
+                        .with("defaultDevice", "")
+                        .with("scope", "")
+                        .build());
+
+        exporter = new SettingsExporter(mockEnvironment, loader);
+        exporter.registerBeanDefinitions(mockMetadata, mockRegistry);
+
+        assertThat(sources.size())
+                .isEqualTo(0);
+    }
+
+    @Test
+    public void shouldExportResourcePropertiesAndNoAnnotationAttributes() {
+        String location = "io/webdevice/wiring/direct-and-remote-devices.yaml";
+
+        MutablePropertySources sources = new MutablePropertySources();
+        given(mockEnvironment.getPropertySources())
+                .willReturn(sources);
+        given(mockMetadata.getAnnotationAttributes(EnableWebDevice.class.getName()))
+                .willReturn(mapOf(String.class, Object.class)
+                        .with("settings", location)
+                        .with("strict", UNSET)
+                        .with("eager", UNSET)
+                        .with("baseUrl", "")
+                        .with("defaultDevice", "")
+                        .with("scope", "")
+                        .build());
+
+        exporter = new SettingsExporter(mockEnvironment, loader);
+        exporter.registerBeanDefinitions(mockMetadata, mockRegistry);
+
+        assertThat(sources.size())
+                .isEqualTo(1);
+
+        PropertySource<?> actual = sources.get(location);
+        assertThat(actual)
+                .isNotNull();
+
+        assertThat(actual)
+                .isEqualTo(new YamlPropertySource(location,
+                        new EncodedResource(loader.getResource(location))));
+    }
+
+    @Test
+    public void shouldExportClassAsString() {
+        MutablePropertySources sources = new MutablePropertySources();
+        given(mockEnvironment.getPropertySources())
+                .willReturn(sources);
+        given(mockMetadata.getAnnotationAttributes(EnableWebDevice.class.getName()))
+                .willReturn(mapOf(String.class, Object.class)
+                        .with("binder", SettingsBinder.class)
+                        .build());
+
+        exporter = new SettingsExporter(mockEnvironment, loader);
+        exporter.registerBeanDefinitions(mockMetadata, mockRegistry);
+
+        assertThat(sources.size())
+                .isEqualTo(1);
+
+        PropertySource<?> actual = sources.get(EnableWebDevice.class.getSimpleName());
+        assertThat(actual)
+                .isNotNull();
+        assertThat(actual.getProperty("webdevice.binder"))
+                .isEqualTo(SettingsBinder.class.getName());
     }
 
     @Test
     public void shouldExportSettingsFromYamlResource() {
         given(mockMetadata.getAnnotationAttributes(EnableWebDevice.class.getName()))
-                .willReturn(newMap(String.class, Object.class)
+                .willReturn(mapOf(String.class, Object.class)
                         .with("settings", "io/webdevice/wiring/direct-and-remote-devices.yaml")
                         .build());
 
@@ -79,7 +180,7 @@ public class WebDeviceSettingsTest
     public void shouldRaiseIllegalStateExceptionFromYamlResourceWhenYamlClassNotFound()
             throws Exception {
         given(mockMetadata.getAnnotationAttributes(EnableWebDevice.class.getName()))
-                .willReturn(newMap(String.class, Object.class)
+                .willReturn(mapOf(String.class, Object.class)
                         .with("settings", "io/webdevice/wiring/driver-class-not-found.yaml")
                         .build());
 
@@ -93,7 +194,7 @@ public class WebDeviceSettingsTest
     @Test
     public void shouldLoadSettingsFromPropertiesResource() {
         given(mockMetadata.getAnnotationAttributes(EnableWebDevice.class.getName()))
-                .willReturn(newMap(String.class, Object.class)
+                .willReturn(mapOf(String.class, Object.class)
                         .with("settings", "io/webdevice/wiring/device-with-placeholders.properties")
                         .build());
 
@@ -121,7 +222,7 @@ public class WebDeviceSettingsTest
     @Test(expected = ApplicationContextException.class)
     public void shouldRaiseApplicationContextExceptionWhenResourceUnsupported() {
         given(mockMetadata.getAnnotationAttributes(EnableWebDevice.class.getName()))
-                .willReturn(newMap(String.class, Object.class)
+                .willReturn(mapOf(String.class, Object.class)
                         .with("settings", "io/webdevice/wiring/unsupported-resource.foo")
                         .build());
 
@@ -129,9 +230,9 @@ public class WebDeviceSettingsTest
     }
 
     @Test
-    public void annotationPropertySourceShouldTakePrecendenceOverSettings() {
+    public void annotationPropertySourceShouldTakePrecedenceOverSettings() {
         given(mockMetadata.getAnnotationAttributes(EnableWebDevice.class.getName()))
-                .willReturn(newMap(String.class, Object.class)
+                .willReturn(mapOf(String.class, Object.class)
                         .with("settings", "io/webdevice/wiring/device-with-placeholders.properties")
                         .with("baseUrl", "http://www.webdevice.io")
                         .with("defaultDevice", "Direct")

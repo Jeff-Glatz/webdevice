@@ -9,7 +9,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.bestquality.util.MapBuilder.newMap;
+import static io.bestquality.util.MapBuilder.mapOf;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -109,7 +109,7 @@ public class BasicDeviceDefinitionTest {
         definition.setCapabilities(definition.getCapabilities());
 
         assertThat(definition.getCapabilities())
-                .isEqualTo(newMap(String.class, Object.class)
+                .isEqualTo(mapOf(String.class, Object.class)
                         .with("name-1", "value-1")
                         .with("name-2", "value-2")
                         .build());
@@ -149,7 +149,7 @@ public class BasicDeviceDefinitionTest {
         definition.setExtraOptions(definition.getExtraOptions());
 
         assertThat(definition.getExtraOptions())
-                .isEqualTo(newMap(String.class, Object.class)
+                .isEqualTo(mapOf(String.class, Object.class)
                         .with("name-1", "value-1")
                         .with("name-2", "value-2")
                         .build());

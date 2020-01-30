@@ -10,6 +10,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContextException;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.io.Resource;
@@ -19,6 +20,7 @@ import org.springframework.core.io.support.PropertySourceFactory;
 import org.springframework.core.type.AnnotationMetadata;
 
 import java.io.IOException;
+import java.util.Map;
 
 import static io.webdevice.lang.annotation.Toggle.UNSET;
 import static io.webdevice.support.AnnotationAttributes.attributesOf;
@@ -37,7 +39,7 @@ import static org.springframework.util.StringUtils.isEmpty;
  * @see WebDeviceBootstrap
  * @see WebDeviceRegistrar
  */
-public class WebDeviceSettings
+public class SettingsExporter
         implements ImportBeanDefinitionRegistrar {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final ConfigurableEnvironment environment;
@@ -45,7 +47,7 @@ public class WebDeviceSettings
     private final PropertySourceFactory factory;
 
     @Autowired
-    public WebDeviceSettings(Environment environment, ResourceLoader loader) {
+    public SettingsExporter(Environment environment, ResourceLoader loader) {
         // Spring implodes when used directly in constructor
         this.environment = (ConfigurableEnvironment) environment;
         this.loader = loader;
@@ -54,6 +56,7 @@ public class WebDeviceSettings
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
+        log.info("Exporting WebDevice settings ...");
         AnnotationAttributes attributes = attributesOf(EnableWebDevice.class, metadata);
         MutablePropertySources sources = environment.getPropertySources();
         if (attributes.hasValue("settings")) {
@@ -67,8 +70,7 @@ public class WebDeviceSettings
                         format("Failure creating PropertySource from %s", resource.getDescription()), e);
             }
         }
-        log.info("Exporting settings from @EnableWebDevice {} to the execution environment", attributes.asMap());
-        sources.addFirst(attributes.asPropertySource(
+        EnumerablePropertySource<Map<String, Object>> source = attributes.asPropertySource(
                 // Exclude the settings and any empty or unset values
                 entry -> !entry.getKey().equals("settings")
                         && !isEmpty(entry.getValue())
@@ -80,7 +82,11 @@ public class WebDeviceSettings
                         ? ((Class<?>) entry.getValue()).getName()
                         : entry.getValue() instanceof Toggle
                         ? ((Toggle) entry.getValue()).toString()
-                        : entry.getValue()));
+                        : entry.getValue());
+        if (source.getPropertyNames().length > 0) {
+            log.info("Exporting settings from @EnableWebDevice {} to the execution environment", attributes.asMap());
+            sources.addFirst(source);
+        }
         log.info("WebDevice settings exported.");
     }
 }

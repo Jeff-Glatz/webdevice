@@ -19,13 +19,6 @@ public enum Toggle {
         return value;
     }
 
-    @Override
-    public String toString() {
-        return value != null
-                ? value.toString()
-                : null;
-    }
-
     public boolean on() {
         return this == ON;
     }
@@ -36,5 +29,12 @@ public enum Toggle {
 
     public boolean unset() {
         return this == UNSET;
+    }
+
+    @Override
+    public String toString() {
+        return value != null
+                ? value.toString()
+                : null;
     }
 }

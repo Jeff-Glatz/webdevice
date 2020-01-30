@@ -6,7 +6,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 
 import java.net.URL;
 
-import static io.bestquality.util.MapBuilder.newMap;
+import static io.bestquality.util.MapBuilder.mapOf;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultSettingsBinderTest
@@ -21,7 +21,7 @@ public class DefaultSettingsBinderTest
     @Test
     public void shouldBindSettings()
             throws Exception {
-        environmentWith(newMap(String.class, Object.class)
+        environmentWith(mapOf(String.class, Object.class)
                 .with("webdevice.base-url", "https://webdevice.io")
                 .with("webdevice.default-device", "Firefox Local")
                 .with("webdevice.eager", "true")

@@ -8,7 +8,7 @@ import org.springframework.core.io.ClassPathResource;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static io.bestquality.util.MapBuilder.newMap;
+import static io.bestquality.util.MapBuilder.mapOf;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SettingsTest {
@@ -52,7 +52,7 @@ public class SettingsTest {
 
     @Test
     public void shouldApplyDeviceNameFromKeyWhenSetAsMap() {
-        settings.setDevices(newMap(String.class, DeviceDefinition.class)
+        settings.setDevices(mapOf(String.class, DeviceDefinition.class)
                 .with("Firefox", new DeviceDefinition())
                 .with("iPhone8", new DeviceDefinition())
                 .build());
@@ -82,7 +82,7 @@ public class SettingsTest {
         DeviceDefinition device = new DeviceDefinition()
                 .withName("Foo");
 
-        Map<String, DeviceDefinition> all = newMap(String.class, DeviceDefinition.class)
+        Map<String, DeviceDefinition> all = mapOf(String.class, DeviceDefinition.class)
                 .with("0", device)
                 .build();
 
