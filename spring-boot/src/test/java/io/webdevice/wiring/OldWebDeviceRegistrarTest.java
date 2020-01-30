@@ -2,12 +2,13 @@ package io.webdevice.wiring;
 
 import io.webdevice.device.DevicePool;
 import io.webdevice.device.WebDevice;
-import io.webdevice.settings.BoundSettingsTest;
+import io.webdevice.settings.ConfigurationPropertiesTest;
 import io.webdevice.settings.DeviceDefinition;
 import io.webdevice.settings.MockSettingsBinder;
 import io.webdevice.settings.Settings;
 import io.webdevice.support.SimpleDeviceCheck;
 import io.webdevice.support.SpringDeviceRegistry;
+import io.webdevice.test.Executor;
 import org.junit.After;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -18,11 +19,14 @@ import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
+import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.type.AnnotationMetadata;
 
 import java.net.URL;
 
+import static io.bestquality.util.MapBuilder.newMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -33,8 +37,8 @@ import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRA
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
-public class WebDeviceRegistrarTest
-        extends BoundSettingsTest {
+public class OldWebDeviceRegistrarTest
+        extends ConfigurationPropertiesTest {
 
     @Mock
     private AnnotationMetadata mockMetadata;
@@ -73,7 +77,7 @@ public class WebDeviceRegistrarTest
                 .withEager(true)
                 .withBaseUrl(new URL("http://webdevice.io"));
 
-        Settings actual = bindFrom(environmentWith("io/webdevice/wiring/non-defaults.properties"));
+        Settings actual = bindFrom(environmentWith("io/webdevice/wiring/non-defaults.yaml"));
         assertThat(actual)
                 .isEqualTo(expected);
     }
@@ -81,7 +85,7 @@ public class WebDeviceRegistrarTest
     @Test
     public void shouldRegisterSettings()
             throws Exception {
-        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/scope-only.properties");
+        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/scope-only.yaml");
         WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
 
         registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
@@ -105,10 +109,14 @@ public class WebDeviceRegistrarTest
     }
 
     @Test
-    public void shouldUseDefaultBinderToBindSettingsFromEnvironment()
+    public void shouldUseDefaultBinder()
             throws Exception {
-        WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
-        registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
+        new Executor()
+                .withMaskedClasses(Binder.class)
+                .execute(() -> {
+                    WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
+                    registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
+                });
 
         Settings actual = registeredSettings();
         assertThat(actual)
@@ -119,7 +127,7 @@ public class WebDeviceRegistrarTest
     public void shouldSkipRegisteringDeviceIfAlreadyDefined()
             throws Exception {
         WebDeviceRegistrar registrar = new WebDeviceRegistrar(
-                environmentWith("io/webdevice/wiring/direct-pooled-device.properties"));
+                environmentWith("io/webdevice/wiring/direct-pooled-device.yaml"));
 
         given(mockRegistry.isBeanNameInUse("webdevice.Direct"))
                 .willReturn(true);
@@ -142,7 +150,7 @@ public class WebDeviceRegistrarTest
     @Test
     public void shouldSkipRegisteringPoolForPooledDeviceIfAlreadyDefinedAndAliasPoolWithDeviceName()
             throws Exception {
-        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.properties");
+        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.yaml");
         WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
 
         given(mockRegistry.isBeanNameInUse("webdevice.Direct"))
@@ -169,6 +177,8 @@ public class WebDeviceRegistrarTest
         verify(mockRegistry)
                 .registerAlias("webdevice.Direct-Pool", "Direct");
         verify(mockRegistry)
+                .registerAlias("webdevice.Direct-Pool", "Firefox");
+        verify(mockRegistry)
                 .registerBeanDefinition(eq("webdevice.DeviceRegistry"), any());
         verify(mockRegistry)
                 .registerBeanDefinition(eq("webdevice.WebDevice"), any());
@@ -179,14 +189,13 @@ public class WebDeviceRegistrarTest
         DeviceDefinition definition = bindFrom(environment)
                 .device("Direct");
         assertThat(provider)
-                .isEqualTo(definition.build()
-                        .getBeanDefinition());
+                .isEqualTo(definition.build().getBeanDefinition());
     }
 
     @Test
     public void shouldSkipRegisteringProviderForPooledDeviceIfAlreadyDefinedAndAliasPoolWithDeviceName()
             throws Exception {
-        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.properties");
+        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.yaml");
         WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
 
         given(mockRegistry.isBeanNameInUse("webdevice.Direct"))
@@ -212,6 +221,8 @@ public class WebDeviceRegistrarTest
                 .registerBeanDefinition(eq("webdevice.Direct-Pool"), definitionCaptor.capture());
         verify(mockRegistry)
                 .registerAlias("webdevice.Direct-Pool", "Direct");
+        verify(mockRegistry)
+                .registerAlias("webdevice.Direct-Pool", "Firefox");
         verify(mockRegistry)
                 .registerBeanDefinition(eq("webdevice.DeviceRegistry"), any());
         verify(mockRegistry)
@@ -241,7 +252,7 @@ public class WebDeviceRegistrarTest
     @Test
     public void shouldRegisterPooledDeviceAndAliasPoolWithDeviceName()
             throws Exception {
-        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.properties");
+        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.yaml");
         WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
 
         given(mockRegistry.isBeanNameInUse("webdevice.Direct"))
@@ -270,6 +281,8 @@ public class WebDeviceRegistrarTest
         verify(mockRegistry)
                 .registerAlias("webdevice.Direct-Pool", "Direct");
         verify(mockRegistry)
+                .registerAlias("webdevice.Direct-Pool", "Firefox");
+        verify(mockRegistry)
                 .registerBeanDefinition(eq("webdevice.DeviceRegistry"), any());
         verify(mockRegistry)
                 .registerBeanDefinition(eq("webdevice.WebDevice"), any());
@@ -281,8 +294,7 @@ public class WebDeviceRegistrarTest
         DeviceDefinition definition = bindFrom(environment)
                 .device("Direct");
         assertThat(provider)
-                .isEqualTo(definition.build()
-                        .getBeanDefinition());
+                .isEqualTo(definition.build().getBeanDefinition());
 
         // Pool definition
         GenericBeanDefinition pool = definitionCaptor.getAllValues()
@@ -310,7 +322,7 @@ public class WebDeviceRegistrarTest
     @Test
     public void shouldRegisterUnpooledDeviceAndAliasProviderWithDeviceName()
             throws Exception {
-        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/direct-not-pooled-device.properties");
+        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/direct-not-pooled-device.yaml");
         WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
 
         given(mockRegistry.isBeanNameInUse("webdevice.Direct"))
@@ -343,14 +355,13 @@ public class WebDeviceRegistrarTest
         DeviceDefinition definition = bindFrom(environment)
                 .device("Direct");
         assertThat(provider)
-                .isEqualTo(definition.build()
-                        .getBeanDefinition());
+                .isEqualTo(definition.build().getBeanDefinition());
     }
 
     @Test
     public void shouldRegisterSpringDeviceRegistryInConfiguredScope()
             throws Exception {
-        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/scope-only.properties");
+        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/scope-only.yaml");
         WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
 
         registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
@@ -376,7 +387,7 @@ public class WebDeviceRegistrarTest
     @Test
     public void shouldRegisterWebDeviceInConfiguredScope()
             throws Exception {
-        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/non-defaults.properties");
+        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/non-defaults.yaml");
         WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
 
         registrar.registerBeanDefinitions(mockMetadata, mockRegistry);

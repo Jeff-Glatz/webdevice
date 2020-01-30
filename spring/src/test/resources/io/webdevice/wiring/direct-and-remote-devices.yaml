@@ -1,0 +1,22 @@
+webdevice:
+  default-device: Direct
+  base-url: https://webdevice.io
+  devices:
+    Direct:
+      aliases: Local Direct, Firefox
+      driver: org.openqa.selenium.firefox.FirefoxDriver
+      pooled: true
+      capabilities:
+        version: "59"
+    Remote:
+      aliases:
+        - iPhone
+        - iPhone 8
+      remoteAddress: http://selenium.grid:4444/wd/hub
+      pooled: false
+      capabilities:
+        version: "60"
+        username: ${saucelabs_username}
+        accessKey: ${saucelabs_accessKey}
+      confidential:
+        - accessKey

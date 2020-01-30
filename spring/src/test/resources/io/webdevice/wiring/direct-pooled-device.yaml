@@ -3,5 +3,6 @@ webdevice:
   base-url: http://webdevice.io
   devices:
     Direct:
+      aliases: Firefox
       driver: org.openqa.selenium.firefox.FirefoxDriver
       pooled: true

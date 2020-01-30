@@ -16,7 +16,8 @@ public class YamlPropertySourceFactoryTest {
 
     @Before
     public void setUp() {
-        encodedResource = new EncodedResource(new ClassPathResource("application.yaml"));
+        encodedResource = new EncodedResource(
+                new ClassPathResource("io/webdevice/wiring/direct-and-remote-devices.yaml"));
         factory = new YamlPropertySourceFactory();
     }
 
@@ -35,7 +36,7 @@ public class YamlPropertySourceFactoryTest {
         PropertySource<?> source = factory.createPropertySource(null, encodedResource);
 
         assertThat(source.getName())
-                .isEqualTo("application.yaml");
+                .isEqualTo("direct-and-remote-devices.yaml");
     }
 
     @Test

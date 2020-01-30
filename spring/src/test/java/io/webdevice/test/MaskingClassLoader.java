@@ -1,4 +1,4 @@
-package io.webdevice.net;
+package io.webdevice.test;
 
 import java.io.IOException;
 import java.io.InputStream;

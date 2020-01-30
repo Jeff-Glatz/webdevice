@@ -12,7 +12,12 @@ import static org.springframework.util.ClassUtils.isPresent;
 public class Settings
         implements Serializable {
 
-    private final Map<String, DeviceDefinition> devices = new LinkedHashMap<>();
+    private final Map<String, DeviceDefinition> devices = new LinkedHashMap<String, DeviceDefinition>() {
+        @Override
+        public DeviceDefinition put(String key, DeviceDefinition value) {
+            return super.put(key, value.withName(key));
+        }
+    };
     private URL baseUrl;
     private String defaultDevice;
     private boolean eager = false;

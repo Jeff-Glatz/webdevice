@@ -1,21 +1,14 @@
 package io.webdevice.wiring;
 
 import io.cucumber.spring.CucumberTestContext;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
-import static io.webdevice.net.MaskingClassLoader.classLoaderMasking;
+import static io.webdevice.test.MaskingClassLoader.classLoaderMasking;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ScopedWiringTest {
-    private ApplicationContextRunner runner;
-
-    @Before
-    public void setUp() {
-        runner = new ApplicationContextRunner();
-    }
+public class ScopedWiringTest
+        extends ApplicationContextTest {
 
     @Test
     public void shouldCreateInCucumberGlueScopeWhenCucumberTestContextOnClasspath() {

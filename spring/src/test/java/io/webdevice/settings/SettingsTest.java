@@ -1,15 +1,13 @@
 package io.webdevice.settings;
 
+import io.webdevice.test.Executor;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static io.bestquality.util.MapBuilder.newMap;
-import static io.webdevice.net.MaskingClassLoader.classLoaderMasking;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SettingsTest {
@@ -36,7 +34,7 @@ public class SettingsTest {
     }
 
     @Test
-    public void shouldApplyDevicesNameFromKeyWhenSetAsMap() {
+    public void shouldApplyDeviceNameFromKeyWhenSetAsMap() {
         settings.setDevices(newMap(String.class, DeviceDefinition.class)
                 .with("Firefox", new DeviceDefinition())
                 .with("iPhone8", new DeviceDefinition())
@@ -46,6 +44,20 @@ public class SettingsTest {
                 .isEqualTo("Firefox");
         assertThat(settings.device("iPhone8").getName())
                 .isEqualTo("iPhone8");
+    }
+
+    @Test
+    public void shouldApplyDeviceNameFromKeyWhenPutDirectlyInMap() {
+        DeviceDefinition device = new DeviceDefinition()
+                .withName("Foo");
+
+        settings.getDevices()
+                .put("Bar", device);
+
+        assertThat(device.getName())
+                .isEqualTo("Bar");
+        assertThat(settings.device("Bar"))
+                .isSameAs(device);
     }
 
     @Test
@@ -60,29 +72,16 @@ public class SettingsTest {
     }
 
     @Test
-    public void shouldFindDeviceByDeviceNameWhenDirectlyAddedToDeviceMapAndKeyIsNotPresent() {
-        DeviceDefinition device = new DeviceDefinition()
-                .withName("iPhone8");
-
-        settings.getDevices()
-                .put("0", device);
-
-        assertThat(settings.device("iPhone8"))
-                .isSameAs(device);
-    }
-
-    @Test
     public void shouldReturnWebDeviceScopeWhenNotSpecifiedAndCucumberNotPresent()
             throws Exception {
-        AtomicReference<String> scope = new AtomicReference<>(null);
-        Thread executor = new Thread(() -> scope.set(
-                new Settings()
-                        .withScope(null)
-                        .getScope()));
         // Setup a custom classloader that prevents CucumberTestContext from being seen
-        executor.setContextClassLoader(classLoaderMasking("io.cucumber.spring.CucumberTestContext"));
-        executor.start();
-        executor.join();
+        AtomicReference<String> scope = new AtomicReference<>(null);
+        new Executor()
+                .withMaskedClasses("io.cucumber.spring.CucumberTestContext")
+                .execute(() -> scope.set(
+                        new Settings()
+                                .withScope(null)
+                                .getScope()));
 
         assertThat(scope.get())
                 .isEqualTo("webdevice");
@@ -91,18 +90,14 @@ public class SettingsTest {
     @Test
     public void shouldReturnCucumberGlueScopeWhenNotSpecifiedAndCucumberPresent()
             throws Exception {
-        AtomicReference<String> scope = new AtomicReference<>(null);
-        Thread executor = new Thread(() -> scope.set(
-                new Settings()
-                        .withScope(null)
-                        .getScope()));
         // Setup a custom classloader that allows CucumberTestContext to be seen
-        executor.setContextClassLoader(new URLClassLoader(new URL[]{
-                new ClassPathResource("stubs/cucumber-stub.jar")
-                        .getURL()},
-                getClass().getClassLoader()));
-        executor.start();
-        executor.join();
+        AtomicReference<String> scope = new AtomicReference<>(null);
+        new Executor()
+                .withClassesIn(new ClassPathResource("stubs/cucumber-stub.jar"))
+                .execute(() -> scope.set(
+                        new Settings()
+                                .withScope(null)
+                                .getScope()));
 
         assertThat(scope.get())
                 .isEqualTo("cucumber-glue");

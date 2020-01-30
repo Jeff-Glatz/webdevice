@@ -23,8 +23,9 @@
             <artifactId>webdevice-framework</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Provided Dependencies -->

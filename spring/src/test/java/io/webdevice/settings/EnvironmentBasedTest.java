@@ -1,5 +1,6 @@
 package io.webdevice.settings;
 
+import io.webdevice.support.YamlPropertySourceFactory;
 import io.webdevice.test.UnitTest;
 import org.junit.After;
 import org.junit.Before;
@@ -9,7 +10,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.support.DefaultPropertySourceFactory;
 import org.springframework.core.io.support.EncodedResource;
 import org.springframework.core.io.support.PropertySourceFactory;
 
@@ -47,7 +47,7 @@ public abstract class EnvironmentBasedTest
     }
 
     protected PropertySourceFactory makePropertySourceFactory() {
-        return new DefaultPropertySourceFactory();
+        return new YamlPropertySourceFactory();
     }
 
     protected ConfigurableEnvironment environmentWith(String... resources)

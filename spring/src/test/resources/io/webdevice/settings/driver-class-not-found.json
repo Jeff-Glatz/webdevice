@@ -1,9 +1,0 @@
-{
-  "webdevice": {
-    "devices": {
-      "Browser": {
-        "driver": "some.browser.BrowserDriver"
-      }
-    }
-  }
-}

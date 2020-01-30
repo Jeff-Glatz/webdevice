@@ -2,26 +2,22 @@ package io.webdevice.wiring;
 
 import io.webdevice.device.DevicePool;
 import io.webdevice.device.WebDevice;
+import io.webdevice.settings.DefaultSettingsBinder;
 import io.webdevice.settings.DeviceDefinition;
 import io.webdevice.settings.Settings;
-import io.webdevice.settings.SettingsFromEnvironment;
-import io.webdevice.settings.SettingsFromResource;
-import io.webdevice.support.AnnotationAttributes;
+import io.webdevice.settings.SettingsBinder;
 import io.webdevice.support.SimpleDeviceCheck;
 import io.webdevice.support.SpringDeviceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 
-import java.net.URL;
-
-import static io.webdevice.support.AnnotationAttributes.attributesOf;
 import static io.webdevice.wiring.WebDeviceScope.registerScope;
 import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRASTRUCTURE;
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR;
@@ -31,42 +27,31 @@ public class WebDeviceRegistrar
         implements ImportBeanDefinitionRegistrar {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final ConfigurableEnvironment environment;
+    private final SettingsBinder binder;
 
     @Autowired
     public WebDeviceRegistrar(Environment environment) {
-        // Spring implodes when used directly in constructor
+        // Spring implodes when ConfigurableEnvironment is declared in constructor
         this.environment = (ConfigurableEnvironment) environment;
+        this.binder = new DefaultSettingsBinder();
     }
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
-        Settings settings = settings(metadata);
-        registerScope((ConfigurableListableBeanFactory) registry);
-        registerSettings(settings, registry);
+        Settings settings = registerSettings(binder.from(environment), registry);
+        registerScope((ConfigurableBeanFactory) registry);
         registerDevices(settings, registry);
         registerDeviceRegistry(settings, registry);
         registerWebDevice(settings, registry);
     }
 
-    private Settings applySettingsFromAnnotation(Settings settings, AnnotationAttributes attributes) {
-        if (attributes != null) {
-            return settings.withScope(attributes.valueOf("scope", settings::getScope))
-                    .withDefaultDevice(attributes.valueOf("defaultDevice", settings::getDefaultDevice))
-                    .withEager(attributes.valueOf("eager", Boolean.class, settings::isEager))
-                    .withStrict(attributes.valueOf("strict", Boolean.class, settings::isStrict))
-                    .withBaseUrl(attributes.valueOf("baseUrl", String.class, URL::new, settings::getBaseUrl));
-        }
+    private Settings registerSettings(Settings settings, BeanDefinitionRegistry registry) {
+        log.info("Registering Settings ...");
+        registry.registerBeanDefinition(WebDeviceScope.namespace("Settings"),
+                genericBeanDefinition(Settings.class, () -> settings)
+                        .getBeanDefinition());
+        log.info("Settings registered.");
         return settings;
-    }
-
-    @SuppressWarnings("unchecked")
-    private Settings settings(AnnotationMetadata metadata) {
-        AnnotationAttributes attributes = attributesOf(EnableWebDevice.class, metadata);
-        return applySettingsFromAnnotation(
-                attributes.valueOf("settings", String.class,
-                        new SettingsFromResource(environment),
-                        new SettingsFromEnvironment(environment, attributes)),
-                attributes);
     }
 
     private String maybeRegisterProvider(DeviceDefinition device, BeanDefinitionRegistry registry) {
@@ -104,14 +89,6 @@ public class WebDeviceRegistrar
             log.info("Registering alias '{}' for '{}'", alias, canonical);
             registry.registerAlias(canonical, alias);
         });
-    }
-
-    private void registerSettings(Settings settings, BeanDefinitionRegistry registry) {
-        log.info("Registering Settings ...");
-        registry.registerBeanDefinition(WebDeviceScope.namespace("Settings"),
-                genericBeanDefinition(Settings.class, () -> settings)
-                        .getBeanDefinition());
-        log.info("Settings registered.");
     }
 
     private void registerDevices(Settings settings, BeanDefinitionRegistry registry) {

@@ -16,8 +16,7 @@ public abstract class BoundSettingsTest
         return new DefaultSettingsBinder();
     }
 
-    protected Settings bindFrom(ConfigurableEnvironment environment)
-            throws Exception {
+    protected Settings bindFrom(ConfigurableEnvironment environment) {
         return binder.from(environment);
     }
 }

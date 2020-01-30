@@ -2,7 +2,7 @@ package io.webdevice.wiring;
 
 import io.webdevice.device.WebDevice;
 import org.springframework.beans.factory.ObjectFactory;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.Scope;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -93,7 +93,7 @@ public class WebDeviceScope
         return format("%s.%s", NAME, format(name, args));
     }
 
-    public static WebDeviceScope registerScope(ConfigurableListableBeanFactory registry) {
+    public static WebDeviceScope registerScope(ConfigurableBeanFactory registry) {
         WebDeviceScope scope = new WebDeviceScope();
         registry.registerScope(NAME, scope);
         return scope;

@@ -1,13 +1,11 @@
 package io.webdevice.cucumber.capabilities.reference;
 
 import io.cucumber.java8.En;
-import io.webdevice.support.YamlPropertySourceFactory;
 import io.webdevice.wiring.EnableWebDevice;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration
@@ -15,10 +13,7 @@ public class ConfigurationStep
         implements En {
 
     @Configuration
-    @EnableWebDevice
-    @PropertySource(
-            value = "classpath:io/webdevice/cucumber/capabilities/reference/webdevice.yaml",
-            factory = YamlPropertySourceFactory.class)
+    @EnableWebDevice(settings = "classpath:io/webdevice/cucumber/capabilities/reference/webdevice.yaml")
     public static class TestConfiguration {
 
         @Value("${saucelabs_username}")

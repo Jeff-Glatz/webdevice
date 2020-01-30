@@ -7,15 +7,16 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.validation.DataBinder;
 
+import static io.webdevice.settings.SettingsHelper.normalize;
 import static io.webdevice.wiring.WebDeviceScope.namespace;
 import static java.util.Arrays.stream;
-import static org.springframework.util.StringUtils.capitalize;
 
 /**
  * This class allows the {@link io.webdevice.wiring.WebDeviceRuntime} to be used
- * in a core spring context where spring boot is not available. This implementation
- * uses the {@link DataBinder} to bind {@link Settings} from the execution
- * {@link ConfigurableEnvironment environment}.
+ * in a traditional spring context where spring boot is not available.
+ * <p>
+ * This implementation uses the {@link DataBinder} to bind {@link Settings} from
+ * the execution {@link ConfigurableEnvironment environment}.
  */
 public class DefaultSettingsBinder
         implements SettingsBinder {
@@ -42,22 +43,12 @@ public class DefaultSettingsBinder
                 .filter(name -> name.startsWith(prefix))
                 .distinct()
                 // Apply each property to the settings
-                .forEach(environmentProperty -> {
-                    String property = toCamelCase(environmentProperty.substring(prefix.length()));
-                    log.info("Mapped environment property {} to {}", environmentProperty, property);
-                    propertyValues.addPropertyValue(property,
-                            environment.getProperty(environmentProperty));
+                .forEach(path -> {
+                    String property = normalize(path.substring(prefix.length()));
+                    log.info("Mapped environment property {} to {}", path, property);
+                    Object value = environment.getProperty(path, Object.class);
+                    propertyValues.addPropertyValue(property, value);
                 });
         return propertyValues;
-    }
-
-    static String toCamelCase(String value) {
-        StringBuilder builder = new StringBuilder();
-        for (String part : value.split("-")) {
-            builder.append(builder.length() == 0
-                    ? part :
-                    capitalize(part));
-        }
-        return builder.toString();
     }
 }

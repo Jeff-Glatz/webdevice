@@ -28,13 +28,11 @@ public class DefaultSettingsBinderTest
                 .with("webdevice.strict", "false")
                 .with("webdevice.scope", "prototype")
                 // Firefox
-                .with("webdevice.devices[Firefox].name", "Firefox")
                 .with("webdevice.devices[Firefox].driver", FirefoxDriver.class.getName())
                 .with("webdevice.devices[Firefox].aliases", "Firefox Local")
                 .with("webdevice.devices[Firefox].pooled", "true")
                 .with("webdevice.devices[Firefox].capabilities[version]", "59")
                 // iPhone 8
-                .with("webdevice.devices[iPhone8].name", "iPhone8")
                 .with("webdevice.devices[iPhone8].remote-address", "https://ondemand.saucelabs.com:443/wd/hub")
                 .with("webdevice.devices[iPhone8].aliases[0]", "iPhone")
                 .with("webdevice.devices[iPhone8].aliases[1]", "iPhone 8")
@@ -50,6 +48,10 @@ public class DefaultSettingsBinderTest
                 .with("webdevice.devices[iPhone8].capabilities[browserName]", "Safari")
                 .with("webdevice.devices[iPhone8].confidential[0]", "username")
                 .with("webdevice.devices[iPhone8].confidential[1]", "accessKey")
+                // Chrome
+                .with("webdevice.devices.Chrome.driver", FirefoxDriver.class.getName())
+                .with("webdevice.devices.Chrome.aliases", "Chrome Local, Chrome Default")
+                .with("webdevice.devices.Chrome.capabilities.version", "59")
                 .build());
 
         Settings actual = binder.from(environment);
@@ -82,6 +84,13 @@ public class DefaultSettingsBinderTest
                                 .withCapability("platformName", "iOS")
                                 .withCapability("browserName", "Safari")
                                 .withConfidential("username")
-                                .withConfidential("accessKey")));
+                                .withConfidential("accessKey"))
+                        .withDevice(new DeviceDefinition()
+                                .withName("Chrome")
+                                .withDriver(FirefoxDriver.class)
+                                .withAlias("Chrome Local")
+                                .withAlias("Chrome Default")
+                                .withPooled(false)
+                                .withCapability("version", "59")));
     }
 }

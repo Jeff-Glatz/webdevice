@@ -3,17 +3,22 @@ package io.webdevice.support;
 import io.bestquality.lang.CheckedFunction;
 import io.bestquality.lang.CheckedSupplier;
 import org.springframework.core.convert.ConversionException;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.PropertySource;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.ObjectUtils;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static io.bestquality.lang.CheckedFunction.identity;
 import static io.webdevice.support.AnnotationAttributes.ConversionFailedException.fromConverter;
 import static io.webdevice.support.AnnotationAttributes.ConversionFailedException.fromSupplier;
 import static java.lang.String.format;
+import static java.util.stream.Collectors.toMap;
 
 public class AnnotationAttributes {
     private final Class<? extends Annotation> annotation;
@@ -23,6 +28,22 @@ public class AnnotationAttributes {
                                 Map<String, Object> attributes) {
         this.annotation = annotation;
         this.attributes = attributes;
+    }
+
+    public Map<String, Object> asMap() {
+        return attributes;
+    }
+
+    public PropertySource<?> asPropertySource() {
+        return new MapPropertySource(annotation.getSimpleName(), attributes);
+    }
+
+    public PropertySource<?> asPropertySource(Predicate<Map.Entry<String, Object>> filter,
+                                              Function<Map.Entry<String, Object>, String> keyMapper,
+                                              Function<Map.Entry<String, Object>, Object> valueMapper) {
+        return new MapPropertySource(annotation.getSimpleName(), attributes.entrySet().stream()
+                .filter(filter)
+                .collect(toMap(keyMapper, valueMapper)));
     }
 
     public boolean isEmpty() {

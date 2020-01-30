@@ -7,16 +7,19 @@ import io.webdevice.wiring.EnableWebDevice;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.springframework.core.env.PropertySource;
 import org.springframework.core.type.AnnotationMetadata;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static io.webdevice.support.AnnotationAttributes.attributesOf;
+import static io.webdevice.wiring.WebDeviceScope.namespace;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.util.StringUtils.isEmpty;
 
 public class AnnotationAttributesTest
         extends UnitTest {
@@ -33,6 +36,58 @@ public class AnnotationAttributesTest
         attributeMap.put("string", "true");
 
         attributes = new AnnotationAttributes(EnableWebDevice.class, attributeMap);
+    }
+
+    @Test
+    public void shouldProjectSelfAsMap() {
+        assertThat(attributes.asMap())
+                .isSameAs(attributeMap);
+    }
+
+    @Test
+    public void shouldProjectSelfAsPropertySource() {
+        PropertySource<?> propertySource = attributes.asPropertySource();
+
+        assertThat(propertySource.getName())
+                .isEqualTo(EnableWebDevice.class.getSimpleName());
+        assertThat(propertySource.getSource())
+                .isSameAs(attributeMap);
+    }
+
+    @Test
+    public void shouldProjectSelfAsFilteredAndMappedPropertySource() {
+        attributeMap.clear();
+        attributeMap.put("settings", "path/to/settings.yaml");
+        attributeMap.put("defaultDevice", "");
+        attributeMap.put("scope", "webdevice");
+        attributeMap.put("eager", true);
+
+        PropertySource<?> propertySource = attributes.asPropertySource(
+                entry -> !entry.getKey().equals("settings") && !isEmpty(entry.getValue()),
+                entry -> namespace(entry.getKey()),
+                entry -> entry.getValue().toString());
+
+        assertThat(propertySource.getName())
+                .isEqualTo(EnableWebDevice.class.getSimpleName());
+        assertThat(propertySource.getSource())
+                .isNotSameAs(attributeMap);
+
+        assertThat(propertySource.getProperty("settings"))
+                .isNull();
+        assertThat(propertySource.getProperty("webdevice.settings"))
+                .isNull();
+        assertThat(propertySource.getProperty("defaultDevice"))
+                .isNull();
+        assertThat(propertySource.getProperty("webdevice.defaultDevice"))
+                .isNull();
+        assertThat(propertySource.getProperty("scope"))
+                .isNull();
+
+        assertThat(propertySource.getProperty("webdevice.scope"))
+                .isEqualTo("webdevice");
+        assertThat(propertySource.getProperty("webdevice.eager"))
+                .isEqualTo("true");
+
     }
 
     @Test
