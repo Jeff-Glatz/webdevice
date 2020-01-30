@@ -24,6 +24,7 @@ import static io.webdevice.wiring.WebDeviceScope.registerScope;
 import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRASTRUCTURE;
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
+import static org.springframework.util.ClassUtils.forName;
 
 public class WebDeviceRegistrar
         implements ImportBeanDefinitionRegistrar {
@@ -47,14 +48,15 @@ public class WebDeviceRegistrar
 
     @SuppressWarnings("unchecked")
     private Settings settings() {
-        Class<? extends SettingsBinder> impl = environment.getProperty(
-                namespace("binder"), Class.class, SettingsBinder.class);
-        if (impl == SettingsBinder.class) {
-            impl = DefaultSettingsBinder.class;
+        String impl = environment.getProperty(
+                namespace("binder"), String.class, SettingsBinder.class.getName());
+        if (SettingsBinder.class.getName().equals(impl)) {
+            impl = DefaultSettingsBinder.class.getName();
         }
-        log.info("Using {} to bind Settings from environment", impl.getName());
+        log.info("Using {} to bind Settings from environment", impl);
         try {
-            SettingsBinder binder = impl.getDeclaredConstructor()
+            SettingsBinder binder = ((Class<? extends SettingsBinder>) forName(impl, null))
+                    .getDeclaredConstructor()
                     .newInstance();
             return binder.from(environment);
         } catch (RuntimeException e) {

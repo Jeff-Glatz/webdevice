@@ -19,7 +19,6 @@ import org.springframework.core.io.support.PropertySourceFactory;
 import org.springframework.core.type.AnnotationMetadata;
 
 import java.io.IOException;
-import java.util.Map;
 
 import static io.webdevice.support.AnnotationAttributes.attributesOf;
 import static io.webdevice.wiring.WebDeviceScope.namespace;
@@ -52,16 +51,18 @@ public class WebDeviceSettings
             try {
                 log.info("Exporting settings in {}", resource.getDescription());
                 sources.addFirst(factory.createPropertySource(location, new EncodedResource(resource)));
-                log.info("Exporting settings from @EnableWebDevice {}", attributes.asMap());
             } catch (IOException e) {
                 throw new ApplicationContextException(
                         format("Failure creating PropertySource from %s", resource.getDescription()), e);
             }
         }
+        log.info("Exporting settings from @EnableWebDevice {}", attributes.asMap());
         sources.addFirst(attributes.asPropertySource(
                 entry -> !entry.getKey().equals("settings") && !isEmpty(entry.getValue()),
                 entry -> namespace(entry.getKey()),
-                Map.Entry::getValue));
+                entry -> entry.getValue() instanceof Class
+                        ? ((Class<?>) entry.getValue()).getName()
+                        : entry.getValue()));
         log.info("WebDevice settings exported.");
     }
 

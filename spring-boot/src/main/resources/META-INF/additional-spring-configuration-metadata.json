@@ -15,7 +15,7 @@
     },
     {
       "name": "webdevice.binder",
-      "type": "java.lang.Class<io.webdevice.settings.SettingsBinder>",
+      "type": "java.lang.String",
       "description": "SettingsBinder implementation used to bind Settings from Environment."
     },
     {
