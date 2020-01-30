@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.core.convert.ConversionException;
+import org.springframework.context.ApplicationContextException;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
 import org.yaml.snakeyaml.Yaml;
@@ -118,8 +118,8 @@ public class WebDeviceSettingsTest
                 .isEqualTo("2secret4u");
     }
 
-    @Test(expected = ConversionException.class)
-    public void shouldRaiseConversionExceptionWhenResourceUnsupported() {
+    @Test(expected = ApplicationContextException.class)
+    public void shouldRaiseApplicationContextExceptionWhenResourceUnsupported() {
         given(mockMetadata.getAnnotationAttributes(EnableWebDevice.class.getName()))
                 .willReturn(newMap(String.class, Object.class)
                         .with("settings", "io/webdevice/wiring/unsupported-resource.foo")
