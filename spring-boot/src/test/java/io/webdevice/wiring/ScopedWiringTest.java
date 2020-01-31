@@ -4,7 +4,7 @@ import io.cucumber.spring.CucumberTestContext;
 import org.junit.Test;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 
-import static io.webdevice.test.MaskingClassLoader.classLoaderMasking;
+import static io.bestquality.net.MaskingClassLoader.maskingClasses;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ScopedWiringTest
@@ -27,7 +27,7 @@ public class ScopedWiringTest
     public void shouldCreateInWebDeviceScopeWhenCucumberTestContextNotOnClasspath() {
         // CucumberTestContext is not on the test classpath
         configuredBy(WebDeviceRuntime.class)
-                .withClassLoader(classLoaderMasking(CucumberTestContext.class))
+                .withClassLoader(maskingClasses(CucumberTestContext.class))
                 .run(context -> {
                     ConfigurableListableBeanFactory factory = context.getBeanFactory();
                     assertThat(factory.getBeanDefinition("webdevice.WebDevice").getScope())

@@ -1,6 +1,6 @@
 package io.webdevice.support;
 
-import io.webdevice.test.Executor;
+import io.bestquality.util.Sandbox;
 import io.webdevice.test.UnitTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +14,7 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+import static io.bestquality.net.MaskingClassLoader.maskingClasses;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
@@ -87,8 +88,8 @@ public class YamlPropertySourceFactoryTest
         given(mockResource.getFilename())
                 .willReturn("foo.yml");
 
-        new Executor()
-                .withMaskedClasses(Yaml.class)
+        new Sandbox()
+                .withClassLoader(maskingClasses(Yaml.class))
                 .execute(() -> {
                     factory.createPropertySource(null, new EncodedResource(mockResource));
                 });
@@ -100,8 +101,8 @@ public class YamlPropertySourceFactoryTest
         given(mockResource.getFilename())
                 .willReturn("foo.yaml");
 
-        new Executor()
-                .withMaskedClasses(Yaml.class)
+        new Sandbox()
+                .withClassLoader(maskingClasses(Yaml.class))
                 .execute(() -> {
                     factory.createPropertySource(null, new EncodedResource(mockResource));
                 });

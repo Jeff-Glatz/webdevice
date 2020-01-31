@@ -1,13 +1,13 @@
 package io.webdevice.settings;
 
-import io.webdevice.test.Executor;
+import io.bestquality.util.Sandbox;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.core.io.ClassPathResource;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static io.bestquality.net.MaskingClassLoader.maskingClasses;
 import static io.bestquality.util.MapBuilder.mapOf;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -138,8 +138,8 @@ public class SettingsTest {
             throws Throwable {
         // Setup a custom classloader that prevents CucumberTestContext from being seen
         AtomicReference<String> scope = new AtomicReference<>(null);
-        new Executor()
-                .withMaskedClasses("io.cucumber.spring.CucumberTestContext")
+        new Sandbox()
+                .withClassLoader(maskingClasses("io.cucumber.spring.CucumberTestContext"))
                 .execute(() -> scope.set(
                         new Settings()
                                 .withScope(null)
@@ -154,8 +154,8 @@ public class SettingsTest {
             throws Throwable {
         // Setup a custom classloader that allows CucumberTestContext to be seen
         AtomicReference<String> scope = new AtomicReference<>(null);
-        new Executor()
-                .withClassesIn(new ClassPathResource("stubs/cucumber-stub.jar"))
+        new Sandbox()
+                .withClassesIn("stubs/cucumber-stub.jar")
                 .execute(() -> scope.set(
                         new Settings()
                                 .withScope(null)

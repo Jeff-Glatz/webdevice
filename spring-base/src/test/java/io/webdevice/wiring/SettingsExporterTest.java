@@ -1,9 +1,9 @@
 package io.webdevice.wiring;
 
+import io.bestquality.util.Sandbox;
 import io.webdevice.settings.EnvironmentBasedTest;
 import io.webdevice.settings.SettingsBinder;
 import io.webdevice.support.YamlPropertySource;
-import io.webdevice.test.Executor;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -18,6 +18,7 @@ import org.springframework.core.io.support.EncodedResource;
 import org.springframework.core.type.AnnotationMetadata;
 import org.yaml.snakeyaml.Yaml;
 
+import static io.bestquality.net.MaskingClassLoader.maskingClasses;
 import static io.bestquality.util.MapBuilder.mapOf;
 import static io.webdevice.lang.annotation.Toggle.UNSET;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -184,8 +185,8 @@ public class SettingsExporterTest
                         .with("settings", "io/webdevice/wiring/driver-class-not-found.yaml")
                         .build());
 
-        new Executor()
-                .withMaskedClasses(Yaml.class)
+        new Sandbox()
+                .withClassLoader(maskingClasses(Yaml.class))
                 .execute(() -> {
                     exporter.registerBeanDefinitions(mockMetadata, mockRegistry);
                 });

@@ -1,11 +1,10 @@
 package io.webdevice.settings;
 
-import io.webdevice.test.Executor;
+import io.bestquality.util.Sandbox;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContextException;
-import org.springframework.core.io.ClassPathResource;
 
 import java.net.URL;
 
@@ -69,8 +68,8 @@ public class SettingsFactoryTest
                 .with("webdevice.strict", expected.isStrict())
                 .build());
 
-        new Executor()
-                .withClassesIn(new ClassPathResource("stubs/spring-boot-binder.jar"))
+        new Sandbox()
+                .withClassesIn("stubs/spring-boot-binder.jar")
                 .execute(() -> {
                     SettingsFactory factory = new SettingsFactory(environment);
                     Settings actual = factory.from(environment);
@@ -89,9 +88,9 @@ public class SettingsFactoryTest
                 .withEager(true)
                 .withStrict(false);
 
-        new Executor()
-                .withClassesIn(new ClassPathResource("stubs/spring-boot-binder.jar"),
-                        new ClassPathResource("stubs/configuration-properties-binder.jar"))
+        new Sandbox()
+                .withClassesIn("stubs/spring-boot-binder.jar",
+                        "stubs/configuration-properties-binder.jar")
                 .execute(() -> {
                     SettingsFactory factory = new SettingsFactory(environment);
                     Settings actual = factory.from(environment);

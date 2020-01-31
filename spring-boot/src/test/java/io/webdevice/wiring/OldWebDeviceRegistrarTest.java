@@ -1,5 +1,6 @@
 package io.webdevice.wiring;
 
+import io.bestquality.util.Sandbox;
 import io.webdevice.device.Browser;
 import io.webdevice.device.DevicePool;
 import io.webdevice.settings.ConfigurationPropertiesTest;
@@ -8,7 +9,6 @@ import io.webdevice.settings.MockSettingsBinder;
 import io.webdevice.settings.Settings;
 import io.webdevice.support.SimpleDeviceCheck;
 import io.webdevice.support.SpringDeviceRegistry;
-import io.webdevice.test.Executor;
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -26,6 +26,7 @@ import org.springframework.core.type.AnnotationMetadata;
 
 import java.net.URL;
 
+import static io.bestquality.net.MaskingClassLoader.maskingClasses;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -110,8 +111,8 @@ public class OldWebDeviceRegistrarTest
     @Test
     public void shouldUseDefaultBinder()
             throws Throwable {
-        new Executor()
-                .withMaskedClasses(Binder.class)
+        new Sandbox()
+                .withClassLoader(maskingClasses(Binder.class))
                 .execute(() -> {
                     WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
                     registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
