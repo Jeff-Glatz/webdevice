@@ -17,8 +17,6 @@ public class ConfigurationPropertiesBinder
                     .withScope("mock-scope")
                     .withEager(true)
                     .withStrict(false);
-        } catch (RuntimeException e) {
-            throw e;
         } catch (Exception e) {
             throw new ApplicationContextException("Error creating Settings", e);
         }

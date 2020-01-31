@@ -50,7 +50,7 @@ public class DirectDeviceProvider<Driver extends WebDriver>
                 return type.getDeclaredConstructor(Capabilities.class)
                         .newInstance(capabilities);
             }
-        } catch (Exception e) {
+        } catch (ReflectiveOperationException e) {
             throw new WebDriverException(e);
         }
     }

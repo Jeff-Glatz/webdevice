@@ -4,6 +4,7 @@ import io.webdevice.test.Executor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.context.ApplicationContextException;
 import org.springframework.core.io.ClassPathResource;
 
 import java.net.URL;
@@ -27,7 +28,7 @@ public class SettingsFactoryTest
     }
 
     @Test
-    public void shouldLoadFromDefaultBinder()
+    public void shouldLoadFromDefaultBinderWhenSpringBootNotPresentAndNoCustomBinderSpecified()
             throws
             Exception {
         Settings expected = new Settings()
@@ -51,8 +52,36 @@ public class SettingsFactoryTest
     }
 
     @Test
-    public void shouldLoadFromPreferredBinder()
-            throws Exception {
+    public void shouldLoadFromDefaultBinderWhenSpringBootPresentButConfigurationPropertiesBinderMissing()
+            throws Throwable {
+        Settings expected = new Settings()
+                .withStrict(false)
+                .withEager(true)
+                .withScope("custom")
+                .withDefaultDevice("Custom")
+                .withBaseUrl(new URL("https://www.webdevice.io"));
+
+        environmentWith(mapOf(String.class, Object.class)
+                .with("webdevice.baseUrl", expected.getBaseUrl())
+                .with("webdevice.defaultDevice", expected.getDefaultDevice())
+                .with("webdevice.scope", expected.getScope())
+                .with("webdevice.eager", expected.isEager())
+                .with("webdevice.strict", expected.isStrict())
+                .build());
+
+        new Executor()
+                .withClassesIn(new ClassPathResource("stubs/spring-boot-binder.jar"))
+                .execute(() -> {
+                    SettingsFactory factory = new SettingsFactory(environment);
+                    Settings actual = factory.from(environment);
+                    assertThat(actual)
+                            .isEqualTo(expected);
+                });
+    }
+
+    @Test
+    public void shouldLoadFromConfigurationPropertiesBinder()
+            throws Throwable {
         Settings expected = new Settings()
                 .withBaseUrl(new URL("http://mocked.io"))
                 .withDefaultDevice("Mock Device")
@@ -82,5 +111,14 @@ public class SettingsFactoryTest
         Settings actual = factory.from(environment);
         assertThat(actual)
                 .isSameAs(expected);
+    }
+
+    @Test(expected = ApplicationContextException.class)
+    public void shouldPropagateExceptionInstantiatingCustomBinderByWrapping() {
+        environmentWith(mapOf(String.class, Object.class)
+                .with(namespace("binder"), BadSettingsBinder.class.getName())
+                .build());
+
+        factory.from(environment);
     }
 }

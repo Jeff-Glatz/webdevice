@@ -54,9 +54,7 @@ public class SettingsFactory
             return ((Class<? extends SettingsBinder>) forName(impl, null))
                     .getDeclaredConstructor()
                     .newInstance();
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
+        } catch (ReflectiveOperationException e) {
             throw new ApplicationContextException(format("Failure instantiating %s", impl), e);
         }
     }

@@ -341,7 +341,7 @@ public class DeviceDefinition
         try {
             return options.getDeclaredConstructor()
                     .newInstance();
-        } catch (Exception e) {
+        } catch (ReflectiveOperationException e) {
             throw new IllegalArgumentException(
                     format("Failure invoking new %s()", options.getName()), e);
         }

@@ -40,7 +40,7 @@ public class Executor {
     }
 
     public void execute(CheckedRunnable runnable)
-            throws InterruptedException {
+            throws Throwable {
         CapturingExceptionHandler handler = new CapturingExceptionHandler();
         Thread executor = new Thread(runnable.asRunnable());
         executor.setContextClassLoader(loader);
@@ -60,14 +60,15 @@ public class Executor {
 
     private static class CapturingExceptionHandler
             implements UncaughtExceptionHandler {
-        private RuntimeException exception;
+        private Throwable exception;
 
         @Override
         public void uncaughtException(Thread thread, Throwable exception) {
-            this.exception = (RuntimeException) exception;
+            this.exception = exception;
         }
 
-        public void assertSuccess() {
+        public void assertSuccess()
+                throws Throwable {
             if (exception != null) {
                 throw exception;
             }

@@ -135,7 +135,7 @@ public class SettingsTest {
 
     @Test
     public void shouldReturnWebDeviceScopeWhenNotSpecifiedAndCucumberNotPresent()
-            throws Exception {
+            throws Throwable {
         // Setup a custom classloader that prevents CucumberTestContext from being seen
         AtomicReference<String> scope = new AtomicReference<>(null);
         new Executor()
@@ -151,7 +151,7 @@ public class SettingsTest {
 
     @Test
     public void shouldReturnCucumberGlueScopeWhenNotSpecifiedAndCucumberPresent()
-            throws Exception {
+            throws Throwable {
         // Setup a custom classloader that allows CucumberTestContext to be seen
         AtomicReference<String> scope = new AtomicReference<>(null);
         new Executor()

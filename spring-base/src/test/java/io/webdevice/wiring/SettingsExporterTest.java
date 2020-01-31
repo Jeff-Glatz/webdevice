@@ -178,7 +178,7 @@ public class SettingsExporterTest
 
     @Test(expected = IllegalStateException.class)
     public void shouldRaiseIllegalStateExceptionFromYamlResourceWhenYamlClassNotFound()
-            throws Exception {
+            throws Throwable {
         given(mockMetadata.getAnnotationAttributes(EnableWebDevice.class.getName()))
                 .willReturn(mapOf(String.class, Object.class)
                         .with("settings", "io/webdevice/wiring/driver-class-not-found.yaml")

@@ -109,7 +109,7 @@ public class OldWebDeviceRegistrarTest
 
     @Test
     public void shouldUseDefaultBinder()
-            throws Exception {
+            throws Throwable {
         new Executor()
                 .withMaskedClasses(Binder.class)
                 .execute(() -> {
