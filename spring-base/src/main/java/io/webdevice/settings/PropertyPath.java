@@ -4,7 +4,7 @@ import java.util.StringJoiner;
 
 import static org.springframework.util.StringUtils.capitalize;
 
-public class PropertyPath {
+class PropertyPath {
 
     private PropertyPath() {
     }
