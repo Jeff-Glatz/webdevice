@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+// TODO: Extract WebDevice interface with Browser as implementation
 public class WebDevice
         implements WebDriver, JavascriptExecutor, HasCapabilities, Interactive, TakesScreenshot {
     private final Logger log = LoggerFactory.getLogger(getClass());

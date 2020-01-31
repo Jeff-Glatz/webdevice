@@ -1,6 +1,8 @@
 package io.webdevice.wiring;
 
 import io.webdevice.device.WebDevice;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.Scope;
@@ -20,6 +22,7 @@ import static java.lang.String.format;
 public class WebDeviceScope
         implements Scope {
     public static final String NAME = "webdevice";
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final Map<String, List<Object>> instances = new LinkedHashMap<>();
 
     public boolean isEmpty() {
@@ -45,6 +48,8 @@ public class WebDeviceScope
 
     @Override
     public void registerDestructionCallback(String name, Runnable callback) {
+        // TODO: Implement this
+        log.info("Received destruction callback for {}", name);
     }
 
     @Override
