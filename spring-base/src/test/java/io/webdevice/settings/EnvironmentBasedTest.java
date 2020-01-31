@@ -31,7 +31,7 @@ public abstract class EnvironmentBasedTest
 
     @Before
     public void setUpEnvironment() {
-        environment = new StandardEnvironment();
+        environment = makeEnvironment();
         environment.setConversionService(makeConversionService());
         propertySourceFactory = makePropertySourceFactory();
     }
@@ -40,6 +40,10 @@ public abstract class EnvironmentBasedTest
     public void tearDownSystemProperties() {
         System.clearProperty("saucelabs_accessKey");
         System.clearProperty("saucelabs_username");
+    }
+
+    protected ConfigurableEnvironment makeEnvironment() {
+        return new StandardEnvironment();
     }
 
     protected ConfigurableConversionService makeConversionService() {

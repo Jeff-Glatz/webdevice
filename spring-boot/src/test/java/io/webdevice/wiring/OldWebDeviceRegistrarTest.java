@@ -3,13 +3,16 @@ package io.webdevice.wiring;
 import io.bestquality.util.Sandbox;
 import io.webdevice.device.Browser;
 import io.webdevice.device.DevicePool;
-import io.webdevice.settings.ConfigurationPropertiesTest;
+import io.webdevice.settings.BoundSettingsTest;
+import io.webdevice.settings.ConfigurationPropertiesBinder;
 import io.webdevice.settings.DeviceDefinition;
 import io.webdevice.settings.MockSettingsBinder;
 import io.webdevice.settings.Settings;
+import io.webdevice.settings.SettingsBinder;
 import io.webdevice.support.SimpleDeviceCheck;
 import io.webdevice.support.SpringDeviceRegistry;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -21,12 +24,15 @@ import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.boot.convert.ApplicationConversionService;
+import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.type.AnnotationMetadata;
 
 import java.net.URL;
 
 import static io.bestquality.net.MaskingClassLoader.maskingClasses;
+import static io.bestquality.util.MapBuilder.mapOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -38,7 +44,7 @@ import static org.springframework.beans.factory.support.AbstractBeanDefinition.A
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
 public class OldWebDeviceRegistrarTest
-        extends ConfigurationPropertiesTest {
+        extends BoundSettingsTest {
 
     @Mock
     private AnnotationMetadata mockMetadata;
@@ -47,9 +53,26 @@ public class OldWebDeviceRegistrarTest
     @Captor
     private ArgumentCaptor<GenericBeanDefinition> definitionCaptor;
 
+    @Before
+    public void exportBinder() {
+        environmentWith(mapOf(String.class, Object.class)
+                .with("webdevice.binder", ConfigurationPropertiesBinder.class.getName())
+                .build());
+    }
+
     @After
     public void tearDown() {
         MockSettingsBinder.uninstall();
+    }
+
+    @Override
+    protected SettingsBinder makeSettingsBinder() {
+        return new ConfigurationPropertiesBinder();
+    }
+
+    @Override
+    protected ConfigurableConversionService makeConversionService() {
+        return new ApplicationConversionService();
     }
 
     @Test
