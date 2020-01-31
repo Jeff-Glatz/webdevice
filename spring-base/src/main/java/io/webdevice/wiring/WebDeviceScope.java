@@ -24,6 +24,7 @@ public class WebDeviceScope
     public static final String NAME = "webdevice";
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final Map<String, List<Object>> instances = new LinkedHashMap<>();
+    private final Map<String, Runnable> callbacks = new LinkedHashMap<>();
 
     public boolean isEmpty() {
         return instances.isEmpty();
@@ -48,8 +49,10 @@ public class WebDeviceScope
 
     @Override
     public void registerDestructionCallback(String name, Runnable callback) {
-        // TODO: Implement this
-        log.info("Received destruction callback for {}", name);
+        log.info("Registering destruction callback for {}", name);
+        synchronized (callbacks) {
+            callbacks.put(name, callback);
+        }
     }
 
     @Override
@@ -65,6 +68,7 @@ public class WebDeviceScope
     public boolean dispose() {
         synchronized (instances) {
             final AtomicBoolean disposed = new AtomicBoolean(false);
+            // Release all WebDevices first
             instances.values().stream()
                     .flatMap(Collection::stream)
                     .filter(instance -> {
@@ -92,6 +96,28 @@ public class WebDeviceScope
     @Override
     public int hashCode() {
         return Objects.hash(instances);
+    }
+
+    boolean destructionCallbackRegistered(String name) {
+        synchronized (callbacks) {
+            return callbacks.containsKey(name);
+        }
+    }
+
+    boolean safelyDestroy(String name) {
+        try {
+            synchronized (callbacks) {
+                Runnable callback = callbacks.remove(name);
+                if (callback != null) {
+                    log.debug("Invoking destruction callback for {}", name);
+                    callback.run();
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            log.warn(format("Failure invoking destruction callback for %s", name), e);
+        }
+        return false;
     }
 
     public static String namespace(String name, Object... args) {

@@ -43,6 +43,58 @@ public class WebDeviceScopeTest
     }
 
     @Test
+    public void shouldReturnNullConversationId() {
+        assertThat(scope.getConversationId())
+                .isNull();
+    }
+
+    @Test
+    public void shouldNotResolveContextualObject() {
+        assertThat(scope.resolveContextualObject(null))
+                .isNull();
+        assertThat(scope.resolveContextualObject("webdevice"))
+                .isNull();
+    }
+
+    @Test
+    public void shouldRegisterDestructionCallback() {
+        assertThat(scope.destructionCallbackRegistered("name"))
+                .isFalse();
+
+        scope.registerDestructionCallback("name", () -> {
+        });
+
+        assertThat(scope.destructionCallbackRegistered("name"))
+                .isTrue();
+    }
+
+    @Test
+    public void shouldSafelyDestroyWhenCallbackNotRegistered() {
+        assertThat(scope.destructionCallbackRegistered("name"))
+                .isFalse();
+
+        assertThat(scope.safelyDestroy("name"))
+                .isFalse();
+
+        assertThat(scope.destructionCallbackRegistered("name"))
+                .isFalse();
+    }
+
+    @Test
+    public void shouldConsumeExceptionRaisedByCallback() {
+        scope.registerDestructionCallback("name", () -> {
+            throw new RuntimeException("boom");
+        });
+
+        assertThat(scope.destructionCallbackRegistered("name"))
+                .isTrue();
+        assertThat(scope.safelyDestroy("name"))
+                .isFalse();
+        assertThat(scope.destructionCallbackRegistered("name"))
+                .isFalse();
+    }
+
+    @Test
     public void shouldRegisterAndReturnScope() {
         scope = registerScope(mockBeanFactory);
 
