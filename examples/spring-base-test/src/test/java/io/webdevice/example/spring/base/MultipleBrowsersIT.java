@@ -1,4 +1,4 @@
-package io.webdevice.junit;
+package io.webdevice.example.spring.base;
 
 import io.webdevice.device.WebDevice;
 import io.webdevice.wiring.EnableWebDevice;
@@ -53,7 +53,7 @@ public class MultipleBrowsersIT {
     }
 
     @Configuration
-    @EnableWebDevice(settings = "io/webdevice/junit/prototype-device.yaml")
+    @EnableWebDevice(settings = "devices/local-devices.yaml", scope = "webdevice")
     public static class Wiring {
     }
 }

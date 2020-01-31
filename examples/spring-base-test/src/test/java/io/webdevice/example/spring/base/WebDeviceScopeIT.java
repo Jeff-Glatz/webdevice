@@ -1,4 +1,4 @@
-package io.webdevice.junit;
+package io.webdevice.example.spring.base;
 
 import io.webdevice.device.WebDevice;
 import io.webdevice.wiring.EnableWebDevice;
@@ -6,14 +6,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-@DirtiesContext
 @ContextConfiguration
 @RunWith(SpringRunner.class)
-public class DirtiesContextIT {
+public class WebDeviceScopeIT {
 
     @Autowired
     private WebDevice browser;
@@ -40,7 +38,7 @@ public class DirtiesContextIT {
     }
 
     @Configuration
-    @EnableWebDevice(settings = "io/webdevice/junit/prototype-device.yaml")
+    @EnableWebDevice(settings = "devices/local-devices.yaml", scope = "webdevice")
     public static class Wiring {
     }
 }

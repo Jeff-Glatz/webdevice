@@ -1,5 +1,4 @@
 webdevice:
-  scope: singleton
   default-device: LocalFirefox
   base-url: http://webdevice.io
   devices:

@@ -1,7 +1,8 @@
-package io.webdevice.junit;
+package io.webdevice.example.spring.base;
 
 import io.webdevice.device.WebDevice;
 import io.webdevice.wiring.EnableWebDevice;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @ContextConfiguration
 @RunWith(SpringRunner.class)
-public class WebDeviceScopeIT {
+public class SingletonIT {
 
     @Autowired
     private WebDevice browser;
+
+    @After
+    public void releaseBrowser() {
+        browser.release();
+    }
 
     @Test
     public void shouldUseFirefox() {
@@ -38,7 +44,7 @@ public class WebDeviceScopeIT {
     }
 
     @Configuration
-    @EnableWebDevice(settings = "io/webdevice/junit/prototype-device.yaml")
+    @EnableWebDevice(settings = "devices/local-devices.yaml", scope = "singleton")
     public static class Wiring {
     }
 }
