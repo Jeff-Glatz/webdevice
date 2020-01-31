@@ -7,7 +7,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.validation.DataBinder;
 
-import static io.webdevice.settings.SettingsHelper.normalize;
+import static io.webdevice.settings.PropertyPath.normalize;
 import static io.webdevice.wiring.WebDeviceScope.namespace;
 import static java.util.Arrays.stream;
 
@@ -47,7 +47,7 @@ public class DefaultSettingsBinder
                 // Apply each property to the settings
                 .forEach(path -> {
                     String property = normalize(path.substring(prefix.length()));
-                    log.debug("Mapped environment property {} to {}", path, property);
+                    log.debug("Normalized environment property path: {} -> {}", path, property);
                     Object value = environment.getProperty(path, Object.class);
                     propertyValues.addPropertyValue(property, value);
                 });
