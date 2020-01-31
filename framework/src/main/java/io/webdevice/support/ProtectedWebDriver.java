@@ -6,7 +6,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.lang.reflect.Field;
 import java.net.URL;
-import java.util.Set;
+import java.util.Collection;
 import java.util.function.Supplier;
 
 /**
@@ -15,21 +15,21 @@ import java.util.function.Supplier;
  */
 public class ProtectedWebDriver
         extends RemoteWebDriver
-        implements Supplier<Set<String>> {
-    private final Set<String> confidential;
+        implements Supplier<Collection<String>> {
+    private final Collection<String> confidential;
 
-    public ProtectedWebDriver(URL remoteAddress, Capabilities capabilities, Set<String> confidential) {
+    public ProtectedWebDriver(URL remoteAddress, Capabilities capabilities, Collection<String> confidential) {
         super(remoteAddress, capabilities);
         this.confidential = confidential;
     }
 
-    public ProtectedWebDriver(CommandExecutor executor, Capabilities capabilities, Set<String> confidential) {
+    public ProtectedWebDriver(CommandExecutor executor, Capabilities capabilities, Collection<String> confidential) {
         super(executor, capabilities);
         this.confidential = confidential;
     }
 
     @Override
-    public Set<String> get() {
+    public Collection<String> get() {
         return confidential;
     }
 

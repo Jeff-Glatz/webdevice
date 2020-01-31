@@ -37,6 +37,20 @@ public class ProtectedWebDriverTest
     }
 
     @Test
+    public void shouldSupplyConfidentialKeys()
+            throws Exception {
+        confidential.add("accessKey");
+
+        given(mockCommandExecutor.execute(newSessionCommand()))
+                .willReturn(iPadOnMacResponse());
+
+        ProtectedWebDriver driver = newDriver();
+
+        assertThat(driver.get())
+                .isSameAs(confidential);
+    }
+
+    @Test
     public void shouldProtectCapabilitiesAfterConstruction()
             throws Exception {
         given(mockCommandExecutor.execute(newSessionCommand()))

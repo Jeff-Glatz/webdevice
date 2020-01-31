@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -35,11 +36,11 @@ public abstract class BaseDeviceProvider<Driver extends WebDriver>
         this.capabilities = capabilities;
     }
 
-    public Set<String> getConfidential() {
+    public Collection<String> getConfidential() {
         return unmodifiableSet(confidential);
     }
 
-    public void setConfidential(Set<String> confidential) {
+    public void setConfidential(Collection<String> confidential) {
         this.confidential.clear();
         this.confidential.addAll(confidential);
     }

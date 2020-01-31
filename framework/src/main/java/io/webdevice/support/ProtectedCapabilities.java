@@ -6,7 +6,6 @@ import org.openqa.selenium.MutableCapabilities;
 import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -18,9 +17,9 @@ public class ProtectedCapabilities
         extends MutableCapabilities {
     private static final String MASK = "********";
 
-    private Supplier<Set<String>> confidential;
+    private Supplier<Collection<String>> confidential;
 
-    public ProtectedCapabilities(Capabilities other, Supplier<Set<String>> confidential) {
+    public ProtectedCapabilities(Capabilities other, Supplier<Collection<String>> confidential) {
         super(other);
         this.confidential = confidential;
     }
@@ -36,7 +35,7 @@ public class ProtectedCapabilities
     }
 
     private boolean masked(Object capability) {
-        Set<String> masked = confidential.get();
+        Collection<String> masked = confidential.get();
         return masked.contains(capability);
     }
 
@@ -96,7 +95,7 @@ public class ProtectedCapabilities
         return value.toString();
     }
 
-    public static String mask(Capabilities capabilities, Set<String> confidential) {
+    public static String mask(Capabilities capabilities, Collection<String> confidential) {
         return new ProtectedCapabilities(capabilities, () -> confidential)
                 .toString();
     }
