@@ -108,6 +108,24 @@ public class Browser
     }
 
     @Override
+    public void use(String name) {
+        if (device != null) {
+            if (strict) {
+                throw new IllegalStateException("Browser has already been acquired for the current scenario");
+            }
+            release();
+        }
+        log.info("Acquiring {} browser...", name);
+        device = registry.provide(name);
+        log.info("Acquired {} browser {}", name, device.getSessionId());
+    }
+
+    @Override
+    public void useDefault() {
+        use(defaultDevice);
+    }
+
+    @Override
     public String canonicalize(String url) {
         if (!url.contains("://")) {
             String root = baseUrl.toExternalForm();
@@ -127,24 +145,6 @@ public class Browser
         }
         // Already absolute
         return url;
-    }
-
-    @Override
-    public void use(String name) {
-        if (device != null) {
-            if (strict) {
-                throw new IllegalStateException("Browser has already been acquired for the current scenario");
-            }
-            release();
-        }
-        log.info("Acquiring {} browser...", name);
-        device = registry.provide(name);
-        log.info("Acquired {} browser {}", name, device.getSessionId());
-    }
-
-    @Override
-    public void useDefault() {
-        use(defaultDevice);
     }
 
     @Override

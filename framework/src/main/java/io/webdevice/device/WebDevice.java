@@ -14,11 +14,11 @@ public interface WebDevice
         extends WebDriver, JavascriptExecutor, HasCapabilities, Interactive, TakesScreenshot {
     boolean acquired();
 
-    String canonicalize(String url);
-
     void use(String name);
 
     void useDefault();
+
+    String canonicalize(String url);
 
     void home();
 
