@@ -4,18 +4,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.webdevice.examples</groupId>
-        <artifactId>examples-parent</artifactId>
+        <groupId>io.webdevice.scenarios</groupId>
+        <artifactId>scenarios-parent</artifactId>
         <version>0.0.13-SNAPSHOT</version>
     </parent>
 
-    <artifactId>cucumber-spring-base-test</artifactId>
-    <name>Examples: Cucumber + Spring Base Test</name>
+    <artifactId>cucumber-spring-boot-test</artifactId>
+    <name>Scenario: Cucumber + Spring Boot Test</name>
 
     <dependencies>
         <dependency>
             <groupId>io.webdevice</groupId>
-            <artifactId>webdevice-spring-base</artifactId>
+            <artifactId>webdevice-spring-boot</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

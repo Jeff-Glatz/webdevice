@@ -4,13 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.webdevice.examples</groupId>
-        <artifactId>examples-parent</artifactId>
+        <groupId>io.webdevice.scenarios</groupId>
+        <artifactId>scenarios-parent</artifactId>
         <version>0.0.13-SNAPSHOT</version>
     </parent>
 
-    <artifactId>cucumber-spring-boot-test</artifactId>
-    <name>Examples: Cucumber + Spring Boot Test</name>
+    <artifactId>spring-boot-test</artifactId>
+    <name>Scenario: Spring Boot Test</name>
 
     <dependencies>
         <dependency>

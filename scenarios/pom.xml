@@ -9,9 +9,9 @@
         <version>0.0.13-SNAPSHOT</version>
     </parent>
 
-    <groupId>io.webdevice.examples</groupId>
-    <artifactId>examples-parent</artifactId>
-    <name>Examples</name>
+    <groupId>io.webdevice.scenarios</groupId>
+    <artifactId>scenarios-parent</artifactId>
+    <name>Scenarios</name>
     <packaging>pom</packaging>
 
     <modules>

@@ -1,4 +1,4 @@
-package io.webdevice.example.spring.base;
+package io.webdevice.scenario.spring.base;
 
 import io.webdevice.device.WebDevice;
 import io.webdevice.wiring.EnableWebDevice;

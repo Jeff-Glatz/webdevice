@@ -4,13 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.webdevice.examples</groupId>
-        <artifactId>examples-parent</artifactId>
+        <groupId>io.webdevice.scenarios</groupId>
+        <artifactId>scenarios-parent</artifactId>
         <version>0.0.13-SNAPSHOT</version>
     </parent>
 
     <artifactId>spring-base-test</artifactId>
-    <name>Examples: Spring Base Test</name>
+    <name>Scenario: Spring Base Test</name>
 
     <dependencies>
         <dependency>

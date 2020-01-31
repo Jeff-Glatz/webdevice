@@ -4,22 +4,23 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.webdevice.examples</groupId>
-        <artifactId>examples-parent</artifactId>
+        <groupId>io.webdevice.scenarios</groupId>
+        <artifactId>scenarios-parent</artifactId>
         <version>0.0.13-SNAPSHOT</version>
     </parent>
 
-    <artifactId>junit-base-test</artifactId>
-    <name>Examples: JUnit Base Test</name>
+    <artifactId>spring-boot-app</artifactId>
+    <name>Scenario: Spring Boot Application</name>
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
+            <groupId>io.webdevice</groupId>
+            <artifactId>webdevice-spring-boot</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.webdevice</groupId>
-            <artifactId>webdevice-spring-base</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
