@@ -33,20 +33,6 @@ public class SettingsFactory
         return binder.from(environment);
     }
 
-    private SettingsBinder binder() {
-        String impl = discoverImplementation();
-        log.info("Using {} to bind Settings from environment", impl);
-        try {
-            return ((Class<? extends SettingsBinder>) forName(impl, null))
-                    .getDeclaredConstructor()
-                    .newInstance();
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new ApplicationContextException(format("Failure instantiating %s", impl), e);
-        }
-    }
-
     private String discoverImplementation() {
         // First look for an environment property
         String impl = environment.getProperty(
@@ -59,6 +45,20 @@ public class SettingsFactory
                     : DefaultSettingsBinder.class.getName();
         }
         return impl;
+    }
+
+    private SettingsBinder binder() {
+        String impl = discoverImplementation();
+        log.info("Using {} to bind Settings from environment", impl);
+        try {
+            return ((Class<? extends SettingsBinder>) forName(impl, null))
+                    .getDeclaredConstructor()
+                    .newInstance();
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ApplicationContextException(format("Failure instantiating %s", impl), e);
+        }
     }
 
     private static boolean springBootBinderAvailable() {
