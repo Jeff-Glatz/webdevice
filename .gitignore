@@ -1,5 +1,5 @@
 .idea/
-stubs/
+/stubs/
 target/
 *.iml
 *.log
