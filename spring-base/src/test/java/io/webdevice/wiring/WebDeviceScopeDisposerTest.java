@@ -1,6 +1,6 @@
 package io.webdevice.wiring;
 
-import io.webdevice.device.WebDevice;
+import io.webdevice.device.Browser;
 import io.webdevice.test.UnitTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -80,7 +80,7 @@ public class WebDeviceScopeDisposerTest
     @Test
     public void shouldSetReinjectDependenciesAttributeWhenScopeIsDisposedAfterTestMethod() {
         WebDeviceScope scope = new WebDeviceScope();
-        scope.get("prototype", () -> mock(WebDevice.class));
+        scope.get("prototype", () -> mock(Browser.class));
 
         assertThat(scope.isEmpty())
                 .isFalse();
@@ -101,6 +101,8 @@ public class WebDeviceScopeDisposerTest
                 .getApplicationContext();
         verify(mockConfigurableContext)
                 .getBeanFactory();
+        verify(mockTestContext)
+                .getTestMethod();
         verify(mockTestContext)
                 .setAttribute(REINJECT_DEPENDENCIES_ATTRIBUTE, TRUE);
         verifyNoMoreInteractions(mockConfigurableContext,
@@ -149,7 +151,7 @@ public class WebDeviceScopeDisposerTest
     @Test
     public void shouldDisposeWhenScopeIsPresentAndNotEmptyAfterTestMethod() {
         WebDeviceScope scope = new WebDeviceScope();
-        scope.get("prototype", () -> mock(WebDevice.class));
+        scope.get("prototype", () -> mock(Browser.class));
 
         assertThat(scope.isEmpty())
                 .isFalse();
@@ -170,6 +172,8 @@ public class WebDeviceScopeDisposerTest
                 .getApplicationContext();
         verify(mockConfigurableContext)
                 .getBeanFactory();
+        verify(mockTestContext)
+                .getTestClass();
         verifyNoMoreInteractions(mockConfigurableContext,
                 mockApplicationContext,
                 mockTestContext);

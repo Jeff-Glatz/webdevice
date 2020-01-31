@@ -1,5 +1,6 @@
 package io.webdevice.wiring;
 
+import io.webdevice.device.Browser;
 import io.webdevice.device.WebDevice;
 import io.webdevice.test.UnitTest;
 import org.junit.Before;
@@ -53,7 +54,7 @@ public class WebDeviceScopeTest
 
     @Test
     public void shouldCreatePrototypes() {
-        ObjectFactory<Object> factory = () -> new WebDevice(null);
+        ObjectFactory<Object> factory = () -> new Browser(null);
 
         assertThat(scope.get("webdevice.WebDevice", factory))
                 .isNotSameAs(scope.get("webdevice.WebDevice", factory));
@@ -62,8 +63,8 @@ public class WebDeviceScopeTest
     @Test
     @SuppressWarnings("unchecked")
     public void shouldRemovePrototypes() {
-        WebDevice device1 = new WebDevice(null);
-        WebDevice device2 = new WebDevice(null);
+        WebDevice device1 = new Browser(null);
+        WebDevice device2 = new Browser(null);
 
         scope.get("webdevice.WebDevice", () -> device1);
         scope.get("webdevice.WebDevice", () -> device2);

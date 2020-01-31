@@ -1,7 +1,7 @@
 package io.webdevice.wiring;
 
+import io.webdevice.device.Browser;
 import io.webdevice.device.DevicePool;
-import io.webdevice.device.WebDevice;
 import io.webdevice.settings.ConfigurationPropertiesTest;
 import io.webdevice.settings.DeviceDefinition;
 import io.webdevice.settings.MockSettingsBinder;
@@ -408,7 +408,7 @@ public class OldWebDeviceRegistrarTest
 
         GenericBeanDefinition webDevice = definitionCaptor.getValue();
         assertThat(webDevice)
-                .isEqualTo(genericBeanDefinition(WebDevice.class)
+                .isEqualTo(genericBeanDefinition(Browser.class)
                         .setScope("webdevice")
                         .addConstructorArgReference("webdevice.DeviceRegistry")
                         .setAutowireMode(AUTOWIRE_CONSTRUCTOR)

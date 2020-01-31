@@ -1,7 +1,7 @@
 package io.webdevice.wiring;
 
+import io.webdevice.device.Browser;
 import io.webdevice.device.DevicePool;
-import io.webdevice.device.WebDevice;
 import io.webdevice.settings.DefaultSettingsBinder;
 import io.webdevice.settings.DeviceDefinition;
 import io.webdevice.settings.Settings;
@@ -147,7 +147,7 @@ public class WebDeviceRegistrar
         String scope = settings.getScope();
         log.info("Registering WebDevice in {} scope ...", scope);
         registry.registerBeanDefinition(namespace("WebDevice"),
-                genericBeanDefinition(WebDevice.class)
+                genericBeanDefinition(Browser.class)
                         .setScope(scope)
                         .addConstructorArgReference(namespace("DeviceRegistry"))
                         .setAutowireMode(AUTOWIRE_CONSTRUCTOR)

@@ -42,7 +42,7 @@ import static org.openqa.selenium.By.cssSelector;
 import static org.openqa.selenium.OutputType.BASE64;
 import static org.openqa.selenium.remote.DesiredCapabilities.iphone;
 
-public class WebDeviceTest
+public class BrowserTest
         extends UnitTest {
     @Mock
     private DeviceRegistry mockDeviceRegistry;
@@ -69,7 +69,7 @@ public class WebDeviceTest
     private WebDriver mockWebDriver2;
     private Device<WebDriver> device2;
 
-    private WebDevice webDevice;
+    private Browser browser;
 
     @Mock
     private Consumer<WebDriver> mockConsumer;
@@ -92,7 +92,7 @@ public class WebDeviceTest
 
         device2 = directDevice("ipad", mockWebDriver2);
 
-        webDevice = new WebDevice(mockDeviceRegistry)
+        browser = new Browser(mockDeviceRegistry)
                 .withBaseUrl(new URL("http://localhost"));
     }
 
@@ -100,37 +100,37 @@ public class WebDeviceTest
     public void fluentBuildersShouldPopulateProperties()
             throws
             Exception {
-        webDevice.withBaseUrl(new URL("http://remotehost"))
+        browser.withBaseUrl(new URL("http://remotehost"))
                 .withDefaultDevice("iphone")
                 .withEager(true)
                 .withStrict(true);
 
-        assertThat(webDevice.getBaseUrl())
+        assertThat(browser.getBaseUrl())
                 .isEqualTo(new URL("http://remotehost"));
-        assertThat(webDevice.getDefaultDevice())
+        assertThat(browser.getDefaultDevice())
                 .isEqualTo("iphone");
-        assertThat(webDevice.isEager())
+        assertThat(browser.isEager())
                 .isEqualTo(true);
-        assertThat(webDevice.isStrict())
+        assertThat(browser.isStrict())
                 .isEqualTo(true);
     }
 
     @Test
     public void shouldCanonicalizeUrls()
             throws Exception {
-        assertThat(webDevice.canonicalize("http://remotehost"))
+        assertThat(browser.canonicalize("http://remotehost"))
                 .isEqualTo("http://remotehost");
 
-        assertThat(webDevice.canonicalize("foo"))
+        assertThat(browser.canonicalize("foo"))
                 .isEqualTo("http://localhost/foo");
-        assertThat(webDevice.canonicalize("/foo"))
+        assertThat(browser.canonicalize("/foo"))
                 .isEqualTo("http://localhost/foo");
 
-        webDevice.withBaseUrl(new URL("http://localhost/"));
+        browser.withBaseUrl(new URL("http://localhost/"));
 
-        assertThat(webDevice.canonicalize("foo"))
+        assertThat(browser.canonicalize("foo"))
                 .isEqualTo("http://localhost/foo");
-        assertThat(webDevice.canonicalize("/foo"))
+        assertThat(browser.canonicalize("/foo"))
                 .isEqualTo("http://localhost/foo");
     }
 
@@ -139,7 +139,7 @@ public class WebDeviceTest
         providing("iphone", device)
                 .initializeWith("iphone", true, true);
 
-        assertThat(webDevice.device())
+        assertThat(browser.device())
                 .isSameAs(device);
     }
 
@@ -147,7 +147,7 @@ public class WebDeviceTest
     public void initializeShouldNotAcquireDefaultDevice() {
         initializeWith("iphone", false, true);
 
-        assertThat(webDevice.acquired())
+        assertThat(browser.acquired())
                 .isFalse();
     }
 
@@ -156,11 +156,11 @@ public class WebDeviceTest
         providing("iphone", device)
                 .initializeWith("iphone", true, true);
 
-        assertThat(webDevice.acquired())
+        assertThat(browser.acquired())
                 .isTrue();
 
         try {
-            webDevice.use("iphone");
+            browser.use("iphone");
             fail("Expected an exception");
         } catch (IllegalStateException e) {
             assertThat(e).
@@ -174,14 +174,12 @@ public class WebDeviceTest
                 .providing("ipad", device2)
                 .initializeWith("iphone", true, false);
 
-        assertThat(webDevice.device())
+        assertThat(browser.device())
                 .isSameAs(device);
 
-        WebDevice fluent = webDevice.use("ipad");
+        browser.use("ipad");
 
-        assertThat(fluent)
-                .isSameAs(webDevice);
-        assertThat(webDevice.device())
+        assertThat(browser.device())
                 .isSameAs(device2);
 
         verify(mockDeviceRegistry)
@@ -193,14 +191,12 @@ public class WebDeviceTest
         providing("iphone", device)
                 .initializeWith("iphone", false, true);
 
-        assertThat(webDevice.acquired())
+        assertThat(browser.acquired())
                 .isFalse();
 
-        WebDevice fluent = webDevice.useDefault();
+        browser.useDefault();
 
-        assertThat(fluent)
-                .isSameAs(webDevice);
-        assertThat(webDevice.device())
+        assertThat(browser.device())
                 .isSameAs(device);
     }
 
@@ -210,10 +206,8 @@ public class WebDeviceTest
         providing("iphone", device)
                 .initializeWith("iphone", true, true);
 
-        WebDevice fluent = webDevice.home();
+        browser.home();
 
-        assertThat(fluent)
-                .isSameAs(webDevice);
         verify(mockNavigation)
                 .to(new URL("http://localhost"));
     }
@@ -223,10 +217,8 @@ public class WebDeviceTest
         providing("iphone", device)
                 .initializeWith("iphone", true, true);
 
-        WebDevice fluent = webDevice.navigateTo("/foo");
+        browser.navigateTo("/foo");
 
-        assertThat(fluent)
-                .isSameAs(webDevice);
         verify(mockNavigation)
                 .to("http://localhost/foo");
     }
@@ -236,10 +228,8 @@ public class WebDeviceTest
         providing("iphone", device)
                 .initializeWith("iphone", true, true);
 
-        WebDevice fluent = webDevice.navigateTo("http://remotehost/foo");
+        browser.navigateTo("http://remotehost/foo");
 
-        assertThat(fluent)
-                .isSameAs(webDevice);
         verify(mockNavigation)
                 .to("http://remotehost/foo");
     }
@@ -249,10 +239,8 @@ public class WebDeviceTest
         providing("iphone", device)
                 .initializeWith("iphone", true, true);
 
-        WebDevice fluent = webDevice.perform(mockConsumer);
+        browser.perform(mockConsumer);
 
-        assertThat(fluent)
-                .isSameAs(webDevice);
         verify(mockConsumer)
                 .accept(mockWebDriver);
     }
@@ -263,12 +251,12 @@ public class WebDeviceTest
                 .initializeWith("iphone", true, true);
 
         given(mockFunction.apply(mockWebDriver))
-                .willReturn(webDevice);
+                .willReturn(browser);
 
-        WebDevice fluent = webDevice.invoke(mockFunction);
+        WebDevice fluent = browser.invoke(mockFunction);
 
         assertThat(fluent)
-                .isSameAs(webDevice);
+                .isSameAs(browser);
         verify(mockFunction)
                 .apply(mockWebDriver);
     }
@@ -284,7 +272,7 @@ public class WebDeviceTest
         given(((HasCapabilities) mockWebDriver).getCapabilities())
                 .willReturn(expected);
 
-        assertThat(webDevice.getCapabilities())
+        assertThat(browser.getCapabilities())
                 .isSameAs(expected);
     }
 
@@ -300,7 +288,7 @@ public class WebDeviceTest
         given(((JavascriptExecutor) mockWebDriver).executeScript("script", "arg"))
                 .willReturn(expected);
 
-        assertThat(webDevice.executeScript("script", "arg"))
+        assertThat(browser.executeScript("script", "arg"))
                 .isSameAs(expected);
     }
 
@@ -314,7 +302,7 @@ public class WebDeviceTest
         given(((JavascriptExecutor) mockWebDriver).executeAsyncScript("script", "arg"))
                 .willReturn(expected);
 
-        assertThat(webDevice.executeAsyncScript("script", "arg"))
+        assertThat(browser.executeAsyncScript("script", "arg"))
                 .isSameAs(expected);
     }
 
@@ -330,7 +318,7 @@ public class WebDeviceTest
         given(((TakesScreenshot) mockWebDriver).getScreenshotAs(BASE64))
                 .willReturn(expected);
 
-        assertThat(webDevice.getScreenshotAs(BASE64))
+        assertThat(browser.getScreenshotAs(BASE64))
                 .isSameAs(expected);
     }
 
@@ -341,7 +329,7 @@ public class WebDeviceTest
         providing("iphone", device)
                 .initializeWith("iphone", true, true);
 
-        webDevice.get("/foo");
+        browser.get("/foo");
 
         verify(mockWebDriver)
                 .get("http://localhost/foo");
@@ -352,7 +340,7 @@ public class WebDeviceTest
         providing("iphone", device)
                 .initializeWith("iphone", true, true);
 
-        webDevice.get("http://remotehost/foo");
+        browser.get("http://remotehost/foo");
 
         verify(mockWebDriver)
                 .get("http://remotehost/foo");
@@ -368,7 +356,7 @@ public class WebDeviceTest
         given(mockWebDriver.getCurrentUrl())
                 .willReturn(expected);
 
-        assertThat(webDevice.getCurrentUrl())
+        assertThat(browser.getCurrentUrl())
                 .isSameAs(expected);
     }
 
@@ -382,7 +370,7 @@ public class WebDeviceTest
         given(mockWebDriver.getTitle())
                 .willReturn(expected);
 
-        assertThat(webDevice.getTitle())
+        assertThat(browser.getTitle())
                 .isSameAs(expected);
     }
 
@@ -397,7 +385,7 @@ public class WebDeviceTest
         given(mockWebDriver.findElements(by))
                 .willReturn(expected);
 
-        assertThat(webDevice.findElements(by))
+        assertThat(browser.findElements(by))
                 .isSameAs(expected);
     }
 
@@ -412,7 +400,7 @@ public class WebDeviceTest
         given(mockWebDriver.findElement(by))
                 .willReturn(expected);
 
-        assertThat(webDevice.findElement(by))
+        assertThat(browser.findElement(by))
                 .isSameAs(expected);
     }
 
@@ -426,7 +414,7 @@ public class WebDeviceTest
         given(mockWebDriver.getPageSource())
                 .willReturn(expected);
 
-        assertThat(webDevice.getPageSource())
+        assertThat(browser.getPageSource())
                 .isSameAs(expected);
     }
 
@@ -438,7 +426,7 @@ public class WebDeviceTest
         given(mockWebDriver.getWindowHandles())
                 .willReturn(new LinkedHashSet<>(asList("handle-1", "handle-2")));
 
-        webDevice.close();
+        browser.close();
 
         verify(mockWebDriver)
                 .close();
@@ -452,7 +440,7 @@ public class WebDeviceTest
         given(mockWebDriver.getWindowHandles())
                 .willReturn(singleton("handle"));
 
-        webDevice.close();
+        browser.close();
 
         verify(mockWebDriver, never())
                 .close();
@@ -463,7 +451,7 @@ public class WebDeviceTest
         providing("iphone", device)
                 .initializeWith("iphone", true, true);
 
-        webDevice.quit();
+        browser.quit();
 
         verify(mockWebDriver, never())
                 .quit();
@@ -479,7 +467,7 @@ public class WebDeviceTest
         given(mockWebDriver.getWindowHandles())
                 .willReturn(expected);
 
-        assertThat(webDevice.getWindowHandles())
+        assertThat(browser.getWindowHandles())
                 .isSameAs(expected);
     }
 
@@ -493,7 +481,7 @@ public class WebDeviceTest
         given(mockWebDriver.getWindowHandle())
                 .willReturn(expected);
 
-        assertThat(webDevice.getWindowHandle())
+        assertThat(browser.getWindowHandle())
                 .isSameAs(expected);
     }
 
@@ -502,7 +490,7 @@ public class WebDeviceTest
         providing("iphone", device)
                 .initializeWith("iphone", true, true);
 
-        assertThat(webDevice.switchTo())
+        assertThat(browser.switchTo())
                 .isSameAs(mockTargetLocator);
     }
 
@@ -511,7 +499,7 @@ public class WebDeviceTest
         providing("iphone", device)
                 .initializeWith("iphone", true, true);
 
-        Navigation navigate = webDevice.navigate();
+        Navigation navigate = browser.navigate();
         navigate.to("/foo");
 
         assertThat(navigate)
@@ -528,7 +516,7 @@ public class WebDeviceTest
         providing("iphone", device)
                 .initializeWith("iphone", true, true);
 
-        assertThat(webDevice.manage())
+        assertThat(browser.manage())
                 .isSameAs(mockOptions);
     }
 
@@ -541,7 +529,7 @@ public class WebDeviceTest
 
         Collection<Sequence> actions = emptySet();
 
-        webDevice.perform(actions);
+        browser.perform(actions);
 
         verify((Interactive) mockWebDriver)
                 .perform(actions);
@@ -552,7 +540,7 @@ public class WebDeviceTest
         providing("iphone", device)
                 .initializeWith("iphone", true, true);
 
-        webDevice.resetInputState();
+        browser.resetInputState();
 
         verify((Interactive) mockWebDriver)
                 .resetInputState();
@@ -560,12 +548,12 @@ public class WebDeviceTest
 
     @Test
     public void releaseShouldNotFailWhenDeviceHasNotBeenAcquired() {
-        assertThat(webDevice.acquired())
+        assertThat(browser.acquired())
                 .isFalse();
 
-        webDevice.release();
+        browser.release();
 
-        assertThat(webDevice.acquired())
+        assertThat(browser.acquired())
                 .isFalse();
     }
 
@@ -574,12 +562,12 @@ public class WebDeviceTest
         providing("iphone", device)
                 .initializeWith("iphone", true, true);
 
-        assertThat(webDevice.acquired())
+        assertThat(browser.acquired())
                 .isTrue();
 
-        webDevice.release();
+        browser.release();
 
-        assertThat(webDevice.acquired())
+        assertThat(browser.acquired())
                 .isFalse();
 
         verify(mockDeviceRegistry)
@@ -591,7 +579,7 @@ public class WebDeviceTest
         providing("iphone", device)
                 .initializeWith("iphone", true, false);
 
-        assertThat(webDevice.acquired())
+        assertThat(browser.acquired())
                 .isTrue();
 
         willThrow(new DeviceNotProvidedException("iphone"))
@@ -599,26 +587,26 @@ public class WebDeviceTest
                 .release(this.device);
 
         try {
-            webDevice.release();
+            browser.release();
             fail("Expected an exception");
         } catch (DeviceNotProvidedException e) {
         }
 
-        assertThat(webDevice.acquired())
+        assertThat(browser.acquired())
                 .isFalse();
 
         verify(mockDeviceRegistry)
                 .release(this.device);
     }
 
-    private WebDeviceTest providing(String name, Device<WebDriver> device) {
+    private BrowserTest providing(String name, Device<WebDriver> device) {
         given(mockDeviceRegistry.provide(name))
                 .willReturn(device);
         return this;
     }
 
-    private WebDeviceTest initializeWith(String defaultDevice, boolean eager, boolean strict) {
-        webDevice.withDefaultDevice(defaultDevice)
+    private BrowserTest initializeWith(String defaultDevice, boolean eager, boolean strict) {
+        browser.withDefaultDevice(defaultDevice)
                 .withEager(eager)
                 .withStrict(strict)
                 .initialize();
