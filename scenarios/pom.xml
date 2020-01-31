@@ -20,7 +20,6 @@
         <module>spring-boot-app</module>
         <module>cucumber-spring-base-test</module>
         <module>cucumber-spring-boot-test</module>
-        <module>junit-base-test</module>
     </modules>
 
 </project>
