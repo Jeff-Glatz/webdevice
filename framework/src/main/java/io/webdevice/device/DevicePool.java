@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 import static java.lang.String.format;
 
 /**
- * A naive and unoptimized {@link Device} pool
+ * TODO: This needs a proper implementation
  */
 public class DevicePool<Driver extends WebDriver>
         implements DeviceProvider<Driver> {

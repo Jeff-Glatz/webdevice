@@ -2,10 +2,9 @@ package io.webdevice.wiring;
 
 import io.webdevice.device.Browser;
 import io.webdevice.device.DevicePool;
-import io.webdevice.settings.DefaultSettingsBinder;
 import io.webdevice.settings.DeviceDefinition;
 import io.webdevice.settings.Settings;
-import io.webdevice.settings.SettingsBinder;
+import io.webdevice.settings.SettingsFactory;
 import io.webdevice.support.SimpleDeviceCheck;
 import io.webdevice.support.SpringDeviceRegistry;
 import org.slf4j.Logger;
@@ -13,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.context.ApplicationContextException;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
@@ -24,46 +22,27 @@ import static io.webdevice.wiring.WebDeviceScope.registerScope;
 import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRASTRUCTURE;
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
-import static org.springframework.util.ClassUtils.forName;
 
 public class WebDeviceRegistrar
         implements ImportBeanDefinitionRegistrar {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final ConfigurableEnvironment environment;
+    private final SettingsFactory factory;
 
     @Autowired
     public WebDeviceRegistrar(Environment environment) {
         // Spring implodes when ConfigurableEnvironment is declared in constructor
         this.environment = (ConfigurableEnvironment) environment;
+        this.factory = new SettingsFactory((ConfigurableEnvironment) environment);
     }
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
-        SettingsBinder binder = binder();
-        Settings settings = registerSettings(binder.from(environment), registry);
+        Settings settings = registerSettings(factory.from(environment), registry);
         registerScope((ConfigurableBeanFactory) registry);
         registerDevices(settings, registry);
         registerDeviceRegistry(settings, registry);
         registerWebDevice(settings, registry);
-    }
-
-    @SuppressWarnings("unchecked")
-    private SettingsBinder binder() {
-        String impl = environment.getProperty(
-                namespace("binder"), String.class, SettingsBinder.class.getName());
-        if (SettingsBinder.class.getName().equals(impl)) {
-            impl = DefaultSettingsBinder.class.getName();
-        }
-        log.info("Using {} to bind Settings from environment", impl);
-        try {
-            return ((Class<? extends SettingsBinder>) forName(impl, null))
-                    .getDeclaredConstructor()
-                    .newInstance();
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new ApplicationContextException("Failure loading SettingsBinder", e);
-        }
     }
 
     private Settings registerSettings(Settings settings, BeanDefinitionRegistry registry) {
