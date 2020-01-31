@@ -1,5 +1,4 @@
 .idea/
-/stubs/
 target/
 *.iml
 *.log
@@ -8,3 +7,4 @@ target/
 release.properties
 pom.xml.releaseBackup
 deploy/id_rsa
+.DS_Store

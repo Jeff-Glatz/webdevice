@@ -118,6 +118,7 @@
         <module>framework</module>
         <module>spring-base</module>
         <module>spring-boot</module>
+        <module>stubs</module>
         <module>scenarios</module>
     </modules>
 
