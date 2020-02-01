@@ -39,6 +39,22 @@ public class AnnotationAttributesTest
     }
 
     @Test
+    public void shouldAddAliasForAttributeWhenPresent() {
+        attributes.withAlias("integer", "inte-ger");
+
+        assertThat(attributes.valueOf("inte-ger", Integer.class))
+                .isEqualTo(attributes.valueOf("integer", Integer.class));
+    }
+
+    @Test
+    public void shouldNotAddAliasForAttributeWhenNotPresent() {
+        attributes.withAlias("does-not-exist", "inte-ger");
+
+        assertThat(attributes.valueOf("inte-ger", Integer.class))
+                .isNull();
+    }
+
+    @Test
     public void shouldProjectSelfAsMap() {
         assertThat(attributes.asMap())
                 .isSameAs(attributeMap);

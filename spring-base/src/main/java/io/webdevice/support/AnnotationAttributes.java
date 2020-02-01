@@ -31,6 +31,14 @@ public class AnnotationAttributes {
         this.attributes = attributes;
     }
 
+    public AnnotationAttributes withAlias(String attribute, String alias) {
+        Object value = attributes.get(attribute);
+        if (value != null) {
+            attributes.put(alias, value);
+        }
+        return this;
+    }
+
     public Map<String, Object> asMap() {
         return attributes;
     }

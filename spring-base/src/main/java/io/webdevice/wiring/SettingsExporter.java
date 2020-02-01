@@ -56,7 +56,9 @@ public class SettingsExporter
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
-        AnnotationAttributes attributes = attributesOf(EnableWebDevice.class, metadata);
+        AnnotationAttributes attributes = attributesOf(EnableWebDevice.class, metadata)
+                .withAlias("baseUrl", "base-url")
+                .withAlias("defaultDevice", "default-device");
         MutablePropertySources sources = environment.getPropertySources();
         if (attributes.hasValue("settings")) {
             String location = attributes.valueOf("settings");

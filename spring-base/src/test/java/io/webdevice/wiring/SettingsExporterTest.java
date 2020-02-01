@@ -244,12 +244,13 @@ public class SettingsExporterTest
 
         exporter.registerBeanDefinitions(mockMetadata, mockRegistry);
 
-        // TODO: Address this
         assertThat(environment.getProperty("webdevice.base-url"))
-                .isEqualTo("https://webdevice.io");
+                .isEqualTo("http://www.webdevice.io");
         assertThat(environment.getProperty("webdevice.baseUrl"))
                 .isEqualTo("http://www.webdevice.io");
 
+        assertThat(environment.getProperty("webdevice.default-device"))
+                .isEqualTo("Direct");
         assertThat(environment.getProperty("webdevice.defaultDevice"))
                 .isEqualTo("Direct");
         assertThat(environment.getProperty("webdevice.scope"))
