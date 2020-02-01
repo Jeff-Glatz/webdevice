@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static org.springframework.util.ClassUtils.isPresent;
-
 public class Settings
         implements Serializable {
 
@@ -104,12 +102,7 @@ public class Settings
     }
 
     public String getScope() {
-        if (scope != null) {
-            return scope;
-        }
-        return isPresent("io.cucumber.spring.CucumberTestContext", null)
-                ? "cucumber-glue"
-                : "webdevice";
+        return scope;
     }
 
     public void setScope(String scope) {

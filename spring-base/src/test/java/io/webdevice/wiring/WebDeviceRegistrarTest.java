@@ -11,6 +11,7 @@ import io.webdevice.support.SpringDeviceRegistry;
 import io.webdevice.test.SpringSandboxTest;
 import org.junit.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.support.SimpleThreadScope;
 
 import static io.webdevice.wiring.WebDeviceScope.namespace;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -152,7 +153,7 @@ public class WebDeviceRegistrarTest
     }
 
     @Test
-    public void shouldRegisterDeviceRegistryInConfiguredScope()
+    public void shouldRegisterWebDeviceAndDeviceRegistryInConfiguredScope()
             throws Exception {
         sandbox().withEnvironmentFrom("io/webdevice/wiring/scope-only.properties")
                 .with(WebDeviceRuntime.class)
@@ -160,18 +161,44 @@ public class WebDeviceRegistrarTest
                     BeanDefinition definition = context.getBeanDefinition(namespace("DeviceRegistry"));
                     assertThat(definition.getScope())
                             .isEqualTo("application");
+
+                    definition = context.getBeanDefinition(namespace("WebDevice"));
+                    assertThat(definition.getScope())
+                            .isEqualTo("application");
                 });
     }
 
     @Test
-    public void shouldRegisterWebDeviceInConfiguredScope()
+    public void shouldRegisterWebDeviceAndDeviceRegistryInDefaultScope()
             throws Exception {
         sandbox().withEnvironmentFrom("io/webdevice/wiring/non-defaults.properties")
                 .with(WebDeviceRuntime.class)
                 .execute(context -> {
-                    BeanDefinition definition = context.getBeanDefinition(namespace("WebDevice"));
+                    BeanDefinition definition = context.getBeanDefinition(namespace("DeviceRegistry"));
                     assertThat(definition.getScope())
                             .isEqualTo("webdevice");
+
+                    definition = context.getBeanDefinition(namespace("WebDevice"));
+                    assertThat(definition.getScope())
+                            .isEqualTo("webdevice");
+                });
+    }
+
+    @Test
+    public void shouldAttemptToRegisterDeviceRegistryInCucumberScopeWhenPresentScope()
+            throws Exception {
+        sandbox().with(WebDeviceRuntime.class)
+                .withInitializer(context -> context.getBeanFactory()
+                        .registerScope("cucumber-glue", new SimpleThreadScope()))
+                .withClassesIn("stubs/cucumber-stub.jar")
+                .execute(context -> {
+                    BeanDefinition definition = context.getBeanDefinition(namespace("DeviceRegistry"));
+                    assertThat(definition.getScope())
+                            .isEqualTo("cucumber-glue");
+
+                    definition = context.getBeanDefinition(namespace("WebDevice"));
+                    assertThat(definition.getScope())
+                            .isEqualTo("cucumber-glue");
                 });
     }
 }

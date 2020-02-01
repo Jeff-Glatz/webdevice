@@ -22,6 +22,8 @@ import static io.webdevice.wiring.WebDeviceScope.registerScope;
 import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRASTRUCTURE;
 import static org.springframework.beans.factory.support.AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
+import static org.springframework.util.ClassUtils.isPresent;
+import static org.springframework.util.StringUtils.isEmpty;
 
 public class WebDeviceRegistrar
         implements ImportBeanDefinitionRegistrar {
@@ -111,8 +113,21 @@ public class WebDeviceRegistrar
         log.info("Devices registered.");
     }
 
-    private void registerDeviceRegistry(Settings settings, BeanDefinitionRegistry registry) {
+    private String scope(Settings settings, BeanDefinitionRegistry registry) {
         String scope = settings.getScope();
+        if (isEmpty(scope)
+                && isPresent("io.cucumber.spring.CucumberTestContext", null)
+                && ((ConfigurableBeanFactory) registry).getRegisteredScope("cucumber-glue") != null) {
+            scope = "cucumber-glue";
+        }
+        if (isEmpty(scope)) {
+            scope = "webdevice";
+        }
+        return scope;
+    }
+
+    private void registerDeviceRegistry(Settings settings, BeanDefinitionRegistry registry) {
+        String scope = scope(settings, registry);
         log.info("Registering DeviceRegistry in {} scope ...", scope);
         registry.registerBeanDefinition(namespace("DeviceRegistry"),
                 genericBeanDefinition(SpringDeviceRegistry.class)
@@ -123,7 +138,7 @@ public class WebDeviceRegistrar
     }
 
     private void registerWebDevice(Settings settings, BeanDefinitionRegistry registry) {
-        String scope = settings.getScope();
+        String scope = scope(settings, registry);
         log.info("Registering WebDevice in {} scope ...", scope);
         registry.registerBeanDefinition(namespace("WebDevice"),
                 genericBeanDefinition(Browser.class)

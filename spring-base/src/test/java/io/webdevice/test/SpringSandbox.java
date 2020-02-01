@@ -13,12 +13,16 @@ import org.springframework.core.io.support.EncodedResource;
 import org.springframework.core.io.support.PropertySourceFactory;
 
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import static io.bestquality.lang.Classes.loaderOf;
 import static java.lang.Thread.currentThread;
 import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
 
 public class SpringSandbox {
     private final Properties systemProperties = new Properties(System.getProperties());
@@ -38,6 +42,17 @@ public class SpringSandbox {
     public SpringSandbox withClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
         return this;
+    }
+
+    public SpringSandbox withClassesIn(URL... urls) {
+        return withClassLoader(new URLClassLoader(urls, loaderOf(this)));
+    }
+
+    public SpringSandbox withClassesIn(String... resources) {
+        ClassLoader loader = loaderOf(this);
+        return withClassesIn(stream(resources)
+                .map(loader::getResource)
+                .toArray(URL[]::new));
     }
 
     public SpringSandbox withPropertySourceFactory(PropertySourceFactory propertySourceFactory) {

@@ -1,13 +1,10 @@
 package io.webdevice.settings;
 
-import io.bestquality.util.Sandbox;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
-import static io.bestquality.net.MaskingClassLoader.maskingClasses;
 import static io.bestquality.util.MapBuilder.mapOf;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -131,38 +128,6 @@ public class SettingsTest {
                 .isSameAs(device);
         assertThat(settings.device("Foo"))
                 .isSameAs(device);
-    }
-
-    @Test
-    public void shouldReturnWebDeviceScopeWhenNotSpecifiedAndCucumberNotPresent()
-            throws Throwable {
-        // Setup a custom classloader that prevents CucumberTestContext from being seen
-        AtomicReference<String> scope = new AtomicReference<>(null);
-        new Sandbox()
-                .withClassLoader(maskingClasses("io.cucumber.spring.CucumberTestContext"))
-                .execute(() -> scope.set(
-                        new Settings()
-                                .withScope(null)
-                                .getScope()));
-
-        assertThat(scope.get())
-                .isEqualTo("webdevice");
-    }
-
-    @Test
-    public void shouldReturnCucumberGlueScopeWhenNotSpecifiedAndCucumberPresent()
-            throws Throwable {
-        // Setup a custom classloader that allows CucumberTestContext to be seen
-        AtomicReference<String> scope = new AtomicReference<>(null);
-        new Sandbox()
-                .withClassesIn("stubs/cucumber-stub.jar")
-                .execute(() -> scope.set(
-                        new Settings()
-                                .withScope(null)
-                                .getScope()));
-
-        assertThat(scope.get())
-                .isEqualTo("cucumber-glue");
     }
 
     @Test
