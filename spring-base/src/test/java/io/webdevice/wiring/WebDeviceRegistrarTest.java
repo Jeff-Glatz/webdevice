@@ -7,6 +7,7 @@ import io.webdevice.device.StubDeviceProvider;
 import io.webdevice.device.StubWebDriver;
 import io.webdevice.settings.MockSettingsBinder;
 import io.webdevice.settings.Settings;
+import io.webdevice.support.SpringDeviceRegistry;
 import io.webdevice.test.SpringSandboxTest;
 import org.junit.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -16,6 +17,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class WebDeviceRegistrarTest
         extends SpringSandboxTest {
+
+    @Test
+    public void shouldLoadFromAllDevices()
+            throws Exception {
+        sandbox().withEnvironmentFrom("devices/all-devices.yaml")
+                .with(WebDeviceRuntime.class)
+                .execute(context -> {
+                    SpringDeviceRegistry registry = context.getBean(namespace("DeviceRegistry"),
+                            SpringDeviceRegistry.class);
+                });
+    }
 
     @Test
     public void shouldUseCustomBinderToBindSettingsFromEnvironment()
