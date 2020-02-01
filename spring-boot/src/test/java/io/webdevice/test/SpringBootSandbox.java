@@ -1,7 +1,6 @@
-package io.webdevice.wiring;
+package io.webdevice.test;
 
 import io.webdevice.support.YamlPropertySourceFactory;
-import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
@@ -23,38 +22,28 @@ import java.net.URLClassLoader;
 import static io.bestquality.lang.Classes.loaderOf;
 import static java.util.Arrays.stream;
 
-public class ApplicationContextTest {
+public class SpringBootSandbox {
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private ApplicationContextRunner runner;
-    private PropertySourceFactory propertySourceFactory;
+    private ApplicationContextRunner runner = new ApplicationContextRunner();
+    private PropertySourceFactory propertySourceFactory = new YamlPropertySourceFactory();
 
-    @Before
-    public void setUp() {
-        propertySourceFactory = new YamlPropertySourceFactory();
-        runner = new ApplicationContextRunner();
-    }
-
-    protected ApplicationContextTest sandbox() {
-        return this;
-    }
-
-    protected ApplicationContextTest withClassLoader(ClassLoader classLoader) {
+    public SpringBootSandbox withClassLoader(ClassLoader classLoader) {
         runner = runner.withClassLoader(classLoader);
         return this;
     }
 
-    protected ApplicationContextTest withClassesIn(URL... urls) {
+    public SpringBootSandbox withClassesIn(URL... urls) {
         return withClassLoader(new URLClassLoader(urls, loaderOf(this)));
     }
 
-    protected ApplicationContextTest withClassesIn(String... resources) {
+    public SpringBootSandbox withClassesIn(String... resources) {
         ClassLoader loader = loaderOf(this);
         return withClassesIn(stream(resources)
                 .map(loader::getResource)
                 .toArray(URL[]::new));
     }
 
-    protected ApplicationContextTest withEnvironmentFrom(String... resources) {
+    public SpringBootSandbox withEnvironmentFrom(String... resources) {
         runner = runner.withInitializer(context -> {
             MutablePropertySources sources = context.getEnvironment().getPropertySources();
             for (String resource : resources) {
@@ -71,27 +60,27 @@ public class ApplicationContextTest {
         return this;
     }
 
-    protected ApplicationContextTest withSystemProperties(String... pairs) {
+    public SpringBootSandbox withSystemProperties(String... pairs) {
         runner = runner.withSystemProperties(pairs);
         return this;
     }
 
-    protected ApplicationContextTest withEnvironmentProperties(String... pairs) {
+    public SpringBootSandbox withEnvironmentProperties(String... pairs) {
         runner = runner.withPropertyValues(pairs);
         return this;
     }
 
-    protected ApplicationContextTest withInitializer(ApplicationContextInitializer<ConfigurableApplicationContext> initializer) {
+    public SpringBootSandbox withInitializer(ApplicationContextInitializer<ConfigurableApplicationContext> initializer) {
         runner = runner.withInitializer(initializer);
         return this;
     }
 
-    protected ApplicationContextTest withConfiguration(Class<?>... configurations) {
+    public SpringBootSandbox withConfiguration(Class<?>... configurations) {
         runner = runner.withUserConfiguration(configurations);
         return this;
     }
 
-    protected ApplicationContextRunner run(ContextConsumer<AssertableApplicationContext> consumer) {
+    public ApplicationContextRunner run(ContextConsumer<AssertableApplicationContext> consumer) {
         return runner = runner.run(consumer);
     }
 }

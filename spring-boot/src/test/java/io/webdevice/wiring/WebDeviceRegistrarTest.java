@@ -7,6 +7,7 @@ import io.webdevice.device.StubDeviceProvider;
 import io.webdevice.device.StubWebDriver;
 import io.webdevice.settings.MockSettingsBinder;
 import io.webdevice.settings.Settings;
+import io.webdevice.test.SpringBootSandboxTest;
 import org.junit.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -18,7 +19,7 @@ import static io.webdevice.wiring.WebDeviceScope.namespace;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class WebDeviceRegistrarTest
-        extends ApplicationContextTest
+        extends SpringBootSandboxTest
         implements WebDeviceRegistrarUseCases {
 
     @Test

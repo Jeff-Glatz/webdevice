@@ -2,7 +2,7 @@ package io.webdevice.test;
 
 import org.junit.Before;
 
-public class SpringSandboxTest {
+public abstract class SpringSandboxTest {
     private SpringSandbox sandbox;
 
     @Before
