@@ -13,10 +13,10 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
@@ -24,9 +24,6 @@ import static java.util.Objects.hash;
 import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRASTRUCTURE;
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_SINGLETON;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
-
-//import static java.util.Collections.unmodifiableMap;
-//import static java.util.Collections.unmodifiableSet;
 
 /**
  * The {@link DeviceDefinition} class supports 3 types of device providers
@@ -40,8 +37,8 @@ public class DeviceDefinition
         implements Serializable {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final List<String> aliases = new ArrayList<>();
-    private final Map<String, Object> capabilities = new LinkedHashMap<>();
-    private final Map<String, Object> extraOptions = new LinkedHashMap<>();
+    private final Map<String, Object> capabilities = new TreeMap<>();
+    private final Map<String, Object> extraOptions = new TreeMap<>();
     private final List<String> confidential = new ArrayList<>();
     private String name;
     private boolean pooled = false;

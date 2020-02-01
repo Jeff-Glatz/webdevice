@@ -6,6 +6,7 @@ import io.webdevice.support.YamlPropertySourceFactory;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.core.io.ClassPathResource;
@@ -17,9 +18,11 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import static io.bestquality.lang.Classes.loaderOf;
+import static java.lang.String.valueOf;
 import static java.lang.Thread.currentThread;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
@@ -71,7 +74,13 @@ public class SpringSandbox {
         return this;
     }
 
-    public SpringSandbox with(Class<?> component) {
+    public SpringSandbox withEnvironmentProperties(Map<String, Object> map) {
+        MutablePropertySources propertySources = environment.getPropertySources();
+        propertySources.addFirst(new MapPropertySource(valueOf(map.hashCode()), map));
+        return this;
+    }
+
+    public SpringSandbox withConfiguration(Class<?> component) {
         this.components.add(component);
         return this;
     }

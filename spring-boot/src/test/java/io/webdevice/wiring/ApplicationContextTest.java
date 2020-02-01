@@ -86,7 +86,7 @@ public class ApplicationContextTest {
         return this;
     }
 
-    protected ApplicationContextTest with(Class<?>... configurations) {
+    protected ApplicationContextTest withConfiguration(Class<?>... configurations) {
         runner = runner.withUserConfiguration(configurations);
         return this;
     }

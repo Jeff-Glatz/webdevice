@@ -4,13 +4,13 @@ webdevice:
       driver: org.openqa.selenium.firefox.FirefoxDriver
       pooled: true
       aliases: Firefox, Local Firefox
-      capabilites:
+      capabilities:
         version: "71.0"
     LocalChrome:
       driver: org.openqa.selenium.chrome.ChromeDriver
       pooled: true
       aliases: Chrome, Local Chrome
-      capabilites:
+      capabilities:
         version: "59.0"
     Chrome59Windows10:
       remote-address: https://ondemand.saucelabs.com:443/wd/hub

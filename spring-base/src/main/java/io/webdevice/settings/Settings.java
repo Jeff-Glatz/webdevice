@@ -2,9 +2,9 @@ package io.webdevice.settings;
 
 import java.io.Serializable;
 import java.net.URL;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 import java.util.stream.Stream;
 
 public class Settings
@@ -148,7 +148,7 @@ public class Settings
      * This class exists to ensure key names and device names remain synchronized
      */
     private static class DeviceMap
-            extends LinkedHashMap<String, DeviceDefinition> {
+            extends TreeMap<String, DeviceDefinition> {
 
         @Override
         public DeviceDefinition put(String key, DeviceDefinition value) {

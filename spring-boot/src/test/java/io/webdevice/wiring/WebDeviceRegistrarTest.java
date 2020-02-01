@@ -7,13 +7,13 @@ import io.webdevice.device.StubDeviceProvider;
 import io.webdevice.device.StubWebDriver;
 import io.webdevice.settings.MockSettingsBinder;
 import io.webdevice.settings.Settings;
-import io.webdevice.support.SpringDeviceRegistry;
 import org.junit.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.SimpleThreadScope;
 
+import static io.webdevice.settings.SettingsMaker.allDevices;
 import static io.webdevice.wiring.WebDeviceScope.namespace;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,10 +24,12 @@ public class WebDeviceRegistrarTest
     @Test
     public void shouldLoadFromAllDevices() {
         sandbox().withEnvironmentFrom("devices/all-devices.yaml")
-                .with(WebDeviceRuntime.class)
+                .withSystemProperties("saucelabs_username=saucy", "saucelabs_accessKey=2secret4u")
+                .withConfiguration(WebDeviceRuntime.class)
                 .run(context -> {
-                    SpringDeviceRegistry registry = context.getBean(namespace("DeviceRegistry"),
-                            SpringDeviceRegistry.class);
+                    Settings actual = context.getBean(namespace("Settings"), Settings.class);
+                    assertThat(actual)
+                            .isEqualTo(allDevices());
                 });
     }
 
@@ -35,7 +37,7 @@ public class WebDeviceRegistrarTest
     public void shouldUseCustomBinderToBindSettingsFromEnvironment() {
         Settings expected = new Settings();
         sandbox().withEnvironmentFrom("io/webdevice/wiring/binder-only.properties")
-                .with(WebDeviceRuntime.class)
+                .withConfiguration(WebDeviceRuntime.class)
                 .withInitializer(context -> MockSettingsBinder.install(expected))
                 .run(context -> {
                     Settings actual = context.getBean(namespace("Settings"), Settings.class);
@@ -47,7 +49,7 @@ public class WebDeviceRegistrarTest
     @Test
     public void shouldRegisterSettings() {
         sandbox().withEnvironmentFrom("io/webdevice/wiring/scope-only.properties")
-                .with(WebDeviceRuntime.class)
+                .withConfiguration(WebDeviceRuntime.class)
                 .run(context -> {
                     Settings actual = context.getBean(namespace("Settings"), Settings.class);
                     assertThat(actual)
@@ -59,7 +61,7 @@ public class WebDeviceRegistrarTest
     @Test
     public void shouldSkipRegisteringDeviceIfAlreadyDefined() {
         sandbox().withEnvironmentFrom("io/webdevice/wiring/direct-pooled-device.properties")
-                .with(WebDeviceRuntime.class)
+                .withConfiguration(WebDeviceRuntime.class)
                 .withInitializer(context -> ((AnnotationConfigApplicationContext) context)
                         .registerBean("webdevice.Direct",
                                 DeviceProvider.class,
@@ -78,7 +80,7 @@ public class WebDeviceRegistrarTest
     @Test
     public void shouldSkipRegisteringPoolForPooledDeviceIfAlreadyDefinedAndAliasPoolWithDeviceName() {
         sandbox().withEnvironmentFrom("io/webdevice/wiring/direct-pooled-device.properties")
-                .with(WebDeviceRuntime.class)
+                .withConfiguration(WebDeviceRuntime.class)
                 .withInitializer(context -> ((AnnotationConfigApplicationContext) context)
                         .registerBean("webdevice.Direct-Pool", DevicePool.class,
                                 () -> new StubDevicePool("Direct", StubWebDriver::new)))
@@ -100,7 +102,7 @@ public class WebDeviceRegistrarTest
     @Test
     public void shouldSkipRegisteringProviderForPooledDeviceIfAlreadyDefinedAndAliasPoolWithDeviceName() {
         sandbox().withEnvironmentFrom("io/webdevice/wiring/direct-pooled-device.properties")
-                .with(WebDeviceRuntime.class)
+                .withConfiguration(WebDeviceRuntime.class)
                 .withInitializer(context -> ((AnnotationConfigApplicationContext) context)
                         .registerBean("webdevice.Direct-Provider",
                                 DeviceProvider.class,
@@ -123,7 +125,7 @@ public class WebDeviceRegistrarTest
     @Test
     public void shouldRegisterPooledDeviceAndAliasPoolWithDeviceName() {
         sandbox().withEnvironmentFrom("io/webdevice/wiring/direct-pooled-device.properties")
-                .with(WebDeviceRuntime.class)
+                .withConfiguration(WebDeviceRuntime.class)
                 .run(context -> {
                     assertThat(context.containsBeanDefinition(namespace("Direct-Provider")))
                             .isTrue();
@@ -140,7 +142,7 @@ public class WebDeviceRegistrarTest
     @Test
     public void shouldRegisterUnPooledDeviceAndAliasProviderWithDeviceName() {
         sandbox().withEnvironmentFrom("io/webdevice/wiring/direct-not-pooled-device.properties")
-                .with(WebDeviceRuntime.class)
+                .withConfiguration(WebDeviceRuntime.class)
                 .run(context -> {
                     assertThat(context.containsBeanDefinition(namespace("Direct-Provider")))
                             .isTrue();
@@ -154,7 +156,7 @@ public class WebDeviceRegistrarTest
     @Test
     public void shouldRegisterWebDeviceAndDeviceRegistryInConfiguredScope() {
         sandbox().withEnvironmentFrom("io/webdevice/wiring/scope-only.properties")
-                .with(WebDeviceRuntime.class)
+                .withConfiguration(WebDeviceRuntime.class)
                 .run(context -> {
                     ConfigurableListableBeanFactory factory = context.getBeanFactory();
 
@@ -171,7 +173,7 @@ public class WebDeviceRegistrarTest
     @Test
     public void shouldRegisterWebDeviceAndDeviceRegistryInDefaultScope() {
         sandbox().withEnvironmentFrom("io/webdevice/wiring/non-defaults.properties")
-                .with(WebDeviceRuntime.class)
+                .withConfiguration(WebDeviceRuntime.class)
                 .run(context -> {
                     ConfigurableListableBeanFactory factory = context.getBeanFactory();
 
@@ -188,7 +190,7 @@ public class WebDeviceRegistrarTest
     @Test
     public void shouldRegisterWebDeviceAndDeviceRegistryInCucumberScope() {
         sandbox().withClassesIn("stubs/cucumber-stub.jar")
-                .with(WebDeviceRuntime.class)
+                .withConfiguration(WebDeviceRuntime.class)
                 .withInitializer(context -> context.getBeanFactory()
                         .registerScope("cucumber-glue", new SimpleThreadScope()))
                 .run(context -> {
