@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 
+import static io.webdevice.wiring.WebDeviceScope.namespace;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -29,7 +30,7 @@ public class WebDeviceDependsOnTest
     public void shouldEstablishDeviceRegistryDependenciesOnDeviceProviders() {
         String[] providers = {"provider-1", "provider-2"};
 
-        given(mockBeanFactory.getBeanDefinition("webdevice.WebDevice"))
+        given(mockBeanFactory.getBeanDefinition(namespace("WebDevice")))
                 .willReturn(mockBeanDefinition);
         given(mockBeanFactory.getBeanNamesForType(DeviceProvider.class))
                 .willReturn(providers);
