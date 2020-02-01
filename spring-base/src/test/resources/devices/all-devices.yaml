@@ -39,6 +39,7 @@ webdevice:
         - accessKey
     SafariLatestMojave:
       remote-address: https://ondemand.saucelabs.com:443/wd/hub
+      aliases: Safari
       pooled: false
       desired: safari
       capabilities:
@@ -66,7 +67,7 @@ webdevice:
         - accessKey
     iPhone8:
       remote-address: https://ondemand.saucelabs.com:443/wd/hub
-      aliases: iPhone 8
+      aliases: iPhone, iPhone 8
       pooled: false
       desired: iphone
       capabilities:

@@ -5,8 +5,12 @@ import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
+import org.springframework.boot.test.context.assertj.AssertableApplicationContext;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.boot.test.context.runner.ContextConsumer;
 import org.springframework.context.ApplicationContextException;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.EncodedResource;
@@ -21,7 +25,7 @@ import static java.util.Arrays.stream;
 
 public class ApplicationContextTest {
     private final Logger log = LoggerFactory.getLogger(getClass());
-    protected ApplicationContextRunner runner;
+    private ApplicationContextRunner runner;
     private PropertySourceFactory propertySourceFactory;
 
     @Before
@@ -50,10 +54,6 @@ public class ApplicationContextTest {
                 .toArray(URL[]::new));
     }
 
-    protected ApplicationContextRunner configuredBy(Class<?>... classes) {
-        return runner = runner.withUserConfiguration(classes);
-    }
-
     protected ApplicationContextTest withEnvironmentFrom(String... resources) {
         runner = runner.withInitializer(context -> {
             MutablePropertySources sources = context.getEnvironment().getPropertySources();
@@ -71,7 +71,27 @@ public class ApplicationContextTest {
         return this;
     }
 
-    protected ApplicationContextRunner with(Class<?>... configurations) {
-        return runner = runner.withUserConfiguration(configurations);
+    protected ApplicationContextTest withSystemProperties(String... pairs) {
+        runner = runner.withSystemProperties(pairs);
+        return this;
+    }
+
+    protected ApplicationContextTest withEnvironmentProperties(String... pairs) {
+        runner = runner.withPropertyValues(pairs);
+        return this;
+    }
+
+    protected ApplicationContextTest withInitializer(ApplicationContextInitializer<ConfigurableApplicationContext> initializer) {
+        runner = runner.withInitializer(initializer);
+        return this;
+    }
+
+    protected ApplicationContextTest with(Class<?>... configurations) {
+        runner = runner.withUserConfiguration(configurations);
+        return this;
+    }
+
+    protected ApplicationContextRunner run(ContextConsumer<AssertableApplicationContext> consumer) {
+        return runner = runner.run(consumer);
     }
 }
