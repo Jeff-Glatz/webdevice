@@ -12,13 +12,12 @@ import org.junit.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.SimpleThreadScope;
 
 import static io.webdevice.settings.SettingsMaker.allDevices;
 import static io.webdevice.wiring.WebDeviceScope.namespace;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class WebDeviceRegistrarTest
+public class WebDeviceRegistrarSpringBootTest
         extends SpringBootSandboxTest
         implements WebDeviceRegistrarUseCases {
 
@@ -192,8 +191,6 @@ public class WebDeviceRegistrarTest
     public void shouldRegisterWebDeviceAndDeviceRegistryInCucumberScope() {
         sandbox().withClassesIn("stubs/cucumber-stub.jar")
                 .withConfiguration(WebDeviceRuntime.class)
-                .withInitializer(context -> context.getBeanFactory()
-                        .registerScope("cucumber-glue", new SimpleThreadScope()))
                 .run(context -> {
                     ConfigurableListableBeanFactory factory = context.getBeanFactory();
 

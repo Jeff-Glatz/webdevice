@@ -115,14 +115,11 @@ public class WebDeviceRegistrar
 
     private String scope(Settings settings, BeanDefinitionRegistry registry) {
         String scope = settings.getScope();
-        if (isEmpty(scope)
-                && isPresent("io.cucumber.spring.CucumberTestContext", null)
-                && ((ConfigurableBeanFactory) registry).getRegisteredScope("cucumber-glue") != null) {
-            // TODO: Determine a reliable way to detect running with cucumber
-            scope = "cucumber-glue";
-        }
         if (isEmpty(scope)) {
-            scope = "webdevice";
+            // TODO: Determine a reliable way to detect running with cucumber
+            scope = isPresent("io.cucumber.spring.CucumberTestContext", null)
+                    ? "cucumber-glue"
+                    : "webdevice";
         }
         return scope;
     }

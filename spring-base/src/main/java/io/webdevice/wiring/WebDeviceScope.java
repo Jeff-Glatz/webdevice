@@ -50,6 +50,7 @@ public class WebDeviceScope
     @Override
     public void registerDestructionCallback(String name, Runnable callback) {
         log.info("Registering destruction callback for {}", name);
+        // TODO: This is a prototype scope, all instances will have the same name
         synchronized (callbacks) {
             callbacks.put(name, callback);
         }
