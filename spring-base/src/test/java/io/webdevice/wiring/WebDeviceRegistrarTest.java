@@ -17,8 +17,10 @@ import static io.webdevice.wiring.WebDeviceScope.namespace;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class WebDeviceRegistrarTest
-        extends SpringSandboxTest {
+        extends SpringSandboxTest
+        implements WebDeviceRegistrarUseCases {
 
+    @Override
     @Test
     public void shouldLoadFromAllDevices()
             throws Exception {
@@ -30,6 +32,7 @@ public class WebDeviceRegistrarTest
                 });
     }
 
+    @Override
     @Test
     public void shouldUseCustomBinderToBindSettingsFromEnvironment()
             throws Exception {
@@ -44,6 +47,7 @@ public class WebDeviceRegistrarTest
                 });
     }
 
+    @Override
     @Test
     public void shouldRegisterSettings()
             throws Exception {
@@ -57,6 +61,7 @@ public class WebDeviceRegistrarTest
                 });
     }
 
+    @Override
     @Test
     public void shouldSkipRegisteringDeviceIfAlreadyDefined()
             throws Exception {
@@ -75,6 +80,7 @@ public class WebDeviceRegistrarTest
                 });
     }
 
+    @Override
     @Test
     public void shouldSkipRegisteringPoolForPooledDeviceIfAlreadyDefinedAndAliasPoolWithDeviceName()
             throws Exception {
@@ -97,6 +103,7 @@ public class WebDeviceRegistrarTest
                 });
     }
 
+    @Override
     @Test
     public void shouldSkipRegisteringProviderForPooledDeviceIfAlreadyDefinedAndAliasPoolWithDeviceName()
             throws Exception {
@@ -119,6 +126,7 @@ public class WebDeviceRegistrarTest
                 });
     }
 
+    @Override
     @Test
     public void shouldRegisterPooledDeviceAndAliasPoolWithDeviceName()
             throws Exception {
@@ -137,8 +145,9 @@ public class WebDeviceRegistrarTest
                 });
     }
 
+    @Override
     @Test
-    public void shouldRegisterUnpooledDeviceAndAliasProviderWithDeviceName()
+    public void shouldRegisterUnPooledDeviceAndAliasProviderWithDeviceName()
             throws Exception {
         sandbox().withEnvironmentFrom("io/webdevice/wiring/direct-not-pooled-device.properties")
                 .with(WebDeviceRuntime.class)
@@ -152,6 +161,7 @@ public class WebDeviceRegistrarTest
                 });
     }
 
+    @Override
     @Test
     public void shouldRegisterWebDeviceAndDeviceRegistryInConfiguredScope()
             throws Exception {
@@ -168,6 +178,7 @@ public class WebDeviceRegistrarTest
                 });
     }
 
+    @Override
     @Test
     public void shouldRegisterWebDeviceAndDeviceRegistryInDefaultScope()
             throws Exception {
@@ -184,9 +195,9 @@ public class WebDeviceRegistrarTest
                 });
     }
 
+    @Override
     @Test
-    public void shouldAttemptToRegisterDeviceRegistryInCucumberScopeWhenPresentScope()
-            throws Exception {
+    public void shouldRegisterWebDeviceAndDeviceRegistryInCucumberScope() {
         sandbox().with(WebDeviceRuntime.class)
                 .withInitializer(context -> context.getBeanFactory()
                         .registerScope("cucumber-glue", new SimpleThreadScope()))

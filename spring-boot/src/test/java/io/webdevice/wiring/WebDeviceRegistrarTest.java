@@ -1,275 +1,206 @@
 package io.webdevice.wiring;
 
-import io.webdevice.configurations.DirectPooledDevice;
+import io.webdevice.device.DevicePool;
 import io.webdevice.device.DeviceProvider;
+import io.webdevice.device.StubDevicePool;
+import io.webdevice.device.StubDeviceProvider;
+import io.webdevice.device.StubWebDriver;
+import io.webdevice.settings.MockSettingsBinder;
 import io.webdevice.settings.Settings;
+import io.webdevice.support.SpringDeviceRegistry;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.GenericBeanDefinition;
-import org.springframework.core.type.AnnotationMetadata;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.SimpleThreadScope;
 
+import static io.webdevice.wiring.WebDeviceScope.namespace;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
 
 public class WebDeviceRegistrarTest
-        extends ApplicationContextTest {
-
-    @Mock
-    private AnnotationMetadata mockMetadata;
-    @Mock(extraInterfaces = ConfigurableListableBeanFactory.class)
-    private BeanDefinitionRegistry mockRegistry;
-    @Captor
-    private ArgumentCaptor<GenericBeanDefinition> definitionCaptor;
+        extends ApplicationContextTest
+        implements WebDeviceRegistrarUseCases {
 
     @Test
-    public void shouldSkipRegisteringDeviceIfAlreadyDefined()
-            throws Exception {
-        configuredBy(DirectPooledDevice.class)
-                // Device already registered
-                .withBean("webdevice.Direct", String.class, () -> "Hi!")
+    public void shouldLoadFromAllDevices() {
+        sandbox().withEnvironmentFrom("devices/all-devices.yaml")
+                .with(WebDeviceRuntime.class)
                 .run(context -> {
-                    ConfigurableListableBeanFactory factory = context.getBeanFactory();
-                    assertThat(factory.getBean("webdevice.Direct"))
-                            .isInstanceOf(String.class);
-                    assertThat(factory.containsBeanDefinition("webdevice.Direct-Pool"))
+                    SpringDeviceRegistry registry = context.getBean(namespace("DeviceRegistry"),
+                            SpringDeviceRegistry.class);
+                });
+    }
+
+    @Test
+    public void shouldUseCustomBinderToBindSettingsFromEnvironment() {
+        Settings expected = new Settings();
+        sandbox().withEnvironmentFrom("io/webdevice/wiring/binder-only.properties")
+                .with(WebDeviceRuntime.class)
+                .withInitializer(context -> MockSettingsBinder.install(expected))
+                .run(context -> {
+                    Settings actual = context.getBean(namespace("Settings"), Settings.class);
+                    assertThat(actual)
+                            .isSameAs(expected);
+                });
+    }
+
+    @Test
+    public void shouldRegisterSettings() {
+        sandbox().withEnvironmentFrom("io/webdevice/wiring/scope-only.properties")
+                .with(WebDeviceRuntime.class)
+                .run(context -> {
+                    Settings actual = context.getBean(namespace("Settings"), Settings.class);
+                    assertThat(actual)
+                            .isEqualTo(new Settings()
+                                    .withScope("application"));
+                });
+    }
+
+    @Test
+    public void shouldSkipRegisteringDeviceIfAlreadyDefined() {
+        sandbox().withEnvironmentFrom("io/webdevice/wiring/direct-pooled-device.properties")
+                .with(WebDeviceRuntime.class)
+                .withInitializer(context -> ((AnnotationConfigApplicationContext) context)
+                        .registerBean("webdevice.Direct",
+                                DeviceProvider.class,
+                                () -> new StubDeviceProvider("Direct")))
+                .run(context -> {
+                    assertThat(context.containsBeanDefinition(namespace("Direct-Provider")))
                             .isFalse();
-                    assertThat(factory.containsBeanDefinition("webdevice.Direct-Provider"))
+                    assertThat(context.containsBeanDefinition(namespace("Direct-Pool")))
+                            .isFalse();
+                    assertThat(context.getAliases(namespace("Direct")))
+                            .containsExactly();
+
+                });
+    }
+
+    @Test
+    public void shouldSkipRegisteringPoolForPooledDeviceIfAlreadyDefinedAndAliasPoolWithDeviceName() {
+        sandbox().withEnvironmentFrom("io/webdevice/wiring/direct-pooled-device.properties")
+                .with(WebDeviceRuntime.class)
+                .withInitializer(context -> ((AnnotationConfigApplicationContext) context)
+                        .registerBean("webdevice.Direct-Pool", DevicePool.class,
+                                () -> new StubDevicePool("Direct", StubWebDriver::new)))
+                .run(context -> {
+                    assertThat(context.containsBeanDefinition(namespace("Direct-Provider")))
+                            .isTrue();
+                    assertThat(context.getAliases(namespace("Direct-Provider")))
+                            .containsExactly();
+
+                    assertThat(context.containsBeanDefinition(namespace("Direct-Pool")))
+                            .isTrue();
+                    assertThat(context.getBean(namespace("Direct-Pool")))
+                            .isInstanceOf(StubDevicePool.class);
+                    assertThat(context.getAliases(namespace("Direct-Pool")))
+                            .containsExactly("Direct");
+                });
+    }
+
+    @Test
+    public void shouldSkipRegisteringProviderForPooledDeviceIfAlreadyDefinedAndAliasPoolWithDeviceName() {
+        sandbox().withEnvironmentFrom("io/webdevice/wiring/direct-pooled-device.properties")
+                .with(WebDeviceRuntime.class)
+                .withInitializer(context -> ((AnnotationConfigApplicationContext) context)
+                        .registerBean("webdevice.Direct-Provider",
+                                DeviceProvider.class,
+                                () -> new StubDeviceProvider("Direct")))
+                .run(context -> {
+                    assertThat(context.containsBeanDefinition(namespace("Direct-Provider")))
+                            .isTrue();
+                    assertThat(context.getBean(namespace("Direct-Provider")))
+                            .isInstanceOf(StubDeviceProvider.class);
+                    assertThat(context.getAliases(namespace("Direct-Provider")))
+                            .containsExactly();
+
+                    assertThat(context.containsBeanDefinition(namespace("Direct-Pool")))
+                            .isTrue();
+                    assertThat(context.getAliases(namespace("Direct-Pool")))
+                            .containsExactly("Direct");
+                });
+    }
+
+    @Test
+    public void shouldRegisterPooledDeviceAndAliasPoolWithDeviceName() {
+        sandbox().withEnvironmentFrom("io/webdevice/wiring/direct-pooled-device.properties")
+                .with(WebDeviceRuntime.class)
+                .run(context -> {
+                    assertThat(context.containsBeanDefinition(namespace("Direct-Provider")))
+                            .isTrue();
+                    assertThat(context.getAliases(namespace("Direct-Provider")))
+                            .containsExactly();
+
+                    assertThat(context.containsBeanDefinition(namespace("Direct-Pool")))
+                            .isTrue();
+                    assertThat(context.getAliases(namespace("Direct-Pool")))
+                            .containsExactly("Direct");
+                });
+    }
+
+    @Test
+    public void shouldRegisterUnPooledDeviceAndAliasProviderWithDeviceName() {
+        sandbox().withEnvironmentFrom("io/webdevice/wiring/direct-not-pooled-device.properties")
+                .with(WebDeviceRuntime.class)
+                .run(context -> {
+                    assertThat(context.containsBeanDefinition(namespace("Direct-Provider")))
+                            .isTrue();
+                    assertThat(context.getAliases(namespace("Direct-Provider")))
+                            .containsExactly("Direct");
+                    assertThat(context.containsBeanDefinition(namespace("Direct-Pool")))
                             .isFalse();
                 });
     }
 
     @Test
-    public void shouldSkipRegisteringPoolIfAlreadyDefinedAndAliasPoolWithDeviceName()
-            throws Exception {
-        configuredBy(DirectPooledDevice.class)
-                // DevicePool already registered
-                .withBean("webdevice.Direct-Pool", String.class, () -> "Hi!")
+    public void shouldRegisterWebDeviceAndDeviceRegistryInConfiguredScope() {
+        sandbox().withEnvironmentFrom("io/webdevice/wiring/scope-only.properties")
+                .with(WebDeviceRuntime.class)
                 .run(context -> {
                     ConfigurableListableBeanFactory factory = context.getBeanFactory();
-                    assertThat(factory.getBean("webdevice.Direct-Provider"))
-                            .isInstanceOf(DeviceProvider.class);
-                    assertThat(factory.getBean("webdevice.Direct-Pool"))
-                            .isInstanceOf(String.class);
-                    assertThat(factory.getBean("Direct"))
-                            .isInstanceOf(String.class);
-                    assertThat(factory.getBean("Firefox"))
-                            .isInstanceOf(String.class);
+
+                    BeanDefinition definition = factory.getBeanDefinition(namespace("DeviceRegistry"));
+                    assertThat(definition.getScope())
+                            .isEqualTo("application");
+
+                    definition = factory.getBeanDefinition(namespace("WebDevice"));
+                    assertThat(definition.getScope())
+                            .isEqualTo("application");
                 });
-
-//        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.yaml");
-//        WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
-//
-//        given(mockRegistry.isBeanNameInUse("webdevice.Direct"))
-//                .willReturn(false);
-//        given(mockRegistry.isBeanNameInUse("webdevice.Direct-Provider"))
-//                .willReturn(false);
-//        given(mockRegistry.isBeanNameInUse("webdevice.Direct-Pool"))
-//                .willReturn(true);
-//
-//        registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
-//
-//        verify((ConfigurableListableBeanFactory) mockRegistry)
-//                .registerScope("webdevice", new WebDeviceScope());
-//        verify(mockRegistry)
-//                .registerBeanDefinition(eq("webdevice.Settings"), any());
-//        verify(mockRegistry)
-//                .isBeanNameInUse("webdevice.Direct");
-//        verify(mockRegistry)
-//                .isBeanNameInUse("webdevice.Direct-Provider");
-//        verify(mockRegistry)
-//                .registerBeanDefinition(eq("webdevice.Direct-Provider"), definitionCaptor.capture());
-//        verify(mockRegistry)
-//                .isBeanNameInUse("webdevice.Direct-Pool");
-//        verify(mockRegistry)
-//                .registerAlias("webdevice.Direct-Pool", "Direct");
-//        verify(mockRegistry)
-//                .registerBeanDefinition(eq("webdevice.DeviceRegistry"), any());
-//        verify(mockRegistry)
-//                .registerBeanDefinition(eq("webdevice.WebDevice"), any());
-//        verifyNoMoreInteractions(mockRegistry);
-//
-//        // Provider definition
-//        GenericBeanDefinition provider = definitionCaptor.getValue();
-//        DeviceDefinition definition = bindFrom(environment)
-//                .device("Direct");
-//        assertThat(provider)
-//                .isEqualTo(definition.build().getBeanDefinition());
-    }
-//
-//    @Test
-//    public void shouldSkipRegisteringProviderForPooledDeviceIfAlreadyDefinedAndAliasPoolWithDeviceName()
-//            throws Exception {
-//        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.yaml");
-//        WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
-//
-//        given(mockRegistry.isBeanNameInUse("webdevice.Direct"))
-//                .willReturn(false);
-//        given(mockRegistry.isBeanNameInUse("webdevice.Direct-Provider"))
-//                .willReturn(true);
-//        given(mockRegistry.isBeanNameInUse("webdevice.Direct-Pool"))
-//                .willReturn(false);
-//
-//        registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
-//
-//        verify((ConfigurableListableBeanFactory) mockRegistry)
-//                .registerScope("webdevice", new WebDeviceScope());
-//        verify(mockRegistry)
-//                .registerBeanDefinition(eq("webdevice.Settings"), any());
-//        verify(mockRegistry)
-//                .isBeanNameInUse("webdevice.Direct");
-//        verify(mockRegistry)
-//                .isBeanNameInUse("webdevice.Direct-Provider");
-//        verify(mockRegistry)
-//                .isBeanNameInUse("webdevice.Direct-Pool");
-//        verify(mockRegistry)
-//                .registerBeanDefinition(eq("webdevice.Direct-Pool"), definitionCaptor.capture());
-//        verify(mockRegistry)
-//                .registerAlias("webdevice.Direct-Pool", "Direct");
-//        verify(mockRegistry)
-//                .registerBeanDefinition(eq("webdevice.DeviceRegistry"), any());
-//        verify(mockRegistry)
-//                .registerBeanDefinition(eq("webdevice.WebDevice"), any());
-//        verifyNoMoreInteractions(mockRegistry);
-//
-//        // Pool definition
-//        GenericBeanDefinition pool = definitionCaptor.getValue();
-//        assertThat(pool.getBeanClass())
-//                .isSameAs(DevicePool.class);
-//        assertThat(pool.getAutowireMode())
-//                .isSameAs(AUTOWIRE_CONSTRUCTOR);
-//        assertThat(pool.getDestroyMethodName())
-//                .isEqualTo("dispose");
-//
-//        ConstructorArgumentValues values = pool.getConstructorArgumentValues();
-//        assertThat(values.getArgumentCount())
-//                .isSameAs(3);
-//        assertThat(values.getIndexedArgumentValue(0, String.class).getValue())
-//                .isEqualTo("Direct");
-//        assertThat(values.getIndexedArgumentValue(1, String.class).getValue())
-//                .isEqualTo(new RuntimeBeanReference("webdevice.Direct-Provider"));
-//        assertThat(values.getIndexedArgumentValue(2, String.class).getValue())
-//                .isInstanceOf(SimpleDeviceCheck.class);
-//    }
-//
-//    @Test
-//    public void shouldRegisterPooledDeviceAndAliasPoolWithDeviceName()
-//            throws Exception {
-//        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/direct-pooled-device.yaml");
-//        WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
-//
-//        given(mockRegistry.isBeanNameInUse("webdevice.Direct"))
-//                .willReturn(false);
-//        given(mockRegistry.isBeanNameInUse("webdevice.Direct-Provider"))
-//                .willReturn(false);
-//        given(mockRegistry.isBeanNameInUse("webdevice.Direct-Pool"))
-//                .willReturn(false);
-//
-//        registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
-//
-//        verify((ConfigurableListableBeanFactory) mockRegistry)
-//                .registerScope("webdevice", new WebDeviceScope());
-//        verify(mockRegistry)
-//                .registerBeanDefinition(eq("webdevice.Settings"), any());
-//        verify(mockRegistry)
-//                .isBeanNameInUse("webdevice.Direct");
-//        verify(mockRegistry)
-//                .isBeanNameInUse("webdevice.Direct-Provider");
-//        verify(mockRegistry)
-//                .registerBeanDefinition(eq("webdevice.Direct-Provider"), definitionCaptor.capture());
-//        verify(mockRegistry)
-//                .isBeanNameInUse("webdevice.Direct-Pool");
-//        verify(mockRegistry)
-//                .registerBeanDefinition(eq("webdevice.Direct-Pool"), definitionCaptor.capture());
-//        verify(mockRegistry)
-//                .registerAlias("webdevice.Direct-Pool", "Direct");
-//        verify(mockRegistry)
-//                .registerBeanDefinition(eq("webdevice.DeviceRegistry"), any());
-//        verify(mockRegistry)
-//                .registerBeanDefinition(eq("webdevice.WebDevice"), any());
-//        verifyNoMoreInteractions(mockRegistry);
-//
-//        // Provider definition
-//        GenericBeanDefinition provider = definitionCaptor.getAllValues()
-//                .get(0);
-//        DeviceDefinition definition = bindFrom(environment)
-//                .device("Direct");
-//        assertThat(provider)
-//                .isEqualTo(definition.build().getBeanDefinition());
-//
-//        // Pool definition
-//        GenericBeanDefinition pool = definitionCaptor.getAllValues()
-//                .get(1);
-//        assertThat(pool.getBeanClass())
-//                .isSameAs(DevicePool.class);
-//        assertThat(pool.getAutowireMode())
-//                .isSameAs(AUTOWIRE_CONSTRUCTOR);
-//        assertThat(pool.getDestroyMethodName())
-//                .isEqualTo("dispose");
-//        assertThat(pool.getRole())
-//                .isEqualTo(ROLE_INFRASTRUCTURE);
-//
-//        ConstructorArgumentValues values = pool.getConstructorArgumentValues();
-//        assertThat(values.getArgumentCount())
-//                .isSameAs(3);
-//        assertThat(values.getIndexedArgumentValue(0, String.class).getValue())
-//                .isEqualTo("Direct");
-//        assertThat(values.getIndexedArgumentValue(1, String.class).getValue())
-//                .isEqualTo(new RuntimeBeanReference("webdevice.Direct-Provider"));
-//        assertThat(values.getIndexedArgumentValue(2, String.class).getValue())
-//                .isInstanceOf(SimpleDeviceCheck.class);
-//    }
-//
-//    @Test
-//    public void shouldRegisterUnpooledDeviceAndAliasProviderWithDeviceName()
-//            throws Exception {
-//        ConfigurableEnvironment environment = environmentWith("io/webdevice/wiring/direct-not-pooled-device.yaml");
-//        WebDeviceRegistrar registrar = new WebDeviceRegistrar(environment);
-//
-//        given(mockRegistry.isBeanNameInUse("webdevice.Direct"))
-//                .willReturn(false);
-//        given(mockRegistry.isBeanNameInUse("webdevice.Direct-Provider"))
-//                .willReturn(false);
-//
-//        registrar.registerBeanDefinitions(mockMetadata, mockRegistry);
-//
-//        verify((ConfigurableListableBeanFactory) mockRegistry)
-//                .registerScope("webdevice", new WebDeviceScope());
-//        verify(mockRegistry)
-//                .registerBeanDefinition(eq("webdevice.Settings"), any());
-//        verify(mockRegistry)
-//                .isBeanNameInUse("webdevice.Direct");
-//        verify(mockRegistry)
-//                .isBeanNameInUse("webdevice.Direct-Provider");
-//        verify(mockRegistry)
-//                .registerBeanDefinition(eq("webdevice.Direct-Provider"), definitionCaptor.capture());
-//        verify(mockRegistry)
-//                .registerAlias("webdevice.Direct-Provider", "Direct");
-//        verify(mockRegistry)
-//                .registerBeanDefinition(eq("webdevice.DeviceRegistry"), any());
-//        verify(mockRegistry)
-//                .registerBeanDefinition(eq("webdevice.WebDevice"), any());
-//        verifyNoMoreInteractions(mockRegistry);
-//
-//        // Provider definition
-//        GenericBeanDefinition provider = definitionCaptor.getValue();
-//        DeviceDefinition definition = bindFrom(environment)
-//                .device("Direct");
-//        assertThat(provider)
-//                .isEqualTo(definition.build().getBeanDefinition());
-//    }
-
-    private Settings registeredSettings() {
-        verify(mockRegistry)
-                .registerBeanDefinition(eq("webdevice.Settings"), definitionCaptor.capture());
-        GenericBeanDefinition settingsDefinition = definitionCaptor.getValue();
-        return (Settings) settingsDefinition
-                .getInstanceSupplier()
-                .get();
     }
 
+    @Test
+    public void shouldRegisterWebDeviceAndDeviceRegistryInDefaultScope() {
+        sandbox().withEnvironmentFrom("io/webdevice/wiring/non-defaults.properties")
+                .with(WebDeviceRuntime.class)
+                .run(context -> {
+                    ConfigurableListableBeanFactory factory = context.getBeanFactory();
+
+                    BeanDefinition definition = factory.getBeanDefinition(namespace("DeviceRegistry"));
+                    assertThat(definition.getScope())
+                            .isEqualTo("webdevice");
+
+                    definition = factory.getBeanDefinition(namespace("WebDevice"));
+                    assertThat(definition.getScope())
+                            .isEqualTo("webdevice");
+                });
+    }
+
+    @Test
+    public void shouldRegisterWebDeviceAndDeviceRegistryInCucumberScope() {
+        sandbox().withClassesIn("stubs/cucumber-stub.jar")
+                .with(WebDeviceRuntime.class)
+                .withInitializer(context -> context.getBeanFactory()
+                        .registerScope("cucumber-glue", new SimpleThreadScope()))
+                .run(context -> {
+                    ConfigurableListableBeanFactory factory = context.getBeanFactory();
+
+                    BeanDefinition definition = factory.getBeanDefinition(namespace("DeviceRegistry"));
+                    assertThat(definition.getScope())
+                            .isEqualTo("cucumber-glue");
+
+                    definition = factory.getBeanDefinition(namespace("WebDevice"));
+                    assertThat(definition.getScope())
+                            .isEqualTo("cucumber-glue");
+                });
+    }
 }
