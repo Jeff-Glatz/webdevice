@@ -69,32 +69,6 @@ public class WebDeviceScopeTest
     }
 
     @Test
-    public void shouldSafelyDestroyWhenCallbackNotRegistered() {
-        assertThat(scope.destructionCallbackRegistered("name"))
-                .isFalse();
-
-        assertThat(scope.safelyDestroy("name"))
-                .isFalse();
-
-        assertThat(scope.destructionCallbackRegistered("name"))
-                .isFalse();
-    }
-
-    @Test
-    public void shouldConsumeExceptionRaisedByCallback() {
-        scope.registerDestructionCallback("name", () -> {
-            throw new RuntimeException("boom");
-        });
-
-        assertThat(scope.destructionCallbackRegistered("name"))
-                .isTrue();
-        assertThat(scope.safelyDestroy("name"))
-                .isFalse();
-        assertThat(scope.destructionCallbackRegistered("name"))
-                .isFalse();
-    }
-
-    @Test
     public void shouldRegisterAndReturnScope() {
         scope = registerScope(mockBeanFactory);
 
@@ -114,7 +88,7 @@ public class WebDeviceScopeTest
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldRemovePrototypes() {
+    public void shouldReturnListOfPrototypesWhenRemoved() {
         WebDevice device1 = new Browser(null);
         WebDevice device2 = new Browser(null);
 
@@ -126,7 +100,8 @@ public class WebDeviceScopeTest
 
         List<Object> prototypes = (List<Object>) scope.remove("webdevice.WebDevice");
 
-        assertThat(prototypes).contains(device1, device2);
+        assertThat(prototypes)
+                .contains(device1, device2);
 
         assertThat(scope.isEmpty())
                 .isTrue();
@@ -150,6 +125,7 @@ public class WebDeviceScopeTest
     public void shouldReturnTrueFromDisposeWhenNotEmptyWithWebDevices() {
         scope.get("prototype", () -> "Hai");
         scope.get("prototype", () -> mockWebDevice);
+        scope.registerDestructionCallback("prototype", mockWebDevice::release);
 
         assertThat(scope.dispose())
                 .isTrue();
@@ -171,11 +147,26 @@ public class WebDeviceScopeTest
     @Test
     public void shouldReleaseWebDeviceOnDispose() {
         scope.get("prototype", () -> mockWebDevice);
+        scope.registerDestructionCallback("prototype", mockWebDevice::release);
 
         scope.dispose();
 
         verify(mockWebDevice)
                 .release();
+    }
+
+    @Test
+    public void shouldConsumeExceptionRaisedByCallback() {
+        scope.registerDestructionCallback("name", () -> {
+            throw new RuntimeException("boom");
+        });
+
+        assertThat(scope.destructionCallbackRegistered("name"))
+                .isTrue();
+        assertThat(scope.dispose())
+                .isTrue();
+        assertThat(scope.destructionCallbackRegistered("name"))
+                .isFalse();
     }
 
     @Test

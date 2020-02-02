@@ -1,6 +1,5 @@
 package io.webdevice.wiring;
 
-import io.webdevice.device.WebDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectFactory;
@@ -15,7 +14,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.lang.String.format;
 
@@ -24,7 +22,7 @@ public class WebDeviceScope
     public static final String NAME = "webdevice";
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final Map<String, List<Object>> instances = new LinkedHashMap<>();
-    private final Map<String, Runnable> callbacks = new LinkedHashMap<>();
+    private final Map<String, List<Runnable>> callbacks = new LinkedHashMap<>();
 
     public boolean isEmpty() {
         return instances.isEmpty();
@@ -50,9 +48,9 @@ public class WebDeviceScope
     @Override
     public void registerDestructionCallback(String name, Runnable callback) {
         log.info("Registering destruction callback for {}", name);
-        // TODO: This is a prototype scope, all instances will have the same name
         synchronized (callbacks) {
-            callbacks.put(name, callback);
+            callbacks.computeIfAbsent(name, (s) -> new ArrayList<>())
+                    .add(callback);
         }
     }
 
@@ -67,22 +65,19 @@ public class WebDeviceScope
     }
 
     public boolean dispose() {
-        synchronized (instances) {
-            final AtomicBoolean disposed = new AtomicBoolean(false);
-            // Release all WebDevices first
-            instances.values().stream()
-                    .flatMap(Collection::stream)
-                    .filter(instance -> {
-                        if (instance instanceof WebDevice) {
-                            disposed.set(true);
-                            return true;
-                        }
-                        return false;
-                    })
-                    .map(WebDevice.class::cast)
-                    .forEach(WebDevice::release);
-            instances.clear();
-            return disposed.get();
+        synchronized (callbacks) {
+            try {
+                if (!callbacks.isEmpty()) {
+                    callbacks.values().stream()
+                            .flatMap(Collection::stream)
+                            .forEach(this::invoke);
+                    return true;
+                }
+                return false;
+            } finally {
+                instances.clear();
+                callbacks.clear();
+            }
         }
     }
 
@@ -101,22 +96,18 @@ public class WebDeviceScope
 
     boolean destructionCallbackRegistered(String name) {
         synchronized (callbacks) {
-            return callbacks.containsKey(name);
+            return callbacks.containsKey(name) &&
+                    !callbacks.get(name).isEmpty();
         }
     }
 
-    boolean safelyDestroy(String name) {
+    private boolean invoke(Runnable callback) {
         try {
-            synchronized (callbacks) {
-                Runnable callback = callbacks.remove(name);
-                if (callback != null) {
-                    log.debug("Invoking destruction callback for {}", name);
-                    callback.run();
-                    return true;
-                }
-            }
+            log.debug("Invoking destruction callback ...");
+            callback.run();
+            return true;
         } catch (Exception e) {
-            log.warn(format("Failure invoking destruction callback for %s", name), e);
+            log.warn("Failure invoking destruction callback.", e);
         }
         return false;
     }
