@@ -79,8 +79,11 @@ public class WebDeviceScopeDisposerTest
 
     @Test
     public void shouldSetReinjectDependenciesAttributeWhenScopeIsDisposedAfterTestMethod() {
+        Browser mockBrowser = mock(Browser.class);
+
         WebDeviceScope scope = new WebDeviceScope();
-        scope.get("prototype", () -> mock(Browser.class));
+        scope.get("prototype", () -> mockBrowser);
+        scope.registerDestructionCallback("prototype", mockBrowser::release);
 
         assertThat(scope.isEmpty())
                 .isFalse();
