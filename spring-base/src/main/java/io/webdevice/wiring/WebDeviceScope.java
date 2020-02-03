@@ -17,6 +17,13 @@ import java.util.Objects;
 
 import static java.lang.String.format;
 
+/**
+ * The default scope in which {@link io.webdevice.device.WebDevice} and
+ * {@link io.webdevice.device.DeviceRegistry} instances are created. They
+ * are both Flyweights allowing many instances to be created and used
+ * simultaneously. Given this, the {@link WebDeviceScope} behaves like the
+ * built-in {@code prototype} scope, but it works in conjuction with the
+ */
 public class WebDeviceScope
         implements Scope {
     public static final String NAME = "webdevice";
@@ -56,14 +63,23 @@ public class WebDeviceScope
 
     @Override
     public Object resolveContextualObject(String key) {
+        // This scope offers no well-known contextual references
         return null;
     }
 
     @Override
     public String getConversationId() {
-        return null;
+        return NAME;
     }
 
+    /**
+     * Disposes this {@link Scope} by running all registered destruction callbacks
+     * then clearing all tracked instances. This {@link Scope} is ready for re-use
+     * immediately after invocation of this method.
+     *
+     * @return {@code true} if at least one destruction callback was invoked while
+     *         disposing; {@code false} otherwise.
+     */
     public boolean dispose() {
         synchronized (callbacks) {
             try {

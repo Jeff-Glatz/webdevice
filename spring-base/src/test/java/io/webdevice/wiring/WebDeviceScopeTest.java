@@ -43,9 +43,9 @@ public class WebDeviceScopeTest
     }
 
     @Test
-    public void shouldReturnNullConversationId() {
+    public void shouldReturnNameAsConversationId() {
         assertThat(scope.getConversationId())
-                .isNull();
+                .isEqualTo("webdevice");
     }
 
     @Test
