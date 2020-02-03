@@ -1,6 +1,6 @@
 package io.webdevice.wiring;
 
-import io.webdevice.device.Browser;
+import io.webdevice.device.WebDevice;
 import io.webdevice.test.UnitTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +13,6 @@ import org.springframework.test.context.TestContext;
 import static java.lang.Boolean.TRUE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.test.context.support.DependencyInjectionTestExecutionListener.REINJECT_DEPENDENCIES_ATTRIBUTE;
@@ -33,6 +32,9 @@ public class WebDeviceScopeDisposerTest
 
     @Mock
     private ConfigurableListableBeanFactory mockBeanFactory;
+
+    @Mock
+    private WebDevice mockWebDevice;
 
     @Before
     public void setUp() {
@@ -79,11 +81,9 @@ public class WebDeviceScopeDisposerTest
 
     @Test
     public void shouldSetReinjectDependenciesAttributeWhenScopeIsDisposedAfterTestMethod() {
-        Browser mockBrowser = mock(Browser.class);
-
         WebDeviceScope scope = new WebDeviceScope();
-        scope.get("prototype", () -> mockBrowser);
-        scope.registerDestructionCallback("prototype", mockBrowser::release);
+        scope.get("prototype", () -> mockWebDevice);
+        scope.registerDestructionCallback("prototype", mockWebDevice::release);
 
         assertThat(scope.isEmpty())
                 .isFalse();
@@ -152,9 +152,10 @@ public class WebDeviceScopeDisposerTest
     }
 
     @Test
-    public void shouldDisposeWhenScopeIsPresentAndNotEmptyAfterTestMethod() {
+    public void shouldDisposeWhenScopeIsPresentAndNotEmptyAfterTestClass() {
         WebDeviceScope scope = new WebDeviceScope();
-        scope.get("prototype", () -> mock(Browser.class));
+        scope.get("prototype", () -> mockWebDevice);
+        scope.registerDestructionCallback("prototype", mockWebDevice::release);
 
         assertThat(scope.isEmpty())
                 .isFalse();

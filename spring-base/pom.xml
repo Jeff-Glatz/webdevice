@@ -38,6 +38,7 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <!-- Test Dependencies -->

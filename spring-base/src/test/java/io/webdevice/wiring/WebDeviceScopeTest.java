@@ -93,7 +93,10 @@ public class WebDeviceScopeTest
         WebDevice device2 = new Browser(null);
 
         scope.get("webdevice.WebDevice", () -> device1);
+        scope.registerDestructionCallback("webdevice.WebDevice", device1::release);
+
         scope.get("webdevice.WebDevice", () -> device2);
+        scope.registerDestructionCallback("webdevice.WebDevice", device2::release);
 
         assertThat(scope.isEmpty())
                 .isFalse();
