@@ -11,7 +11,7 @@
 
     <groupId>io.webdevice</groupId>
     <artifactId>webdevice-parent</artifactId>
-    <version>0.0.13-SNAPSHOT</version>
+    <version>0.0.13</version>
     <name>WebDevice</name>
     <description>WebDevice Parent</description>
     <packaging>pom</packaging>

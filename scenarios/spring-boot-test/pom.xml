@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.webdevice.scenarios</groupId>
         <artifactId>scenarios-parent</artifactId>
-        <version>0.0.13-SNAPSHOT</version>
+        <version>0.0.13</version>
     </parent>
 
     <artifactId>spring-boot-test</artifactId>
