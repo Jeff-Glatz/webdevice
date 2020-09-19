@@ -25,7 +25,7 @@
         <cucumber.version>4.8.0</cucumber.version>
         <selenium.version>3.141.59</selenium.version>
         <spring.boot.version>2.2.2.RELEASE</spring.boot.version>
-        <wdm.version>3.7.1</wdm.version>
+        <wdm.version>4.2.0</wdm.version>
     </properties>
 
     <dependencyManagement>
