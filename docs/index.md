@@ -3,9 +3,9 @@
 [![Maven Central](https://img.shields.io/maven-central/v/io.webdevice/webdevice-spring-boot.svg?color=green&label=maven%20central)](https://search.maven.org/search?q=g:io.webdevice)
 
 # WebDevice.IO
-WebDevice.IO is a lightweight Java-based framework, initially for use within `Cucumber` test suites 
-based on `cucumber-spring`, for managing a collection of `WebDriver` devices that can be specified and
-activated at `Scenario` runtime.
+WebDevice.IO is a lightweight Java-based framework for managing a collection of predefined WebDriver 
+instances for use in browser automation test suites. The instances can be local, remote, and works well
+with Sauce Labs for driving desktop and mobile web devices.
 
 ## Installation
 ```xml
@@ -14,6 +14,67 @@ activated at `Scenario` runtime.
   <artifactId>webdevice-spring-boot</artifactId>
   <version>0.0.13</version>
 </dependency>
+```
+## Spring Integration
+`WebDevice` works best with Spring. When used with Spring, the `WebDevice` runtime will manage the lifecycle of all
+`WbeDriver` instances so that they will be automatically closed and quit. 
+
+### Spring Test Framework
+If using plain Spring Test Framework, use the `webdevice-spring-base` artifact:
+```xml
+<dependency>
+  <groupId>io.webdevice</groupId>
+  <artifactId>webdevice-spring-base</artifactId>
+  <version>0.0.13</version>
+</dependency>
+```
+To activate the `WebDevice` runtime, apply the `@EnableWebDevice` annotation:
+```java
+package com.someco.product.cucumber.steps;
+
+import io.webdevice.device.WebDevice;
+import io.webdevice.wiring.EnableWebDevice;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+
+@EnableWebDevice
+@ContextConfiguration(classes = TestConfiguration.class)
+public class TestCase {
+
+    @Autowired
+    private WebDevice browser;
+
+    @Test
+    public void shouldDoSomething() {
+        browser.use("iPhone8");
+        browser.home();
+        browser.navigateTo(relativePath);
+    }
+}
+```
+
+### Spring Boot Test Framework
+As long as the `webdevice-spring-boot` artifact is on the classpath, the runtime will be activated automatically:
+```java
+package com.someco.product.cucumber.steps;
+
+import io.webdevice.device.WebDevice;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest(classes = TestConfiguration.class)
+public class TestSteps {
+
+    @Autowired
+    private WebDevice browser;
+
+    @Test
+    public void shouldDoSomething() {
+        browser.use("iPhone8");
+        browser.home();
+        browser.navigateTo(relativePath);
+    }
+}
 ```
 
 ## Cucumber Integration
@@ -38,17 +99,22 @@ public class TestSuite {
 When using `cucumber-spring`, only one step definition is allowed to carry the context configuring
 Spring annotation.
 
-#### Without Existing Configuration
+#### With Existing Configuration
+In the most common use case, `WebDevice` will be integrated into a test automation suite with an existing Spring
+configuration. In this case, apply the `@EnableWebDevice` annotation to activate the runtime:
 ```java
 package com.someco.product.cucumber.steps;
 
 import io.cucumber.java.en.Given;
+import io.cucumber.spring.CucumberContextConfiguration;
 import io.webdevice.device.WebDevice;
-import io.webdevice.wiring.WebDeviceRuntime;
+import io.webdevice.wiring.EnableWebDevice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest(classes = WebDeviceRuntime.class)
+@EnableWebDevice
+@CucumberContextConfiguration
+@SpringBootTest(classes = TestConfiguration.class)
 public class TestSteps {
 
     @Autowired
@@ -76,19 +142,21 @@ public class TestSteps {
 }
 ```
 
-#### With Existing Configuration
+#### Without Existing Configuration
+If the project utilizing WebDevice does not have an existing spring configuration and simply wants access
+to the `WebDevice` instance, then the `WebDeviceRuntime` can be referenced directly:
 ```java
 package com.someco.product.cucumber.steps;
 
 import io.cucumber.java.en.Given;
+import io.cucumber.spring.CucumberContextConfiguration;
 import io.webdevice.device.WebDevice;
-import io.webdevice.wiring.EnableWebDevice;
 import io.webdevice.wiring.WebDeviceRuntime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@EnableWebDevice
-@SpringBootTest(classes = TestConfiguration.class)
+@CucumberContextConfiguration
+@SpringBootTest(classes = WebDeviceRuntime.class)
 public class TestSteps {
 
     @Autowired
@@ -241,6 +309,29 @@ webdevice:
                 extendedDebugging: true
 ```
 
+#### Specifying iPhone Device via SauceLabs/Appium
+```yaml
+webdevice:
+  devices:
+    iPhone8:
+      remote-address: https://ondemand.saucelabs.com:443/wd/hub
+      aliases: iPhone 8
+      pooled: false
+      desired: iphone
+      capabilities:
+        username: ${saucelabs_username}
+        accessKey: ${saucelabs_accessKey}
+        extendedDebugging: true
+        appiumVersion: "1.13.0"
+        deviceName: iPhone 8
+        deviceOrientation: portrait
+        platformVersion: "12.2"
+        platformName: iOS
+        browserName: Safari
+      confidential:
+        - accessKey    
+```
+
 ## Programmatic Device Definition
 If the declarative abilities of WebDevice.IO are not sufficient, then simply provide your own `DeviceProvider`
 implementation(s):
@@ -258,12 +349,12 @@ import static org.openqa.selenium.remote.RemoteWebDriver.builder;
 public class CustomProviderWiring {
 
     @Bean
-    public DeviceProvider<RemoteWebDriver> customRemoteProvider() {
-        return remoteProvider("customRemoteProvider",
-                this::customRemoteDriver);
+    public DeviceProvider<RemoteWebDriver> myDevice() {
+        return remoteProvider("myDevice", this::customDriver);
     }
 
-    private RemoteWebDriver customRemoteDriver() {
+    private RemoteWebDriver customDriver() {
+        // Build up the custom RemoteWebDriver
         return (RemoteWebDriver) builder()
                 .addMetadata("key", "value")
                 .build();
