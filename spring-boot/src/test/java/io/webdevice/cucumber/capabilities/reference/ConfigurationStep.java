@@ -1,6 +1,7 @@
 package io.webdevice.cucumber.capabilities.reference;
 
 import io.cucumber.java8.En;
+import io.cucumber.spring.CucumberContextConfiguration;
 import io.webdevice.wiring.EnableWebDevice;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration
+@CucumberContextConfiguration
 public class ConfigurationStep
         implements En {
 

@@ -52,6 +52,17 @@ public class MultipleBrowsersIT {
         browser2.navigateTo("/tasks");
     }
 
+    @Test
+    public void shouldUseDifferentDevices() {
+        browser.use("LocalFirefox");
+        browser.home();
+        browser.navigateTo("/tasks");
+
+        browser2.use("LocalChrome");
+        browser2.home();
+        browser2.navigateTo("/tasks");
+    }
+
     @Configuration
     @EnableWebDevice(settings = "devices/local-devices.yaml", scope = "webdevice")
     public static class Wiring {

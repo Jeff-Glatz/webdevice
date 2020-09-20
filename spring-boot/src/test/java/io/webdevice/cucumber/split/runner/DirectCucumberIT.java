@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        tags = {"not @ignore"},
+        tags = "not @ignore",
         glue = {"io.webdevice.cucumber.split.steps.direct", "io.webdevice.cucumber.common"},
         features = {"src/test/resources/features"},
         plugin = {"pretty"})

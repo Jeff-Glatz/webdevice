@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        tags = {"not @ignore"},
+        tags = "not @ignore",
         extraGlue = {"io.webdevice.cucumber.common"},
         plugin = {"pretty"})
 public class SimpleRunner {
