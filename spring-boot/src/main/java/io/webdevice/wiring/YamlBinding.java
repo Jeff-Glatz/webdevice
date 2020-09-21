@@ -1,4 +1,4 @@
-package io.webdevice.support;
+package io.webdevice.wiring;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.convert.ApplicationConversionService;
