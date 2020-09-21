@@ -12,7 +12,7 @@ with Sauce Labs for driving desktop and mobile web devices.
 <dependency>
   <groupId>io.webdevice</groupId>
   <artifactId>webdevice-spring-boot</artifactId>
-  <version>0.0.13</version>
+  <version>0.0.14</version>
 </dependency>
 ```
 ## Spring Integration
@@ -25,7 +25,7 @@ If using plain Spring Test Framework, use the `webdevice-spring-base` artifact:
 <dependency>
   <groupId>io.webdevice</groupId>
   <artifactId>webdevice-spring-base</artifactId>
-  <version>0.0.13</version>
+  <version>0.0.14</version>
 </dependency>
 ```
 To activate the `WebDevice` runtime, apply the `@EnableWebDevice` annotation:
